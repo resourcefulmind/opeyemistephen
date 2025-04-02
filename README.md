@@ -4,7 +4,6 @@ Welcome to my digital space! Built with React and TypeScript, featuring a unique
 
 ![Portfolio Preview](./public/preview.png)
 
-<iframe width="560" height="315" src="https://res.cloudinary.com/resourcefulmind-inc/video/upload/v1743617274/Screen_Recording_2025-04-02_at_7.00.17_PM_ioridt.mov" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## 🎯 Technical Highlights
 
