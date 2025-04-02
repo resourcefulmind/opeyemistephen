@@ -1,18 +1,10 @@
 # Opeyemi's Portfolio
 
-Welcome to my digital space! This is where elegance meets functionality - a portfolio that showcases my work through modern design and smooth animations. Built with React and TypeScript, featuring a unique dark/light theme transition that brings creativity to life.
+Welcome to my digital space! Built with React and TypeScript, featuring a unique dark/light theme transition. I tried to be a little creative.
 
-![Portfolio Preview](public/preview.png)
+![Portfolio Preview](./public/preview.png)
 
-## ✨ What Makes This Special
-
-- **Creative Name Animation** - Watch as "Opeyemi Bangkok" transforms into "Opeyemi Stephen" with a unique falling letter effect
-- **Dynamic Themes** 
-  - Dark mode features twinkling stars and shooting comets
-  - Light mode comes alive with colorful paint splashes
-- **Metallic Text Effect** - Custom-built metallic text with dynamic glow animations
-- **Responsive & Smooth** - Fluid animations and perfect responsiveness across all devices
-- **Modern Stack** - Built with the latest web technologies for optimal performance
+<iframe width="560" height="315" src="https://res.cloudinary.com/resourcefulmind-inc/video/upload/v1743617274/Screen_Recording_2025-04-02_at_7.00.17_PM_ioridt.mov" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## 🎯 Technical Highlights
 
@@ -24,18 +16,18 @@ Welcome to my digital space! This is where elegance meets functionality - a port
 
 ## 🛠 Built With
 
-- React & TypeScript for robust development
-- Framer Motion for butter-smooth animations
-- Tailwind CSS for sleek styling
-- Satoshi font for modern typography
-- Lucide Icons for clean, consistent iconography
+- React & TypeScript
+- Framer Motion 
+- Tailwind CSS 
+- Satoshi font 
+- Lucide Icons
 
 ## 🚀 Running the Project
 
 1. Clone it:
 ```bash
-git clone https://github.com/opeyemibami/portfolio-blog.git
-cd portfolio-blog
+git clone https://github.com/resourcefulmind/opeyemistephen.git
+cd opeyemistephen
 ```
 
 2. Install what you need:
@@ -48,63 +40,11 @@ npm install
 npm run dev
 ```
 
-4. View it at [http://localhost:3000](http://localhost:3000)
-
-## 🎨 Making It Your Own
-
-### Colors
-
-The theme colors live in `src/index.css`:
-
-```css
-:root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --paint-1: 0 90% 60%;
-  --paint-2: 240 90% 60%;
-  --paint-3: 180 90% 60%;
-  --paint-4: 120 90% 60%;
-}
-```
+4. View it at [http://localhost:5173](http://localhost:5173)
 
 ### Animation Timing
 
 Want to adjust the animations? Check `src/components/Hero.tsx`:
-
-```typescript
-const ANIMATION_DELAYS = {
-  GLOW: 1500,
-  FALLING: 4000,
-  STEPHEN: 500,
-  LETTER_INTERVAL: 0.4,
-};
-```
-
-### Key Features Implementation
-
-```typescript
-// Metallic Text Effect
-const metallic = {
-  initial: { scale: 0.9, opacity: 0 },
-  animate: { scale: 1, opacity: 1 },
-  transition: { duration: 1, ease: "easeOut" }
-};
-
-// Dynamic Theme Toggle
-const themeTransition = {
-  duration: 0.7,
-  ease: [0.43, 0.13, 0.23, 0.96]
-};
-```
-
-## 📱 Responsive Breakpoints
-
-Everything scales beautifully across:
-- Mobile (320px+)
-- Tablet (768px+)
-- Desktop (1024px+)
-- Large Screens (1280px+)
 
 ## 🔧 Project Layout
 
@@ -114,14 +54,26 @@ portfolio-blog/
 │   ├── components/        # React components
 │   │   ├── Hero.tsx      # Main animated hero section
 │   │   ├── ThemeToggle.tsx   # Theme switcher
-│   │   ├── Background/    # Background effects
-│   │   └── Animations/    # Reusable animations
+│   │   └── MeteorShower.tsx   # Meteor shower effect
 │   ├── lib/              # Utility functions
 │   │   ├── hooks/        # Custom React hooks
+│   │   │   └── useTheme.ts  # Your custom theme hook
 │   │   └── utils.ts      # Helper functions
-│   └── styles/           # Global styles
+│   ├── styles/           # Global styles
+│   │   ├── index.css     # Main global styles
+│   │   ├── variables.css  # CSS variables
+│   │   ├── animations.css  # Keyframe animations
+│   │   ├── components.css  # Component-specific styles
+│   │   └── themes.css      # Theme-specific styles
+│   ├── content/          # MDX content for blog posts 
+│   │   └── articles/     # Individual MDX files for articles 
+│   └── pages/            # Pages for routing 
+│       ├── Blog.tsx      # Blog listing page 
+│       ├── Post.tsx      # Blog post page 
+│       ├── About.tsx     # About Me page 
+│       └── Community.tsx  # Community page 
 ├── public/               # Static assets
-└── package.json         
+└── package.json                 
 ```
 
 ## 📦 Core Dependencies
@@ -135,6 +87,7 @@ portfolio-blog/
 ## 🔮 Future Updates
 
 I'm constantly improving this portfolio. Here's what's coming:
+
 - Blog section with MDX support
 - Interactive project showcases
 - Advanced animation sequences
@@ -144,9 +97,10 @@ I'm constantly improving this portfolio. Here's what's coming:
 ## 👤 About Me
 
 Opeyemi Stephen - Full Stack Developer & Technical Writer
-- Portfolio: [opeyemi.dev](https://opeyemi.dev)
-- GitHub: [@opeyemibami](https://github.com/opeyemibami)
-- LinkedIn: [Opeyemi Stephen](https://linkedin.com/in/opeyemibami)
+
+- GitHub: [@resourcefulmind](https://github.com/resourcefulmind)
+- LinkedIn: [Opeyemi Stephen](https://linkedin.com/in/opeyemistephen)
+- X: [Opeyemi Bangkok](https://x.com/vgbg)
 
 ## 🙏 Special Thanks To
 
@@ -156,5 +110,3 @@ Opeyemi Stephen - Full Stack Developer & Technical Writer
 - [Lucide Icons](https://lucide.dev) - Beautiful, consistent icons
 
 ---
-
-Built with precision and passion 🚀 
