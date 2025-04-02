@@ -15,10 +15,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-700">
-      <div className="fixed top-0 left-0 p-4 text-sm text-muted-foreground">
-        Debug: Theme is {document.documentElement.classList.contains('dark') ? 'dark' : 'light'}
-      </div>
-      <ThemeToggle />
       <Hero />
     </div>
   );
