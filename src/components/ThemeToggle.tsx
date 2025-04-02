@@ -1,5 +1,5 @@
 import { Moon, Sun } from 'lucide-react';
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "../lib/hooks/useTheme";
 import { cn } from "../lib/utils";
 
 // Create a global event for theme changes

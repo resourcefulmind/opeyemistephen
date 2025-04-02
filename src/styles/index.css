@@ -1,0 +1,172 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400,900,800&display=swap');
+@import './variables.css';
+@import './animations.css';
+@import './components.css';
+@import './themes.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .light {
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --input: 214.3 31.8% 91.4%;
+
+    /* Light mode specific colors for paint splashes */
+    --paint-1: 20 90% 60%;
+    --paint-2: 200 90% 60%;
+    --paint-3: 280 90% 60%;
+    --paint-4: 120 90% 60%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* color: var(--text-color); */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Add smooth transitions for theme changes */
+  :root {
+    --transition-duration: 0.7s;
+  }
+
+  body,
+  body * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: var(--transition-duration);
+  }
+}
+
+.font-display {
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.twinkle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: white;
+  animation: twinkle-animation var(--twinkle-duration) ease-in-out infinite;
+}
+
+.comet {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 50%;
+  animation: comet var(--comet-duration, 45s) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+  filter: blur(1px);
+  box-shadow: 
+    0 0 10px white,
+    0 0 20px white,
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 40px rgba(255, 255, 255, 0.6),
+    0 0 50px rgba(255, 255, 255, 0.4);
+}
+
+.comet::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 2px;
+  width: 0;
+  background: linear-gradient(to right, 
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.4)
+  );
+  opacity: 0;
+  filter: blur(2px);
+  animation: trail var(--comet-duration, 45s) linear forwards;
+}
+
+.comet::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 2px;
+  width: 0;
+  background: linear-gradient(to right, 
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.5)
+  );
+  opacity: 0;
+  filter: blur(4px);
+  animation: trail var(--comet-duration, 45s) linear forwards;
+  animation-delay: 0.1s;
+}
+
+.shine-effect {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: background-shine 6s linear infinite;
+}
+
+/* Styles for Nebula */
+.nebula {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.nebula-left {
+  left: -150px;
+  bottom: -150px;
+}
+
+.nebula-right {
+  right: -150px;
+  top: -150px;
+}
+
+/* Styles for Meteor */
+.meteor {
+  position: absolute;
+  width: 2px;
+  height: 10px;
+  background-color: white;
+  opacity: 0.8;
+  animation: fall linear forwards;
+}
+
+

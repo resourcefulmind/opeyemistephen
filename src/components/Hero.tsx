@@ -3,6 +3,7 @@ import { Github, Linkedin, Mail } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/utils';
 import { ThemeToggle } from './ThemeToggle';
+import MeteorShower from './MeteroShower';
 
 // Animation constants
 const ANIMATION_DELAYS = {
@@ -161,35 +162,15 @@ function ShootingStar() {
 }
 
 function ShootingStars() {
-  const [stars, setStars] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (!document.documentElement.classList.contains('dark')) return;
-
-    const createStar = () => {
-      setStars(prev => [...prev, Date.now()]);
-    };
-
-    // Create initial stars
-    for (let i = 0; i < 3; i++) {
-      setTimeout(createStar, i * 1000);
-    }
-
-    // Create stars periodically
-    const interval = setInterval(() => {
-      if (Math.random() > 0.5) { // 50% chance to create a star
-        createStar();
-      }
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const stars = [...Array(10)].map((_, index) => ({
+    id: `${Date.now()}-${index}`,
+  }));
 
   return (
     <div className="absolute inset-0 overflow-hidden">
       <AnimatePresence>
-        {stars.map((id) => (
-          <ShootingStar key={id} />
+        {stars.map((star) => (
+          <ShootingStar key={star.id} />
         ))}
       </AnimatePresence>
     </div>
@@ -331,7 +312,10 @@ export function Hero() {
       <div className="absolute inset-0 w-full h-full bg-background transition-colors duration-700">
         <TwinklingBackground />
         <ShootingStars />
+        <MeteorShower />
         <PaintSplashes />
+        <div className="nebula nebula-left" />
+        <div className="nebula nebula-right" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_0%,transparent_100%)] animate-float dark:opacity-100 light:opacity-30" />
       </div>
       
@@ -344,7 +328,8 @@ export function Hero() {
         <motion.h1 
           className={cn(
             "text-[3rem] sm:text-[4.75rem] md:text-[5.75rem] lg:text-[6.75rem] font-display mb-8 sm:mb-10 flex justify-center items-center gap-3 sm:gap-5 text-primary leading-none",
-            nameAnimation && "metallic-text"
+            nameAnimation && "metallic-text", 
+            "text-primary"
           )}
           data-text="Opeyemi Bangkok"
           initial={{ scale: 0.9, opacity: 0 }}
@@ -376,7 +361,7 @@ export function Hero() {
               <motion.div 
                 key="bangkok-falling"
                 className="relative inline-block" 
-                style={{ minWidth: '320px', minHeight: '150px' }}
+                style={{ minWidth: '520px', minHeight: '150px' }}
               >
                 <motion.div
                   className="metallic-text absolute top-0 left-0"
@@ -414,7 +399,7 @@ export function Hero() {
           transition={{ delay: 0.2 }}
           className="typewriter text-lg sm:text-xl md:text-2xl lg:text-3xl text-primary/90 mb-12 sm:mb-16 tracking-normal font-display font-medium"
         >
-          Full Stack Developer & Technical Writer
+          Software Engineer, Technical Writer & Ecosystem Buildoor
         </motion.p>
 
         <motion.div 
