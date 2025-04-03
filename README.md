@@ -95,7 +95,7 @@ I'm constantly improving this portfolio. Here's what's coming:
 
 ## 👤 About Me
 
-Opeyemi Stephen - Full Stack Developer & Technical Writer
+Opeyemi Stephen - Software Engineer & Technical Writer
 
 - GitHub: [@resourcefulmind](https://github.com/resourcefulmind)
 - LinkedIn: [Opeyemi Stephen](https://linkedin.com/in/opeyemistephen)
