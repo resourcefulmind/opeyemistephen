@@ -2,7 +2,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Mail } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/utils';
-import { ThemeToggle } from './ThemeToggle';
 import MeteorShower from './MeteroShower';
 
 // Animation constants
@@ -24,7 +23,7 @@ const EASE_ANIMATION = {
   ease: [0.43, 0.13, 0.23, 0.96],
 } as const;
 
-function TwinklingBackground() {
+export function TwinklingBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -161,7 +160,7 @@ function ShootingStar() {
   );
 }
 
-function ShootingStars() {
+export function ShootingStars() {
   const stars = [...Array(10)].map((_, index) => ({
     id: `${Date.now()}-${index}`,
   }));
@@ -308,7 +307,6 @@ export function Hero() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 sm:px-6 lg:px-8">
-      <ThemeToggle className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50" />
       <div className="absolute inset-0 w-full h-full bg-background transition-colors duration-700">
         <TwinklingBackground />
         <ShootingStars />
