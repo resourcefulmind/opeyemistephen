@@ -3,6 +3,7 @@ import { Hero } from './components/Hero';
 import { ThemeToggle } from './components/ThemeToggle';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import BlogList from './components/Blog/BlogList';
+import BlogPost from './components/Blog/BlogPost';
 import Navbar from './components/Navbar';
 import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
@@ -57,6 +58,13 @@ function App() {
         <Route path='/blog' element={
           <PageLayout>
             <BlogList />
+          </PageLayout>
+        } />
+        
+        {/* Individual blog post route */}
+        <Route path='/blog/:slug' element={
+          <PageLayout>
+            <BlogPost />
           </PageLayout>
         } />
         
