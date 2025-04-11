@@ -3,6 +3,7 @@
 @import './animations.css';
 @import './components.css';
 @import './themes.css';
+@import './blog.css';
 
 @tailwind base;
 @tailwind components;
