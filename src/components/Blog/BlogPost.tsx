@@ -301,7 +301,7 @@ export default function BlogPost() {
           </header>
           
           <div className="blog-content prose dark:prose-invert max-w-none">
-            <MDXComponents>
+            <MDXComponents frontmatter={post.frontmatter}>
               <PostContent />
             </MDXComponents>
           </div>
