@@ -1,15 +1,31 @@
+/**
+ * Blog post loader module
+ * 
+ * This module contains functions for loading blog posts from MDX files.
+ * It handles importing, validating, and processing blog content.
+ */
 import { BlogPost, BlogPostPreview, FrontmatterValidationError, RawFrontmatter } from "./types";
 import { validateFrontmatter, calculateReadingTime } from "./schema";
 
-//store cached posts
+// Cache to avoid reloading posts on every request
 let postsCache: BlogPostPreview[] | null = null;
 
+/**
+ * Gets all blog posts with their metadata
+ * 
+ * This function imports all MDX files from the articles directory,
+ * validates their frontmatter, and returns them as BlogPostPreview objects.
+ * Results are sorted by date (newest first) and filtered in production.
+ * 
+ * @returns Promise resolving to an array of blog post previews
+ */
 export async function getAllPosts(): Promise<BlogPostPreview[]> {
+    // Return cached posts if available
     if (postsCache) {
         return postsCache;
     }
 
-    //import all .mdx files from the articles directory
+    // Import all .mdx files from the articles directory using Vite's import.meta.glob
     const postFiles = import.meta.glob('../../content/articles/*.mdx', {
         eager: true,
     });
@@ -18,26 +34,26 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
 
     const posts: BlogPostPreview[] = [];
 
-    // Process each post
+    // Process each post file
     Object.entries(postFiles).forEach(([filepath, module]: [string, any]) => {
-        //get slug from filename
+        // Extract slug from filename
         const slug = filepath
             .replace('../../content/articles/', '')
             .replace('.mdx', '');
         
         try {
-            // Get raw frontmatter
+            // Get raw frontmatter from the MDX module
             const rawFrontmatter: RawFrontmatter = module.frontmatter || {};
             
-            // Add slug to frontmatter if not present
+            // Add slug to frontmatter if not present (derive from filename)
             if (!rawFrontmatter.slug) {
                 rawFrontmatter.slug = slug;
             }
             
-            // Validate frontmatter
+            // Validate frontmatter against schema
             const validatedFrontmatter = validateFrontmatter(rawFrontmatter);
             
-            // Create blog post preview
+            // Create and add blog post preview to the list
             posts.push({
                 frontmatter: validatedFrontmatter,
                 slug,
@@ -45,47 +61,65 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
             
             console.log(`Processed post: ${slug}`);
         } catch (error) {
+            // Handle validation errors separately for better error messages
             if (error instanceof FrontmatterValidationError) {
                 console.error(`Validation error in ${slug}: ${error.message}`);
             } else {
                 console.error(`Error processing post ${slug}:`, error);
             }
-            // Skip invalid posts
+            // Skip invalid posts to prevent breaking the entire blog
         }
     });
 
-    //sort posts by date in descending order
+    // Sort posts by date in descending order (newest first)
     const sortedPosts = posts.sort((a, b) => {
         return new Date(b.frontmatter.date).getTime() - 
         new Date(a.frontmatter.date).getTime();
     });
 
-    // Filter out draft posts in production
+    // Filter posts in production environment:
+    // 1. Remove draft posts
+    // 2. Only show posts with status=published or undefined status
     const isProduction = import.meta.env.PROD;
     const filteredPosts = isProduction 
-        ? sortedPosts.filter(post => !post.frontmatter.draft)
+        ? sortedPosts.filter(post => 
+            !post.frontmatter.draft && 
+            (post.frontmatter.status === undefined || post.frontmatter.status === 'published')
+          )
         : sortedPosts;
 
+    // Cache the filtered posts for future requests
     postsCache = filteredPosts;
     return filteredPosts;
 }
 
+/**
+ * Gets a single blog post by its slug
+ * 
+ * This function dynamically imports the specific MDX file for the requested post,
+ * validates its frontmatter, and returns it as a complete BlogPost object.
+ * 
+ * @param slug - The URL-friendly identifier of the post
+ * @returns Promise resolving to the blog post or null if not found/invalid
+ */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     console.log("Attempting to load post by slug:", slug);
     
     try {
-        //Dynamic import of the specific MDX file
+        // Dynamic import of the specific MDX file
+        // This leverages Vite's dynamic import capability
         const module = await import(`../../content/articles/${slug}.mdx`);
         console.log("Module loaded:", module);
         console.log("Module default:", module.default);
         console.log("Module frontmatter:", module.frontmatter);
         
+        // Ensure the module has a default export (the content component)
         if (!module.default) {
             console.error("No default export found in MDX module");
             return null;
         }
 
-        // Get raw frontmatter
+        // Get raw frontmatter from the MDX module
         const rawFrontmatter: RawFrontmatter = module.frontmatter || {};
         
         // Add slug to frontmatter if not present
@@ -93,30 +127,37 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
             rawFrontmatter.slug = slug;
         }
         
-        // Calculate reading time if not provided
+        // Calculate reading time if not already provided
         if (!rawFrontmatter.readingTime && typeof module.default === 'function') {
-            // Approximate content length for reading time calculation
-            // This is imperfect but provides a reasonable estimate
+            // Convert component to string for word count estimation
+            // This isn't perfect but provides a reasonable estimate
             const contentStr = module.default.toString();
             rawFrontmatter.readingTime = calculateReadingTime(contentStr);
         }
         
-        // Validate frontmatter
+        // Validate frontmatter against schema
         const validatedFrontmatter = validateFrontmatter(rawFrontmatter);
         
-        // Check if this is a draft post in production
+        // In production, filter out:
+        // 1. Draft posts
+        // 2. Posts with non-published status
         const isProduction = import.meta.env.PROD;
-        if (isProduction && validatedFrontmatter.draft) {
-            console.log(`Skipping draft post in production: ${slug}`);
+        if (isProduction && (
+            validatedFrontmatter.draft || 
+            (validatedFrontmatter.status !== undefined && validatedFrontmatter.status !== 'published')
+        )) {
+            console.log(`Skipping non-published post in production: ${slug}`);
             return null;
         }
         
+        // Return the complete blog post object
         return {
             content: module.default, 
             frontmatter: validatedFrontmatter, 
             slug, 
         };
     } catch (error) {
+        // Handle errors appropriately
         if (error instanceof FrontmatterValidationError) {
             console.error(`Validation error in ${slug}: ${error.message}`);
         } else {
