@@ -21,26 +21,28 @@ const CodeBlock = ({ className, children, ...props }: React.HTMLAttributes<HTMLE
   };
   
   return (
-    <div className="relative group">
-      <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div className="relative group my-8">
+      <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <button
           onClick={copyToClipboard}
-          className="p-2 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors"
+          className="p-2 rounded-md bg-primary/20 hover:bg-primary/30 transition-colors text-white"
           aria-label="Copy code to clipboard"
         >
           {copied ? <Check size={16} /> : <ClipboardCopy size={16} />}
         </button>
       </div>
-      <pre className="rounded-lg overflow-x-auto p-4 bg-[#0d1117] text-white">
+      
+      {language && (
+        <div className="absolute left-0 top-0 px-3 py-1 text-xs font-mono text-white bg-gray-700 rounded-br-md z-10">
+          {language}
+        </div>
+      )}
+      
+      <pre className="rounded-lg overflow-x-auto p-6 pt-10 bg-[#1e293b] text-white border border-gray-700 shadow-lg">
         <code ref={codeRef} className={className} {...props}>
           {children}
         </code>
       </pre>
-      {language && (
-        <div className="absolute right-2 bottom-2 text-xs text-gray-400 opacity-50">
-          {language}
-        </div>
-      )}
     </div>
   );
 };

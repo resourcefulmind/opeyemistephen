@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { BlogPostPreview } from "../../lib/blog/types";
 import { getAllPosts } from "../../lib/blog/loader";
 import { Helmet } from "react-helmet";
+import logger from '../../lib/utils/logger';
 
 // Blog Stars Background Component
 const BlogListCosmic = () => {
@@ -60,13 +61,13 @@ export default function BlogList() {
     useEffect(() => {
         async function loadPosts() {
             try {
-                console.log("Fetching all posts...");
+                logger.info("Fetching all posts...");
                 const allPosts = await getAllPosts();
-                console.log("Posts loaded:", allPosts);
+                logger.debug("Posts loaded:", allPosts);
                 setPosts(allPosts);
                 setLoading(false);
             } catch (err) {
-                console.error("Error loading posts:", err);
+                logger.error("Error loading posts:", err);
                 setError(
                     "Failed to load posts at this time...wanna check your network connection"
                 );

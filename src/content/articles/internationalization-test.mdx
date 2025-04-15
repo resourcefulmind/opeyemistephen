@@ -1,0 +1,214 @@
+---
+title: "Testing Internationalization & RTL Support"
+date: "2023-12-23T14:30:00Z"
+slug: "internationalization-test"
+excerpt: "This post tests how our blog system handles internationalization, including right-to-left text, special characters, and multilingual content."
+tags: ["i18n", "rtl", "multilingual", "testing"]
+author: {
+  name: "i18n Tester",
+  avatar: "/images/avatars/i18n-tester.png",
+  bio: "Specialized in internationalization testing"
+}
+coverImage: "/images/blog/i18n-test-cover.jpg"
+status: "published"
+language: "multi"
+direction: "mixed"
+translations: [
+  { language: "es", slug: "prueba-de-internacionalizacion" },
+  { language: "ar", slug: "اختبار-التدويل" },
+  { language: "zh", slug: "国际化测试" }
+]
+---
+
+# Testing Internationalization & RTL Support
+
+This post tests how our blog system handles internationalization features including right-to-left text, special characters, and multilingual content.
+
+## Multiple Languages in One Post
+
+### English (LTR)
+
+This is standard English text in a left-to-right (LTR) format. It contains special characters like: æ, ø, å, ñ, é, ü.
+
+### Arabic (RTL)
+
+<div dir="rtl" lang="ar">
+  <h4>اختبار النص العربي</h4>
+  <p>هذا نص باللغة العربية يتم عرضه من اليمين إلى اليسار. نحن نختبر كيفية تعامل نظام المدونة مع النصوص ذات الاتجاه من اليمين إلى اليسار.</p>
+  
+  <p>يجب أن يكون هذا النص محاذيًا إلى اليمين والحروف مرتبة بشكل صحيح. <strong>هذا نص غامق</strong> و <em>هذا نص مائل</em>.</p>
+  
+  <ul>
+    <li>عنصر قائمة الأول</li>
+    <li>عنصر قائمة الثاني</li>
+    <li>عنصر قائمة الثالث</li>
+  </ul>
+</div>
+
+### Hebrew (RTL)
+
+<div dir="rtl" lang="he">
+  <h4>בדיקת טקסט בעברית</h4>
+  <p>זהו טקסט בעברית המוצג מימין לשמאל. אנו בודקים כיצד מערכת הבלוג מתמודדת עם טקסט בכיוון מימין לשמאל.</p>
+  
+  <p>טקסט זה צריך להיות מיושר לימין והאותיות בסדר הנכון. <strong>זה טקסט מודגש</strong> ו<em>זה טקסט נטוי</em>.</p>
+</div>
+
+### Chinese (Simplified)
+
+<div lang="zh-CN">
+  <h4>简体中文测试</h4>
+  <p>这是用简体中文编写的文本。我们正在测试博客系统如何处理亚洲文字和字符。</p>
+  
+  <p>中文文本应该垂直对齐，并且正确显示所有字符。<strong>这是粗体文本</strong>和<em>这是斜体文本</em>。</p>
+</div>
+
+### Japanese
+
+<div lang="ja">
+  <h4>日本語テスト</h4>
+  <p>これは日本語のテキストです。ブログシステムが日本語の文字をどのように処理するかをテストしています。</p>
+  
+  <p>漢字、ひらがな、カタカナが正しく表示されるはずです。<strong>これは太字テキスト</strong>と<em>これは斜体テキスト</em>です。</p>
+</div>
+
+### Thai
+
+<div lang="th">
+  <h4>การทดสอบภาษาไทย</h4>
+  <p>นี่คือข้อความภาษาไทย เรากำลังทดสอบว่าระบบบล็อกจัดการกับอักขระไทยอย่างไร</p>
+  
+  <p>ข้อความภาษาไทยควรแสดงตัวอักษรได้อย่างถูกต้อง <strong>นี่คือตัวหนา</strong> และ <em>นี่คือตัวเอียง</em></p>
+</div>
+
+## Mixed Direction Content
+
+This paragraph contains mixed direction content with both English (LTR) and Arabic (RTL): The Arabic word for "blog" is مدونة and the Hebrew word for "test" is בדיקה.
+
+## Bidirectional Text Algorithm (BiDi)
+
+Testing the bidirectional text algorithm with mixed English and Arabic: Hello مرحبا world عالم!
+
+## Special Characters and Symbols
+
+### Currency Symbols
+€ (Euro), $ (Dollar), £ (Pound), ¥ (Yen), ₹ (Rupee), ₽ (Ruble), ₩ (Won)
+
+### Mathematical Symbols
+∑ (Summation), ∫ (Integral), ∏ (Product), √ (Square Root), ∞ (Infinity)
+
+### Diacritical Marks
+á, à, â, ä, ã, å, ç, é, è, ê, ë, í, ì, î, ï, ñ, ó, ò, ô, ö, õ, ú, ù, û, ü, ÿ
+
+## Font Rendering Tests
+
+### Multilingual Paragraph
+
+<p lang="multi">
+  English: Hello world! |
+  Spanish: ¡Hola mundo! |
+  French: Bonjour le monde! |
+  German: Hallo Welt! |
+  Chinese: 你好世界! |
+  Japanese: こんにちは世界! |
+  Korean: 안녕하세요 세계! |
+  Arabic: مرحبا بالعالم! |
+  Hebrew: שלום עולם! |
+  Russian: Привет мир! |
+  Greek: Γειά σου Κόσμε! |
+  Hindi: नमस्ते दुनिया! |
+  Thai: สวัสดีชาวโลก! |
+</p>
+
+### Font Stack Testing
+
+<div className="font-test sans-serif">
+  This text tests the sans-serif font stack.
+</div>
+
+<div className="font-test serif">
+  This text tests the serif font stack.
+</div>
+
+<div className="font-test monospace">
+  This text tests the monospace font stack.
+</div>
+
+## Emoji Support
+
+### Basic Emoji Test
+🙂 😊 😎 🤔 👍 🎉 🚀 💻 📱 🌍
+
+### Emoji in Mixed Text
+Testing emoji in regular text 👋 to see how they align 📐 with different scripts 📝.
+
+### Emoji in RTL Text
+
+<div dir="rtl" lang="ar">
+  اختبار الرموز التعبيرية في النص العربي 🎯 لمعرفة كيفية محاذاتها 📏 مع النص من اليمين إلى اليسار 📝.
+</div>
+
+## Date, Time, and Number Formatting
+
+### Dates in Different Formats
+- US Format: 12/23/2023
+- European Format: 23/12/2023
+- ISO Format: 2023-12-23
+- Long Format: December 23, 2023
+
+### Time Formats
+- 12-hour: 2:30 PM
+- 24-hour: 14:30
+- With seconds: 14:30:45
+- With timezone: 14:30:45 GMT+0000
+
+### Number Formats
+- US: 1,234,567.89
+- European: 1.234.567,89
+- Scientific: 1.23456789E6
+- Indian: 12,34,567.89
+
+## Text Direction Switching
+
+This is left-to-right text.
+
+<div dir="rtl">
+  هذا نص من اليمين إلى اليسار.
+  <div dir="ltr">
+    This is embedded left-to-right text inside right-to-left container.
+    <div dir="rtl">
+      وهذا نص من اليمين إلى اليسار داخل نص من اليسار إلى اليمين داخل نص من اليمين إلى اليسار.
+    </div>
+  </div>
+</div>
+
+## Accessibility Considerations
+
+### Language Tags
+<span lang="en">English</span>, <span lang="es">Español</span>, <span lang="fr">Français</span>, <span lang="de">Deutsch</span>, <span lang="ar">العربية</span>, <span lang="zh">中文</span>
+
+### Screen Reader Text
+<span className="sr-only">This text is only visible to screen readers.</span>
+
+## Typography Stress Tests
+
+### Long Words
+Pneumonoultramicroscopicsilicovolcanoconiosis (longest English word in a major dictionary)
+
+### Long Words in Different Languages
+<div lang="de">Donaudampfschifffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft (a long German compound word)</div>
+
+<div lang="th">ตัวอย่างคำยาวภาษาไทยตัวอย่างคำยาวภาษาไทยตัวอย่างคำยาวภาษาไทยตัวอย่างคำยาวภาษาไทยตัวอย่างคำยาวภาษาไทยตัวอย่างคำยาวภาษาไทย</div>
+
+## Conclusion
+
+This post has tested a variety of internationalization features including:
+
+1. Right-to-left (RTL) text rendering
+2. Multiple language scripts
+3. Mixed direction text
+4. Special characters and symbols
+5. Emoji rendering
+6. Date, time, and number formats across cultures
+
+These tests help ensure our blog system properly handles content from around the world and provides a good reading experience for all users regardless of their language. 

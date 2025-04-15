@@ -1,6 +1,36 @@
 import React from 'react';
 
 /**
+ * Post status types for better categorization of content
+ */
+export type PostStatus = 'draft' | 'published' | 'archived' | 'scheduled';
+
+/**
+ * Author information with detailed metadata
+ */
+export interface Author {
+  /** Author's full name */
+  name: string;
+  
+  /** URL to author's avatar/profile image */
+  avatar?: string;
+  
+  /** Short biography of the author */
+  bio?: string;
+  
+  /** Author's personal or professional website */
+  url?: string;
+  
+  /** Author's social media handles */
+  social?: {
+    twitter?: string;
+    github?: string;
+    linkedin?: string;
+    [key: string]: string | undefined;
+  };
+}
+
+/**
  * PostMetadata defines the structure of frontmatter for blog posts.
  * This schema ensures consistency across all blog content.
  */
@@ -20,8 +50,8 @@ export interface PostMetadata {
   /** List of keywords associated with the post (optional) */
   tags: string[];
   
-  /** The person who wrote the post (optional, defaults to site author) */
-  author?: string;
+  /** The person who wrote the post (can be string or detailed Author object) */
+  author?: string | Author;
   
   /** Path to the cover image for the post (optional) */
   coverImage?: string;
@@ -38,8 +68,25 @@ export interface PostMetadata {
   /** Last updated date in ISO format (optional) */
   lastUpdated?: string;
   
+  /** Content publication status (optional, defaults to 'published') */
+  status?: PostStatus;
+  
   /** Whether the post is a draft and shouldn't be published (optional) */
   draft?: boolean;
+}
+
+/**
+ * Reading time calculation result
+ */
+export interface ReadingTime {
+  /** Human-readable text (e.g., "5 min read") */
+  text: string;
+  
+  /** Estimated reading time in minutes */
+  minutes: number;
+  
+  /** Total word count */
+  words: number;
 }
 
 /**
@@ -67,6 +114,12 @@ export interface BlogPost {
   
   /** URL-friendly identifier */
   slug: string;
+  
+  /** File path in the content directory */
+  filePath?: string;
+  
+  /** Calculated reading time statistics */
+  readingTime?: ReadingTime;
 }
 
 /**
@@ -78,6 +131,9 @@ export interface BlogPostPreview {
   
   /** URL-friendly identifier */
   slug: string;
+  
+  /** Calculated reading time statistics */
+  readingTime?: ReadingTime;
 }
 
 /**

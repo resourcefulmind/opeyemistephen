@@ -1,0 +1,242 @@
+---
+title: "Testing Complex MDX Content Structures"
+date: "2023-12-22T16:45:00Z"
+slug: "complex-content-test"
+excerpt: "This post demonstrates how our blog system handles complex MDX content structures including custom components, code blocks, embeds, and other rich media elements."
+tags: ["mdx", "components", "code", "rich-media", "testing"]
+author: {
+  name: "Content Tester",
+  avatar: "/images/avatars/content-tester.png",
+  bio: "Testing complex content structures"
+}
+coverImage: "/images/blog/complex-content-cover.jpg"
+status: "published"
+toc: true
+---
+
+{/* These components are already provided by MDXComponents.tsx */}
+{/* No need to import them directly */}
+
+# Testing Complex MDX Content Structures
+
+This post demonstrates how our blog system handles various MDX components and complex content structures. It serves as a testing ground for different content elements that authors might use in their posts.
+
+<Callout type="info">
+  This is an informational alert component that demonstrates custom components in MDX.
+</Callout>
+
+## Basic Markdown Elements
+
+First, let's go through some basic markdown elements to ensure they render correctly:
+
+### Text Formatting
+
+This paragraph demonstrates **bold text**, *italic text*, ~~strikethrough text~~, and `inline code`. We can also [link to external sites](https://example.com) or [internal pages](/about).
+
+### Lists
+
+Unordered list:
+- Item 1
+- Item 2
+  - Nested item 2.1
+  - Nested item 2.2
+- Item 3
+
+Ordered list:
+1. First item
+2. Second item
+   1. Nested item 2.1
+   2. Nested item 2.2
+3. Third item
+
+### Blockquotes
+
+> This is a blockquote.
+> 
+> It can contain multiple paragraphs.
+>
+> > And nested blockquotes.
+
+## Tables With Formatting
+
+Tables are fully supported with GitHub-flavored markdown:
+
+| Feature | Description | Status |
+| ------- | ----------- | ------ |
+| Enhanced MDX | Rich components for blog content | ✅ |
+| Code Highlighting | Syntax highlighting with copy button | ✅ |
+| Custom Callouts | Styled callout boxes for notes | ✅ |
+| Auto-link Headings | Easy section linking | ✅ |
+| Image Zoom | Click to zoom functionality | ✅ |
+
+### Component in Table Cells
+
+| Feature | Example | Description | | ------- | ------- | ----------- |
+| Enhanced MDX | Rich components for blog content | <Callout type="tip">Tip in table</Callout> |
+| Testing component in table cell | | List in table |
+| | • Item 1 
+| | • Item 2 |
+| Testing list in table cell | | Code in table | `const x = 1;` | Testing code in table cell |
+
+## Code Blocks
+
+Syntax highlighting is essential for technical blogs. Here are some examples:
+
+```javascript
+// JavaScript example
+function calculateFactorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  return n * calculateFactorial(n - 1);
+}
+
+console.log(calculateFactorial(5)); // 120
+```
+
+```typescript
+// TypeScript example
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+class UserService {
+  private users: User[] = [];
+  
+  constructor() {}
+  
+  public addUser(user: User): void {
+    this.users.push(user);
+  }
+  
+  public getUserById(id: number): User | undefined {
+    return this.users.find(user => user.id === id);
+  }
+}
+```
+
+```css
+/* CSS example */
+.blog-post {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.blog-post h1 {
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+```
+
+Here's how we might use our custom CodeBlock component:
+
+<CodeBlock language="jsx" filename="ExampleComponent.jsx">
+{`import React, { useState } from 'react';
+
+const ExampleComponent = ({ initialCount }) => {
+  const [count, setCount] = useState(initialCount);
+  
+  return (
+    <div className="counter">
+      <h2>Count: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={() => setCount(count - 1)}>Decrement</button>
+    </div>
+  );
+};
+
+export default ExampleComponent;`}
+</CodeBlock>
+
+## Custom Components
+
+Our blog system supports custom MDX components. Here are some examples:
+
+<Callout title="Important Note">
+  This callout component can be used to highlight important information in the blog post.
+  It supports **markdown formatting** within it as well!
+</Callout>
+
+{/* Using standard img tag instead of custom Image component */}
+<img 
+  src="/images/blog/example-diagram.png" 
+  alt="Example architecture diagram" 
+  title="Figure 1: Architecture diagram of our system"
+  width={800}
+  height={500}
+/>
+
+## Embedded Content
+
+MDX allows us to embed external content:
+
+{/* YouTubeEmbed and TwitterEmbed components aren't available in MDXComponents.tsx */}
+{/* Commenting out these components for now */}
+{/* <YouTubeEmbed videoId="dQw4w9WgXcQ" /> */}
+{/* <TwitterEmbed tweetId="1233323922986344448" /> */}
+
+## Math Equations
+
+Our blog system should support mathematical equations using LaTeX syntax:
+
+The quadratic formula is:
+
+`$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$`
+
+Inline equations like $E = mc^2$ should also work.
+
+## Interactive Elements
+
+MDX can include interactive elements like this collapsible section:
+
+<details>
+  <summary>Click to expand</summary>
+  <p>This is hidden content that appears when the user clicks on the summary.</p>
+  <p>It can contain multiple paragraphs and other markdown elements.</p>
+  <ul>
+    <li>Like lists</li>
+    <li>And other formatting</li>
+  </ul>
+</details>
+
+## Horizontal Rules
+
+---
+
+## Complex Layouts
+
+MDX can be used to create more complex layouts by combining components:
+
+<div class="grid-container">
+  <div class="grid-column">
+    <h3>Column 1</h3>
+    <p>This is the content for column 1.</p>
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li>Item 3</li>
+    </ul>
+  </div>
+  <div class="grid-column">
+    <h3>Column 2</h3>
+    <p>This is the content for column 2.</p>
+    <ol>
+      <li>First item</li>
+      <li>Second item</li>
+      <li>Third item</li>
+    </ol>
+  </div>
+</div>
+
+## Conclusion
+
+This test post demonstrates the various content structures and components that our blog system should be able to handle. By ensuring all these elements render correctly, we can provide authors with a rich toolset for creating engaging blog posts.
+
+The ability to mix markdown with custom React components is what makes MDX so powerful for content creation. 

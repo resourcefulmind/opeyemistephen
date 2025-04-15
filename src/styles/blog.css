@@ -501,4 +501,117 @@
   background: linear-gradient(90deg, 
     hsl(240, 80%, 60%) 0%, 
     hsl(280, 90%, 60%) 100%);
+}
+
+/* Table styles */
+.mdx-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mdx-content thead {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.mdx-content th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.mdx-content td {
+  padding: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  vertical-align: top;
+}
+
+.mdx-content tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.mdx-content tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Light mode tables */
+.light .mdx-content thead {
+  background-color: #4a6fa5;
+  color: white;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .mdx-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Code block styles */
+.mdx-content pre {
+  margin: 1.75rem 0;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  background-color: #1e293b; /* Dark background */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  position: relative; /* Important for positioning language badge */
+  padding-top: 2.5rem !important; /* Make room for language badge */
+}
+
+/* Hide the hljs language marker that shows up inside code */
+.hljs::before,
+code[class*="language-"]::before {
+  display: none !important;
+}
+
+/* Remove default hljs adding */
+.mdx-content .hljs {
+  background: transparent;
+  padding-top: 0.5rem;
+}
+
+.mdx-content code {
+  font-family: 'Fira Code', Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.mdx-content :not(pre) > code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #e83e8c; /* Pink color for inline code */
+}
+
+/* Language badge */
+.mdx-content .language-badge {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0 0 0.25rem 0.25rem;
+  font-family: monospace;
+  user-select: none;
+}
+
+/* Light mode code styles */
+.light .mdx-content :not(pre) > code {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #d63384;
 } 
