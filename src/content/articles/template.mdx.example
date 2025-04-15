@@ -1,0 +1,60 @@
+/*
+ * BLOG POST TEMPLATE
+ * Copy this file and rename it without the .example extension
+ * Example: cp template.mdx.example my-new-post.mdx
+ */
+
+---
+title: "Your Post Title"
+date: "YYYY-MM-DD"
+excerpt: "A brief summary of your post that will appear in previews and SEO descriptions."
+slug: "your-post-slug"
+tags: ["tag1", "tag2", "tag3"]
+author: "Your Name"
+# Optional fields:
+# coverImage: "/images/blog/your-cover-image.jpg"
+# status: "published" # options: published, draft, archived, scheduled
+# draft: false # set to true to keep as draft
+---
+
+# Your Post Title
+
+<TableOfContents />
+
+## Introduction
+
+Start with an engaging introduction about your topic.
+
+## Main Section 1
+
+Content for your first main section goes here.
+
+### Subsection 1.1
+
+More detailed content.
+
+<Callout type="info">
+  This is an information callout that can highlight important notes.
+</Callout>
+
+## Main Section 2
+
+Content for your second main section.
+
+### Code Example
+
+```javascript
+// Example code block with syntax highlighting
+function exampleFunction() {
+  console.log("Hello, world!");
+  return true;
+}
+```
+
+## Conclusion
+
+Summarize your post and provide any final thoughts or call-to-action.
+
+---
+
+*Remember to remove this template text and replace with your actual content!* 

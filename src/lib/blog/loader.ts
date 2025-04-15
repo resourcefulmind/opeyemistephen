@@ -18,9 +18,10 @@ let postsCache: BlogPostPreview[] | null = null;
  * validates their frontmatter, and returns them as BlogPostPreview objects.
  * Results are sorted by date (newest first) and filtered in production.
  * 
+ * @param forceProduction Force production mode filtering (hide drafts/unpublished)
  * @returns Promise resolving to an array of blog post previews
  */
-export async function getAllPosts(): Promise<BlogPostPreview[]> {
+export async function getAllPosts(forceProduction = false): Promise<BlogPostPreview[]> {
     // Return cached posts if available
     if (postsCache) {
         return postsCache;
@@ -81,13 +82,21 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
     // Filter posts in production environment:
     // 1. Remove draft posts
     // 2. Only show posts with status=published or undefined status
-    const isProduction = import.meta.env.PROD;
+    const isProduction = import.meta.env.PROD || forceProduction;
     const filteredPosts = isProduction 
         ? sortedPosts.filter(post => 
             !post.frontmatter.draft && 
             (post.frontmatter.status === undefined || post.frontmatter.status === 'published')
           )
-        : sortedPosts;
+        : sortedPosts.map(post => ({
+            ...post,
+            frontmatter: {
+                ...post.frontmatter,
+                // Add isDevelopmentOnly flag to indicate posts that wouldn't show in production
+                isDevelopmentOnly: post.frontmatter.draft || 
+                  (post.frontmatter.status !== undefined && post.frontmatter.status !== 'published')
+            }
+          }));
 
     // Cache the filtered posts for future requests
     postsCache = filteredPosts;

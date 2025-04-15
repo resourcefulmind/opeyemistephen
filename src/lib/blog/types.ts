@@ -95,6 +95,9 @@ export interface ReadingTime {
  */
 export interface ValidatedPostMetadata extends PostMetadata {
   // All properties are guaranteed to be valid after validation
+  
+  /** Flag indicating this post would be hidden in production (only visible in development) */
+  isDevelopmentOnly?: boolean;
 }
 
 /**

@@ -5,6 +5,9 @@ import { getPostBySlug, getAllPosts } from "../../lib/blog/loader";
 import MDXComponents from "../MDXComponents";
 import { Helmet } from "react-helmet";
 
+// Fallback image URL for broken images
+const FALLBACK_IMAGE = "https://placehold.co/600x400/1e293b/ffffff?text=Image+Not+Found";
+
 // Blog cosmic background component
 const BlogCosmic = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -191,6 +194,11 @@ export default function BlogPost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Handle image loading errors
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = FALLBACK_IMAGE;
+  };
+
   useEffect(() => {
     // Reset state when slug changes
     setLoading(true);
@@ -269,7 +277,7 @@ export default function BlogPost() {
               
               {author && (
                 <span className="text-foreground/70">
-                  by {author}
+                  by {typeof author === 'string' ? author : author.name}
                 </span>
               )}
               
@@ -282,6 +290,8 @@ export default function BlogPost() {
                   src={coverImage} 
                   alt={title} 
                   className="w-full h-auto rounded-lg object-cover"
+                  onError={handleImageError}
+                  loading="lazy"
                 />
               </div>
             )}
