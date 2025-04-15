@@ -1,0 +1,97 @@
+---
+title: "Edge Case Metadata Testing"
+date: "2023-12-24T09:15:00Z"
+slug: "edge-case-metadata-test"
+excerpt: "This post tests how our blog system handles unusual metadata conditions including extremely long fields, missing optional fields, and edge case values."
+tags: ["testing", "edge-cases", "validation", "metadata"]
+author: {
+  name: "Edge Case Tester",
+  avatar: "/images/avatars/edge-case-tester.png",
+  bio: "Testing the limits of the system"
+}
+coverImage: "/images/blog/edge-case-cover.jpg"
+status: "draft"
+featured: true
+readingTime: 0.5
+toc: false
+externalUrl: "https://example.com/external-version"
+publishedAt: "2023-12-24T09:15:00Z"
+updatedAt: "2023-12-24T10:30:00Z"
+series: {
+  name: "Testing Series",
+  order: 1
+}
+complexity: "beginner"
+sponsoredBy: {
+  name: "Test Sponsor",
+  url: "https://example.com/sponsor",
+  logo: "/images/sponsors/test-sponsor.png"
+}
+veryLongFieldName: "Testing how the system handles metadata fields that are not in the schema"
+emptyField: ""
+booleanField: true
+numberField: 42
+nestedField: {
+  level1: {
+    level2: {
+      level3: "Deeply nested content"
+    }
+  }
+}
+arrayField: ["item1", "item2", "item3"]
+mixedArray: [
+  "string",
+  42,
+  true,
+  { key: "value" },
+  ["nested", "array"]
+]
+tags_with_special_chars: ["test/with/slashes", "test:with:colons", "test with spaces", "test.with.dots"]
+---
+
+# Edge Case Metadata Testing
+
+This post is designed to test how our blog system handles unusual or extreme metadata conditions. The content itself is less important than the metadata for this test.
+
+## Testing Extremely Long Title
+
+The title field is particularly important to test with very long values to ensure our UI can handle it properly. Long titles might break layouts if not properly handled with text overflow, truncation, or wrapping.
+
+## Missing Optional Fields
+
+This post intentionally omits some optional metadata fields to test how the system handles their absence. The validation system should properly handle missing fields by using default values or safely handling undefined values.
+
+## Unusual Status Values
+
+The post uses a draft status to test how the system handles non-published content. This might be useful for testing preview functionality or draft management features.
+
+## Special Characters in Tags
+
+Some tags in this post contain special characters and spaces to test how the tagging system sanitizes, validates, and displays such tags. This helps ensure our system is robust against unusual input.
+
+## Zero and Fractional Reading Times
+
+This post has an unusually short specified reading time to test how the UI handles very short content or edge case reading time calculations.
+
+## Custom and Unregistered Fields
+
+This post includes custom fields that might not be in the schema to test how our system handles unexpected metadata. A robust system should either:
+1. Ignore unrecognized fields
+2. Store them but not use them
+3. Validate against a schema and warn about unexpected fields
+
+## Nested Objects and Arrays
+
+The metadata includes deeply nested objects and arrays of mixed types to test how our parsing and validation handle complex data structures.
+
+## External URL
+
+This post has an external URL to test how our system handles posts that might link to external platforms or mirror content from elsewhere.
+
+## Series Information
+
+This post specifies it's part of a series to test how series navigation and grouping works.
+
+## Conclusion
+
+By testing these edge cases, we can better ensure our blog system is robust against unexpected input and gracefully handles a wide variety of metadata conditions. This helps prevent runtime errors, UI glitches, and data validation issues in production. 

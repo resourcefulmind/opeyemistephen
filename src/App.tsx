@@ -7,7 +7,6 @@ import BlogPost from './components/Blog/BlogPost';
 import Navbar from './components/Navbar';
 import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
-import TestMDXRenderer from './components/TestMDXRenderer';
 
 // Layout component to handle non-Hero pages
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
@@ -65,13 +64,6 @@ function App() {
         <Route path='/blog/:slug' element={
           <PageLayout>
             <BlogPost />
-          </PageLayout>
-        } />
-        
-        {/* Test MDX renderer */}
-        <Route path='/test-mdx' element={
-          <PageLayout>
-            <TestMDXRenderer />
           </PageLayout>
         } />
       </Routes>

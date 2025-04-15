@@ -6,6 +6,7 @@
  */
 import { BlogPost, BlogPostPreview, FrontmatterValidationError, RawFrontmatter } from "./types";
 import { validateFrontmatter, calculateReadingTime } from "./schema";
+import logger from "../utils/logger";
 
 // Cache to avoid reloading posts on every request
 let postsCache: BlogPostPreview[] | null = null;
@@ -30,7 +31,7 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
         eager: true,
     });
 
-    console.log("Found post files:", Object.keys(postFiles));
+    logger.info("Found post files:", Object.keys(postFiles));
 
     const posts: BlogPostPreview[] = [];
 
@@ -59,13 +60,13 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
                 slug,
             });
             
-            console.log(`Processed post: ${slug}`);
+            logger.debug(`Processed post: ${slug}`);
         } catch (error) {
             // Handle validation errors separately for better error messages
             if (error instanceof FrontmatterValidationError) {
-                console.error(`Validation error in ${slug}: ${error.message}`);
+                logger.error(`Validation error in ${slug}: ${error.message}`);
             } else {
-                console.error(`Error processing post ${slug}:`, error);
+                logger.error(`Error processing post ${slug}:`, error);
             }
             // Skip invalid posts to prevent breaking the entire blog
         }
@@ -103,19 +104,19 @@ export async function getAllPosts(): Promise<BlogPostPreview[]> {
  * @returns Promise resolving to the blog post or null if not found/invalid
  */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-    console.log("Attempting to load post by slug:", slug);
+    logger.info("Attempting to load post by slug:", slug);
     
     try {
         // Dynamic import of the specific MDX file
         // This leverages Vite's dynamic import capability
         const module = await import(`../../content/articles/${slug}.mdx`);
-        console.log("Module loaded:", module);
-        console.log("Module default:", module.default);
-        console.log("Module frontmatter:", module.frontmatter);
+        logger.debug("Module loaded:", module);
+        logger.debug("Module default:", module.default);
+        logger.debug("Module frontmatter:", module.frontmatter);
         
         // Ensure the module has a default export (the content component)
         if (!module.default) {
-            console.error("No default export found in MDX module");
+            logger.error("No default export found in MDX module");
             return null;
         }
 
@@ -146,7 +147,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
             validatedFrontmatter.draft || 
             (validatedFrontmatter.status !== undefined && validatedFrontmatter.status !== 'published')
         )) {
-            console.log(`Skipping non-published post in production: ${slug}`);
+            logger.info(`Skipping non-published post in production: ${slug}`);
             return null;
         }
         
@@ -159,9 +160,9 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     } catch (error) {
         // Handle errors appropriately
         if (error instanceof FrontmatterValidationError) {
-            console.error(`Validation error in ${slug}: ${error.message}`);
+            logger.error(`Validation error in ${slug}: ${error.message}`);
         } else {
-            console.error(`Failed to load post with slug ${slug}:`, error);
+            logger.error(`Failed to load post with slug ${slug}:`, error);
         }
         return null;
     }

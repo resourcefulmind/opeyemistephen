@@ -1,9 +1,3 @@
-/**
- * Blog Schema Module
- * 
- * This module provides validation functions for blog post frontmatter.
- * It ensures that all required fields are present and properly formatted.
- */
 import { 
   PostMetadata, 
   ValidatedPostMetadata, 
@@ -13,11 +7,6 @@ import {
 
 /**
  * Validates that a string is not empty
- * 
- * @param value - The value to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The trimmed string if valid
- * @throws {FrontmatterValidationError} If the value is not a string or is empty
  */
 function validateRequiredString(value: any, fieldName: string): string {
   if (typeof value !== 'string' || value.trim() === '') {
@@ -28,11 +17,6 @@ function validateRequiredString(value: any, fieldName: string): string {
 
 /**
  * Validates a date string is in ISO format (YYYY-MM-DD)
- * 
- * @param value - The date string to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The validated date string
- * @throws {FrontmatterValidationError} If the date format is invalid
  */
 function validateDateString(value: any, fieldName: string): string {
   const date = validateRequiredString(value, fieldName);
@@ -61,16 +45,6 @@ function validateDateString(value: any, fieldName: string): string {
 
 /**
  * Validates a slug string (lowercase, alphanumeric, hyphens)
- * 
- * Slugs are used in URLs and must follow specific formatting rules:
- * - Only lowercase letters
- * - Numbers
- * - Hyphens (no spaces or other special characters)
- * 
- * @param value - The slug string to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The validated slug string
- * @throws {FrontmatterValidationError} If the slug format is invalid
  */
 function validateSlug(value: any, fieldName: string): string {
   const slug = validateRequiredString(value, fieldName);
@@ -90,14 +64,6 @@ function validateSlug(value: any, fieldName: string): string {
 
 /**
  * Validates an array of tags
- * 
- * Tags are optional but if provided must be an array of non-empty strings.
- * If no tags are provided, returns an empty array as default.
- * 
- * @param value - The tags array to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns Array of validated tags or empty array if none provided
- * @throws {FrontmatterValidationError} If any tag is invalid
  */
 function validateTags(value: any, fieldName: string): string[] {
   if (!Array.isArray(value)) {
@@ -119,14 +85,6 @@ function validateTags(value: any, fieldName: string): string[] {
 
 /**
  * Validates optional string fields
- * 
- * Optional strings can be undefined/null, but if provided must be valid strings.
- * Empty strings are normalized to undefined.
- * 
- * @param value - The string value to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The trimmed string if valid, undefined if not provided or empty
- * @throws {FrontmatterValidationError} If the value is provided but not a string
  */
 function validateOptionalString(value: any, fieldName: string): string | undefined {
   if (value === undefined || value === null) {
@@ -145,11 +103,6 @@ function validateOptionalString(value: any, fieldName: string): string | undefin
 
 /**
  * Validates optional boolean fields
- * 
- * @param value - The boolean value to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The boolean value if valid, undefined if not provided
- * @throws {FrontmatterValidationError} If the value is provided but not a boolean
  */
 function validateOptionalBoolean(value: any, fieldName: string): boolean | undefined {
   if (value === undefined || value === null) {
@@ -168,11 +121,6 @@ function validateOptionalBoolean(value: any, fieldName: string): boolean | undef
 
 /**
  * Validates optional number fields
- * 
- * @param value - The number value to validate
- * @param fieldName - The name of the field being validated (for error messages)
- * @returns The number value if valid, undefined if not provided
- * @throws {FrontmatterValidationError} If the value is provided but not a number
  */
 function validateOptionalNumber(value: any, fieldName: string): number | undefined {
   if (value === undefined || value === null) {
@@ -191,13 +139,9 @@ function validateOptionalNumber(value: any, fieldName: string): number | undefin
 
 /**
  * Validates frontmatter against the schema
- * 
- * This is the main validation function that processes all fields in the frontmatter.
- * It checks both required and optional fields according to their specific validation rules.
- * 
- * @param raw - Raw frontmatter data from MDX file
- * @returns Validated frontmatter conforming to the schema
- * @throws {FrontmatterValidationError} If any validation fails
+ * @param raw Raw frontmatter data
+ * @returns Validated frontmatter
+ * @throws FrontmatterValidationError if validation fails
  */
 export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata {
   try {
@@ -243,13 +187,9 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
 }
 
 /**
- * Calculates estimated reading time based on word count
- * 
- * Uses a standard reading speed of 200 words per minute.
- * Returns a minimum of 1 minute even for very short content.
- * 
- * @param content - Post content as string
- * @returns Reading time in minutes (rounded up)
+ * Calculates reading time based on word count
+ * @param content Post content as string
+ * @returns Reading time in minutes
  */
 export function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;

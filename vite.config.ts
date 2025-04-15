@@ -5,6 +5,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSlug from 'rehype-slug';
+import remarkGfm from 'remark-gfm';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,7 +13,8 @@ export default defineConfig({
     mdx({
       remarkPlugins: [
         remarkFrontmatter,
-        [remarkMdxFrontmatter, { name: 'frontmatter' }]
+        [remarkMdxFrontmatter, { name: 'frontmatter' }],
+        remarkGfm
       ],
       rehypePlugins: [
         rehypeHighlight,
