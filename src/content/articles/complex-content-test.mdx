@@ -214,8 +214,8 @@ MDX can include interactive elements like this collapsible section:
 
 MDX can be used to create more complex layouts by combining components:
 
-<div class="grid-container">
-  <div class="grid-column">
+<div className="blog-grid-layout">
+  <div className="blog-grid-column">
     <h3>Column 1</h3>
     <p>This is the content for column 1.</p>
     <ul>
@@ -224,7 +224,7 @@ MDX can be used to create more complex layouts by combining components:
       <li>Item 3</li>
     </ul>
   </div>
-  <div class="grid-column">
+  <div className="blog-grid-column">
     <h3>Column 2</h3>
     <p>This is the content for column 2.</p>
     <ol>
@@ -234,6 +234,8 @@ MDX can be used to create more complex layouts by combining components:
     </ol>
   </div>
 </div>
+
+{/* Note: Make sure the blog-grid-layout and blog-grid-column classes are defined in your CSS */}
 
 ## Conclusion
 

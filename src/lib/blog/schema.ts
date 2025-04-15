@@ -2,7 +2,8 @@ import {
   PostMetadata, 
   ValidatedPostMetadata, 
   RawFrontmatter, 
-  FrontmatterValidationError 
+  FrontmatterValidationError,
+  Author 
 } from './types';
 
 /**
@@ -21,17 +22,7 @@ function validateRequiredString(value: any, fieldName: string): string {
 function validateDateString(value: any, fieldName: string): string {
   const date = validateRequiredString(value, fieldName);
   
-  // Simple regex for YYYY-MM-DD format
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  
-  if (!dateRegex.test(date)) {
-    throw new FrontmatterValidationError(
-      `${fieldName} must be in YYYY-MM-DD format`, 
-      fieldName
-    );
-  }
-  
-  // Ensure it's a valid date
+  // Parse the date regardless of format
   const parsedDate = new Date(date);
   if (isNaN(parsedDate.getTime())) {
     throw new FrontmatterValidationError(
@@ -138,6 +129,52 @@ function validateOptionalNumber(value: any, fieldName: string): number | undefin
 }
 
 /**
+ * Validates author field which can be either a string or an Author object
+ */
+function validateAuthor(value: any, fieldName: string): string | Author | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  
+  // Handle string authors
+  if (typeof value === 'string') {
+    return value.trim() === '' ? undefined : value.trim();
+  }
+  
+  // Handle object authors with a name property
+  if (typeof value === 'object' && value !== null) {
+    if (typeof value.name !== 'string' || value.name.trim() === '') {
+      throw new FrontmatterValidationError(
+        `${fieldName}.name is required and must be a non-empty string`, 
+        fieldName
+      );
+    }
+    
+    // Validate other optional author fields if they exist
+    if (value.avatar !== undefined && (typeof value.avatar !== 'string' || value.avatar.trim() === '')) {
+      throw new FrontmatterValidationError(
+        `${fieldName}.avatar must be a non-empty string if provided`,
+        fieldName
+      );
+    }
+    
+    if (value.bio !== undefined && (typeof value.bio !== 'string' || value.bio.trim() === '')) {
+      throw new FrontmatterValidationError(
+        `${fieldName}.bio must be a non-empty string if provided`,
+        fieldName
+      );
+    }
+    
+    return value;
+  }
+  
+  throw new FrontmatterValidationError(
+    `${fieldName} must be a string or an object with a name property`, 
+    fieldName
+  );
+}
+
+/**
  * Validates frontmatter against the schema
  * @param raw Raw frontmatter data
  * @returns Validated frontmatter
@@ -153,7 +190,7 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
     
     // Validate optional fields
     const tags = validateTags(raw.tags, 'tags');
-    const author = validateOptionalString(raw.author, 'author');
+    const author = validateAuthor(raw.author, 'author');
     const coverImage = validateOptionalString(raw.coverImage, 'coverImage');
     const canonicalUrl = validateOptionalString(raw.canonicalUrl, 'canonicalUrl');
     const featured = validateOptionalBoolean(raw.featured, 'featured');
@@ -162,6 +199,7 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
       ? validateDateString(raw.lastUpdated, 'lastUpdated') 
       : undefined;
     const draft = validateOptionalBoolean(raw.draft, 'draft');
+    const status = raw.status ? validateOptionalString(raw.status, 'status') : undefined;
     
     // Construct validated frontmatter
     return {
@@ -177,6 +215,7 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
       ...(readingTime !== undefined && { readingTime }),
       ...(lastUpdated && { lastUpdated }),
       ...(draft !== undefined && { draft }),
+      ...(status && { status }),
     } as ValidatedPostMetadata;
   } catch (error) {
     if (error instanceof FrontmatterValidationError) {
