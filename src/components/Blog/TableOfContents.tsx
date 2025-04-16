@@ -11,15 +11,20 @@ interface TableOfContentsProps {
   selector?: string; // CSS selector for headings, default is h2, h3
   containerSelector?: string; // The container to look for headings in
   className?: string;
+  title?: string; // Custom title for the TOC
+  collapsible?: boolean; // Whether the TOC is collapsible on mobile
 }
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({
   selector = 'h2, h3',
   containerSelector = '.blog-content',
   className,
+  title = 'Table of Contents',
+  collapsible = true,
 }) => {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768 && collapsible);
 
   useEffect(() => {
     const container = document.querySelector(containerSelector);
@@ -61,24 +66,68 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
       }
     });
 
+    // Add a resize listener to handle collapsible state
+    const handleResize = () => {
+      if (collapsible) {
+        setIsCollapsed(window.innerWidth < 768);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
       elements.forEach(el => {
         if (el.id) {
           observer.unobserve(el);
         }
       });
+      window.removeEventListener('resize', handleResize);
     };
-  }, [containerSelector, selector]);
+  }, [containerSelector, selector, collapsible]);
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   if (headings.length === 0) {
     return null;
   }
 
   return (
-    <div className={cn('toc-container my-6', className)}>
-      <div className="text-sm font-semibold mb-2">Table of Contents</div>
-      <nav>
-        <ul className="space-y-2 text-sm">
+    <div className={cn('toc-container my-6 rounded-lg border border-primary/10 bg-primary/5 p-4', className)}>
+      <div 
+        className={cn(
+          "flex items-center justify-between text-sm font-semibold mb-2 cursor-pointer",
+          collapsible && "md:cursor-default"
+        )}
+        onClick={collapsible ? toggleCollapse : undefined}
+      >
+        <span>{title}</span>
+        {collapsible && (
+          <button 
+            className="p-1 rounded-full hover:bg-primary/10 md:hidden"
+            aria-label={isCollapsed ? "Expand table of contents" : "Collapse table of contents"}
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className={cn("transition-transform", isCollapsed ? "rotate-0" : "rotate-180")}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        )}
+      </div>
+      
+      <nav className={cn(isCollapsed && collapsible ? "hidden md:block" : "block")}>
+        <ul className="space-y-2 text-sm max-h-[60vh] overflow-y-auto pr-2">
           {headings.map(heading => (
             <li
               key={heading.id}
@@ -90,7 +139,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
             >
               <a 
                 href={`#${heading.id}`}
-                className="block hover:underline"
+                className="block hover:underline py-1"
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById(heading.id);
@@ -104,6 +153,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
                     setActiveId(heading.id);
                     // Update URL hash without scrolling (browser default behavior)
                     window.history.pushState(null, '', `#${heading.id}`);
+                    // Collapse TOC on mobile after clicking
+                    if (window.innerWidth < 768 && collapsible) {
+                      setIsCollapsed(true);
+                    }
                   }
                 }}
               >

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Hero } from './components/Hero';
 import { ThemeToggle } from './components/ThemeToggle';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import BlogList from './components/Blog/BlogList';
 import BlogPost from './components/Blog/BlogPost';
 import Navbar from './components/Navbar';
 import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
+import { TransitionProvider } from './components/transitions/TransitionProvider';
 
 // Layout component to handle non-Hero pages
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
@@ -30,6 +31,32 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Routes with transitions applied
+const AppRoutes = () => {
+  return (
+    <TransitionProvider>
+      <Routes>
+        {/* Hero page doesn't need extra padding */}
+        <Route path='/' element={<Hero />} />
+        
+        {/* Other pages need the PageLayout */}
+        <Route path='/blog' element={
+          <PageLayout>
+            <BlogList />
+          </PageLayout>
+        } />
+        
+        {/* Individual blog post route */}
+        <Route path='/blog/:slug' element={
+          <PageLayout>
+            <BlogPost />
+          </PageLayout>
+        } />
+      </Routes>
+    </TransitionProvider>
+  );
+};
+
 function App() {
   useEffect(() => {
     // Check for saved theme preference or system preference
@@ -49,24 +76,7 @@ function App() {
         <ThemeToggle />
       </div>
       
-      <Routes>
-        {/* Hero page doesn't need extra padding */}
-        <Route path='/' element={<Hero />} />
-        
-        {/* Other pages need the PageLayout */}
-        <Route path='/blog' element={
-          <PageLayout>
-            <BlogList />
-          </PageLayout>
-        } />
-        
-        {/* Individual blog post route */}
-        <Route path='/blog/:slug' element={
-          <PageLayout>
-            <BlogPost />
-          </PageLayout>
-        } />
-      </Routes>
+      <AppRoutes />
     </Router>
   );
 }
