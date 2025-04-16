@@ -43,40 +43,54 @@ const BlogCosmic = () => {
   );
 };
 
-// Reading progress indicator component
+// Reading progress bar component
 const ReadingProgress = () => {
-  const [width, setWidth] = useState(0);
+  const [completion, setCompletion] = useState(0);
   
   useEffect(() => {
-    const updateScrollProgress = () => {
-      const scrollTop = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / scrollHeight) * 100;
-      setWidth(progress);
+    const updateScrollCompletion = () => {
+      const currentProgress = window.scrollY;
+      const scrollHeight = document.body.scrollHeight - window.innerHeight;
+      if (scrollHeight) {
+        setCompletion(
+          Number((currentProgress / scrollHeight).toFixed(2)) * 100
+        );
+      }
     };
     
-    window.addEventListener('scroll', updateScrollProgress);
+    window.addEventListener('scroll', updateScrollCompletion);
     
     return () => {
-      window.removeEventListener('scroll', updateScrollProgress);
+      window.removeEventListener('scroll', updateScrollCompletion);
     };
   }, []);
   
   return (
     <div className="reading-progress-container">
-      <div className="reading-progress-bar" style={{ width: `${width}%` }}></div>
+      <div 
+        className="reading-progress-bar" 
+        style={{width: `${completion}%`}}
+      />
     </div>
   );
 };
+
+// Reading time display
+const ReadingTime = ({ minutes }: { minutes: number }) => (
+  <span className="flex items-center text-sm">
+    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
+    <span>{minutes} min read</span>
+  </span>
+);
 
 // Placeholder for skeleton loading animation
 const PostSkeleton = () => (
   <div className="blog-container max-w-3xl mx-auto">
     <BlogCosmic />
-    <div className="p-6 blog-skeleton-shine">
+    <div className="blog-post-card blog-skeleton-shine">
       <div className="h-10 bg-primary/20 rounded w-3/4 mb-4 blog-skeleton-pulse"></div>
       <div className="h-4 bg-primary/20 rounded w-1/4 mb-6 blog-skeleton-pulse"></div>
-      <div className="flex gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-8">
         <div className="h-6 bg-primary/20 rounded w-16 blog-skeleton-pulse"></div>
         <div className="h-6 bg-primary/20 rounded w-16 blog-skeleton-pulse"></div>
       </div>
@@ -89,25 +103,6 @@ const PostSkeleton = () => (
   </div>
 );
 
-// Post not found component
-const PostNotFound = () => (
-  <div className="blog-container max-w-3xl mx-auto">
-    <BlogCosmic />
-    <div className="text-center py-12 blog-post-card p-8">
-      <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
-      <p className="mb-6 text-foreground/80">
-        The blog post you're looking for doesn't exist or has been moved.
-      </p>
-      <Link 
-        to="/blog" 
-        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors hover:shadow-lg hover:shadow-primary/20"
-      >
-        Back to Blog
-      </Link>
-    </div>
-  </div>
-);
-
 // Post Navigation component
 const PostNavigation = ({ currentSlug }: { currentSlug: string }) => {
   const [posts, setPosts] = useState<BlogPostPreview[]>([]);
@@ -116,6 +111,7 @@ const PostNavigation = ({ currentSlug }: { currentSlug: string }) => {
   useEffect(() => {
     async function loadPosts() {
       try {
+        // For nav, we always load all posts so we can navigate between draft/dev posts too
         const allPosts = await getAllPosts();
         setPosts(allPosts);
       } catch (error) {
@@ -151,7 +147,7 @@ const PostNavigation = ({ currentSlug }: { currentSlug: string }) => {
           <span className="blog-post-nav-title">← {prevPost.frontmatter.title}</span>
         </Link>
       ) : (
-        <div></div>
+        <div className="hide-mobile"></div>
       )}
 
       <Link 
@@ -170,20 +166,9 @@ const PostNavigation = ({ currentSlug }: { currentSlug: string }) => {
           <span className="blog-post-nav-title">{nextPost.frontmatter.title} →</span>
         </Link>
       ) : (
-        <div></div>
+        <div className="hide-mobile"></div>
       )}
     </nav>
-  );
-};
-
-// Reading time display
-const ReadingTime = ({ minutes }: { minutes?: number }) => {
-  if (!minutes) return null;
-  
-  return (
-    <span className="text-foreground/60 text-sm">
-      {minutes} min read
-    </span>
   );
 };
 
@@ -193,56 +178,70 @@ export default function BlogPost() {
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Handle image loading errors
+  
+  // Handle image errors
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = FALLBACK_IMAGE;
   };
-
+  
   useEffect(() => {
-    // Reset state when slug changes
-    setLoading(true);
-    setError(null);
-    setPost(null);
-    
     async function loadPost() {
       if (!slug) {
-        setError("No slug provided");
-        setLoading(false);
+        navigate('/blog');
         return;
       }
       
       try {
+        setLoading(true);
+        setError(null);
         const postData = await getPostBySlug(slug);
-        
-        if (!postData) {
-          setError("Post not found");
-          setLoading(false);
-          return;
-        }
-        
         setPost(postData);
-        setLoading(false);
       } catch (error) {
-        console.error("Failed to load post:", error);
-        setError("Failed to load post");
+        console.error('Failed to load post:', error);
+        setError('This post could not be loaded. It may not exist or there was an error.');
+      } finally {
         setLoading(false);
       }
     }
     
     loadPost();
   }, [slug, navigate]);
-
+  
   if (loading) {
     return <PostSkeleton />;
   }
-
+  
   if (error || !post) {
-    return <PostNotFound />;
+    return (
+      <div className="blog-container max-w-3xl mx-auto text-center">
+        <BlogCosmic />
+        <div className="blog-post-card">
+          <h1 className="text-2xl font-bold text-destructive mb-4">Post Not Found</h1>
+          <p className="mb-6">{error || "We couldn't find the blog post you're looking for."}</p>
+          <Link to="/blog" className="inline-block px-6 py-3 bg-primary/20 rounded-lg hover:bg-primary/30 transition-colors">
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
   }
-
-  const PostContent = post.content;
-  const { title, date, tags, readingTime, author, coverImage } = post.frontmatter;
+  
+  // Extract content and frontmatter
+  const { frontmatter, content: PostContent } = post;
+  const { 
+    title, 
+    date, 
+    tags = [], 
+    readingTime = 5,
+    coverImage,
+  } = frontmatter;
+  
+  // Properly handle author which can be string or object
+  const author = frontmatter.author 
+    ? (typeof frontmatter.author === 'string' 
+        ? frontmatter.author 
+        : frontmatter.author.name)
+    : null;
 
   return (
     <>
@@ -262,11 +261,11 @@ export default function BlogPost() {
       <article className="blog-container">
         <BlogCosmic />
         
-        <div className="blog-post-card p-6 max-w-3xl mx-auto">
-          <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-6 blog-post-header">{title}</h1>
+        <div className="blog-post-card max-w-3xl mx-auto">
+          <header className="mb-6 md:mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 blog-post-header">{title}</h1>
             
-            <div className="flex items-center flex-wrap text-foreground/70 mb-4 space-x-4">
+            <div className="flex flex-wrap items-center text-foreground/70 mb-4 space-x-2 md:space-x-4">
               <time dateTime={date} className="font-medium">
                 {new Date(date).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -276,8 +275,9 @@ export default function BlogPost() {
               </time>
               
               {author && (
-                <span className="text-foreground/70">
-                  by {typeof author === 'string' ? author : author.name}
+                <span className="flex items-center text-foreground/70">
+                  <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
+                  by {author}
                 </span>
               )}
               
@@ -292,6 +292,7 @@ export default function BlogPost() {
                   className="w-full h-auto rounded-lg object-cover"
                   onError={handleImageError}
                   loading="lazy"
+                  data-transition-id={`cover-image-${slug}`}
                 />
               </div>
             )}
