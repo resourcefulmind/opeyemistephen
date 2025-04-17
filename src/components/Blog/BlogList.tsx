@@ -41,15 +41,41 @@ const BlogListCosmic = () => {
 };
 
 // Blog post card skeleton loader
-const BlogPostSkeleton = () => (
-  <div className="blog-post-card blog-skeleton-shine p-6 opacity-70">
-    <div className="h-7 bg-primary/20 rounded w-3/4 mb-4 blog-skeleton-pulse"></div>
-    <div className="h-4 bg-primary/20 rounded w-full mb-3 blog-skeleton-pulse"></div>
-    <div className="h-4 bg-primary/20 rounded w-5/6 mb-3 blog-skeleton-pulse"></div>
-    <div className="flex flex-wrap gap-2 mt-3">
-      <div className="h-6 w-16 bg-primary/20 rounded-full blog-skeleton-pulse"></div>
-      <div className="h-6 w-20 bg-primary/20 rounded-full blog-skeleton-pulse"></div>
+const BlogPostSkeleton = ({ delay = 0 }: { delay?: number }) => (
+  <div 
+    className="blog-post-card blog-skeleton-shine p-6" 
+    style={{ animationDelay: `${delay}ms` }}
+    role="status"
+    aria-live="polite"
+  >
+    <div className="md:flex md:items-start">
+      {/* Skeleton for the cover image */}
+      <div className="md:w-1/3 md:mr-6 mb-4 md:mb-0 h-[150px] bg-primary/10 rounded-lg blog-skeleton-pulse"></div>
+      
+      <div className="md:w-2/3">
+        {/* Title skeleton */}
+        <div className="h-7 bg-primary/20 rounded w-3/4 mb-4 blog-skeleton-pulse"></div>
+        
+        {/* Date and reading time skeleton */}
+        <div className="flex items-center mb-3">
+          <div className="h-4 bg-primary/20 rounded w-24 blog-skeleton-pulse"></div>
+          <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
+          <div className="h-4 bg-primary/20 rounded w-20 blog-skeleton-pulse"></div>
+        </div>
+        
+        {/* Excerpt skeleton lines */}
+        <div className="h-4 bg-primary/20 rounded w-full mb-3 blog-skeleton-pulse"></div>
+        <div className="h-4 bg-primary/20 rounded w-5/6 mb-3 blog-skeleton-pulse"></div>
+        
+        {/* Tags skeleton */}
+        <div className="flex flex-wrap gap-2 mt-3">
+          <div className="h-6 w-16 bg-primary/20 rounded-full blog-skeleton-pulse"></div>
+          <div className="h-6 w-20 bg-primary/20 rounded-full blog-skeleton-pulse"></div>
+          <div className="h-6 w-14 bg-primary/20 rounded-full blog-skeleton-pulse"></div>
+        </div>
+      </div>
     </div>
+    <span className="sr-only">Loading blog post...</span>
   </div>
 );
 
@@ -118,10 +144,10 @@ export default function BlogList() {
                 </header>
                 
                 {loading ? (
-                    <div className="space-y-6">
-                        <BlogPostSkeleton />
-                        <BlogPostSkeleton />
-                        <BlogPostSkeleton />
+                    <div className="space-y-6" aria-label="Loading blog posts">
+                        <BlogPostSkeleton delay={0} />
+                        <BlogPostSkeleton delay={150} />
+                        <BlogPostSkeleton delay={300} />
                     </div>
                 ) : error ? (
                     <div className="blog-post-card p-8 text-center text-destructive">

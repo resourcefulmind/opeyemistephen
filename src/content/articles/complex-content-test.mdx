@@ -71,12 +71,39 @@ Tables are fully supported with GitHub-flavored markdown:
 
 ### Component in Table Cells
 
-| Feature | Example | Description | | ------- | ------- | ----------- |
-| Enhanced MDX | Rich components for blog content | <Callout type="tip">Tip in table</Callout> |
-| Testing component in table cell | | List in table |
-| | • Item 1 
-| | • Item 2 |
-| Testing list in table cell | | Code in table | `const x = 1;` | Testing code in table cell |
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Example</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Enhanced MDX</td>
+      <td>Rich components for blog content</td>
+      <td>
+        <Callout type="tip">Tip in table</Callout>
+      </td>
+    </tr>
+    <tr>
+      <td>Testing list in table cell</td>
+      <td>
+        <ul>
+          <li>Item 1</li>
+          <li>Item 2</li>
+        </ul>
+      </td>
+      <td>List in table</td>
+    </tr>
+    <tr>
+      <td>Testing code in table cell</td>
+      <td><code>const x = 1;</code></td>
+      <td>Code in table</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Code Blocks
 
@@ -164,7 +191,6 @@ Our blog system supports custom MDX components. Here are some examples:
   It supports **markdown formatting** within it as well!
 </Callout>
 
-{/* Using standard img tag instead of custom Image component */}
 <img 
   src="/images/blog/example-diagram.png" 
   alt="Example architecture diagram" 
@@ -198,12 +224,14 @@ MDX can include interactive elements like this collapsible section:
 
 <details>
   <summary>Click to expand</summary>
-  <p>This is hidden content that appears when the user clicks on the summary.</p>
-  <p>It can contain multiple paragraphs and other markdown elements.</p>
-  <ul>
-    <li>Like lists</li>
-    <li>And other formatting</li>
-  </ul>
+  <div>
+    <p>This is hidden content that appears when the user clicks on the summary.</p>
+    <p>It can contain multiple paragraphs and other markdown elements.</p>
+    <ul>
+      <li>Like lists</li>
+      <li>And other formatting</li>
+    </ul>
+  </div>
 </details>
 
 ## Horizontal Rules
@@ -234,8 +262,6 @@ MDX can be used to create more complex layouts by combining components:
     </ol>
   </div>
 </div>
-
-{/* Note: Make sure the blog-grid-layout and blog-grid-column classes are defined in your CSS */}
 
 ## Conclusion
 

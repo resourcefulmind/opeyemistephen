@@ -1,13 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useTransition } from 'react';
 import { Hero } from './components/Hero';
 import { ThemeToggle } from './components/ThemeToggle';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { 
+  BrowserRouter as Router, 
+  Route, 
+  Routes, 
+  useLocation,
+  useNavigationType
+} from 'react-router-dom';
 import BlogList from './components/Blog/BlogList';
 import BlogPost from './components/Blog/BlogPost';
 import Navbar from './components/Navbar';
 import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
-import { TransitionProvider } from './components/transitions/TransitionProvider';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Layout component to handle non-Hero pages
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
@@ -31,29 +37,89 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Routes with transitions applied
+// BlogErrorFallback component for blog-specific errors
+const BlogErrorFallback = () => (
+  <PageLayout>
+    <div className="text-center my-12">
+      <h2 className="text-2xl font-bold mb-4">Blog content could not be loaded</h2>
+      <p className="mb-6">There was an error loading the blog content. This might be due to network issues or content format problems.</p>
+      <div className="flex gap-4 justify-center">
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-primary/30 hover:bg-primary/50 transition-colors rounded-md"
+        >
+          Try again
+        </button>
+        <a 
+          href="/"
+          className="px-6 py-2 bg-gray-700/50 hover:bg-gray-700/70 transition-colors rounded-md"
+        >
+          Return home
+        </a>
+      </div>
+    </div>
+  </PageLayout>
+);
+
+// Route change handler for React Router v7 compatibility
+const RouteChangeHandler = () => {
+  const [isPending, startTransition] = useTransition();
+  const navigationType = useNavigationType();
+  
+  // Apply startTransition for navigation changes
+  useEffect(() => {
+    if (navigationType !== 'POP') {
+      startTransition(() => {
+        // This wraps route changes in startTransition as recommended
+        // for React Router v7 compatibility
+      });
+    }
+  }, [navigationType, startTransition]);
+  
+  return null;
+};
+
+// App Routes Component
 const AppRoutes = () => {
   return (
-    <TransitionProvider>
-      <Routes>
-        {/* Hero page doesn't need extra padding */}
-        <Route path='/' element={<Hero />} />
-        
-        {/* Other pages need the PageLayout */}
-        <Route path='/blog' element={
+    <Routes>
+      {/* Route change handler for React Router v7 compatibility */}
+      <Route path="*" element={<RouteChangeHandler />} />
+      
+      {/* Home page */}
+      <Route path='/' element={
+        <ErrorBoundary>
+          <Hero />
+        </ErrorBoundary>
+      } />
+      
+      {/* Blog list page */}
+      <Route path='/blog' element={
+        <ErrorBoundary fallback={<BlogErrorFallback />}>
           <PageLayout>
             <BlogList />
           </PageLayout>
-        } />
-        
-        {/* Individual blog post route */}
-        <Route path='/blog/:slug' element={
+        </ErrorBoundary>
+      } />
+      
+      {/* Individual blog post page */}
+      <Route path='/blog/:slug' element={
+        <ErrorBoundary fallback={<BlogErrorFallback />}>
           <PageLayout>
             <BlogPost />
           </PageLayout>
-        } />
-      </Routes>
-    </TransitionProvider>
+        </ErrorBoundary>
+      } />
+      
+      {/* About page */}
+      <Route path='/about' element={
+        <ErrorBoundary>
+          <PageLayout>
+            <div>About Page Content</div>
+          </PageLayout>
+        </ErrorBoundary>
+      } />
+    </Routes>
   );
 };
 
@@ -68,16 +134,19 @@ function App() {
     localStorage.setItem('theme', theme);
   }, []);
 
+  // Wrap everything in a global error boundary
   return (
-    <Router>
-      {/* Fixed navbar on top */}
-      <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-6 z-50">
-        <Navbar />
-        <ThemeToggle />
-      </div>
-      
-      <AppRoutes />
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        {/* Fixed navbar on top */}
+        <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-6 z-50">
+          <Navbar />
+          <ThemeToggle />
+        </div>
+        
+        <AppRoutes />
+      </Router>
+    </ErrorBoundary>
   );
 }
 

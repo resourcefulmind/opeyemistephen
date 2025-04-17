@@ -83,22 +83,59 @@ const ReadingTime = ({ minutes }: { minutes: number }) => (
   </span>
 );
 
-// Placeholder for skeleton loading animation
+// Enhanced skeleton for blog post content with staggered loading
 const PostSkeleton = () => (
-  <div className="blog-container max-w-3xl mx-auto">
+  <div 
+    className="blog-container max-w-3xl mx-auto"
+    role="status"
+    aria-live="polite"
+  >
     <BlogCosmic />
-    <div className="blog-post-card blog-skeleton-shine">
-      <div className="h-10 bg-primary/20 rounded w-3/4 mb-4 blog-skeleton-pulse"></div>
-      <div className="h-4 bg-primary/20 rounded w-1/4 mb-6 blog-skeleton-pulse"></div>
-      <div className="flex flex-wrap gap-2 mb-8">
-        <div className="h-6 bg-primary/20 rounded w-16 blog-skeleton-pulse"></div>
-        <div className="h-6 bg-primary/20 rounded w-16 blog-skeleton-pulse"></div>
+    
+    <div className="blog-post-card blog-skeleton-shine p-8">
+      {/* Cover image skeleton */}
+      <div className="w-full h-[200px] bg-primary/10 rounded-lg blog-skeleton-pulse mb-8"></div>
+      
+      {/* Title skeleton */}
+      <div className="h-10 bg-primary/20 rounded-lg w-3/4 mb-4 blog-skeleton-pulse"></div>
+      
+      {/* Author and date skeleton */}
+      <div className="flex items-center mb-6">
+        <div className="h-4 bg-primary/20 rounded w-32 blog-skeleton-pulse"></div>
+        <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2"></span>
+        <div className="h-4 bg-primary/20 rounded w-24 blog-skeleton-pulse"></div>
+        <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2"></span>
+        <div className="h-4 bg-primary/20 rounded w-20 blog-skeleton-pulse"></div>
       </div>
-      <div className="space-y-3">
+      
+      {/* Tags skeleton */}
+      <div className="flex flex-wrap gap-2 mb-8" style={{ animationDelay: '100ms' }}>
+        <div className="h-6 bg-primary/20 rounded-full w-16 blog-skeleton-pulse"></div>
+        <div className="h-6 bg-primary/20 rounded-full w-16 blog-skeleton-pulse"></div>
+        <div className="h-6 bg-primary/20 rounded-full w-16 blog-skeleton-pulse"></div>
+      </div>
+      
+      {/* Content skeleton */}
+      <div className="space-y-4" style={{ animationDelay: '200ms' }}>
+        {/* Paragraph skeletons - staggered with animation delay */}
         <div className="h-4 bg-primary/20 rounded blog-skeleton-pulse"></div>
         <div className="h-4 bg-primary/20 rounded blog-skeleton-pulse"></div>
         <div className="h-4 bg-primary/20 rounded w-5/6 blog-skeleton-pulse"></div>
+        <div className="h-4 bg-primary/20 rounded blog-skeleton-pulse"></div>
+        
+        {/* Heading skeleton */}
+        <div className="h-6 bg-primary/20 rounded w-1/2 blog-skeleton-pulse mt-8 mb-4"></div>
+        
+        {/* More paragraphs */}
+        <div className="h-4 bg-primary/20 rounded blog-skeleton-pulse"></div>
+        <div className="h-4 bg-primary/20 rounded blog-skeleton-pulse"></div>
+        <div className="h-4 bg-primary/20 rounded w-11/12 blog-skeleton-pulse"></div>
       </div>
+      
+      {/* Post navigation skeleton */}
+      <div className="h-16 bg-primary/10 rounded-lg blog-skeleton-pulse mt-12" style={{ animationDelay: '300ms' }}></div>
+      
+      <span className="sr-only">Loading blog post content...</span>
     </div>
   </div>
 );
