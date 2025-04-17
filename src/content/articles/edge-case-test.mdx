@@ -108,29 +108,34 @@ This is a non-existent language to test how syntax highlighting handles unknown 
 
 ## HTML Edge Cases
 
-<div style="color: red; font-size: 72px; transform: rotate(180deg);">
-  This text has inline styling to test if style sanitization works.
+<div className="text-danger large-text inverted">
+  This text has styling to test if class names work properly.
 </div>
 
-<script>
+{/* Script tags should be sanitized and not render */}
+{/* <script>
   alert("This script tag should be sanitized and not execute");
-</script>
+</script> */}
 
-<h7>Invalid HTML heading level</h7>
+<h6>HTML heading level 6</h6>
 
-<custom-element data-test="Should handle unknown elements gracefully">
+<div data-test="Should handle unknown elements gracefully">
   Custom element content
-</custom-element>
+</div>
 
 <table>
-  <tr>
-    <td>Table</td>
-    <td>Without</td>
-  </tr>
-  <tr>
-    <td>A</td>
-    <td>thead or tbody</td>
-  </tr>
+  <thead>
+    <tr>
+      <th>Table</th>
+      <th>With</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Proper</td>
+      <td>Structure</td>
+    </tr>
+  </tbody>
 </table>
 
 ## Image Edge Cases

@@ -112,6 +112,23 @@ const Callout = ({ type = 'info', title, children }: CalloutProps) => {
   );
 };
 
+// Grid layout components for MDX
+const GridLayout = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={cn("blog-grid-layout", className)} {...props}>
+      {children}
+    </div>
+  );
+};
+
+const GridColumn = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={cn("blog-grid-column", className)} {...props}>
+      {children}
+    </div>
+  );
+};
+
 // Table component with responsive design
 const Table = (props: React.TableHTMLAttributes<HTMLTableElement>) => (
   <div className="overflow-x-auto my-8">
@@ -229,6 +246,21 @@ const components = {
   // Custom components
   Callout,
   TableOfContents,
+  
+  // Handle div with grid layout class name
+  div: (props: React.HTMLAttributes<HTMLDivElement>) => {
+    const { className, ...rest } = props;
+    
+    if (className?.includes('blog-grid-layout')) {
+      return <GridLayout {...rest} className={className} />;
+    }
+    
+    if (className?.includes('blog-grid-column')) {
+      return <GridColumn {...rest} className={className} />;
+    }
+    
+    return <div className={className} {...rest} />;
+  }
 };
 
 interface MDXComponentsProps {
