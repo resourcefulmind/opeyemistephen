@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BlogPostPreview } from "../../lib/blog/types";
 import { getAllPosts } from "../../lib/blog/loader";
 import { Helmet } from "react-helmet";
@@ -87,7 +87,10 @@ export default function BlogList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showAllPosts, setShowAllPosts] = useState(true);
-    
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const activeTag = searchParams.get('tag')?.toLowerCase() || null;
     // Image error handler
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
         e.currentTarget.src = FALLBACK_IMAGE;
@@ -95,7 +98,16 @@ export default function BlogList() {
     
     // Only in development: toggle between all posts and production posts
     const isProduction = import.meta.env.PROD;
-    const filteredPosts = showAllPosts ? posts : posts.filter(post => !post.frontmatter.isDevelopmentOnly);
+    // Production/dev toggle
+    const basePosts = showAllPosts ? posts : posts.filter(post => !post.frontmatter.isDevelopmentOnly);
+    // URL-based tag filter (applies on top of basePosts)
+    const visiblePosts = activeTag
+    ? basePosts.filter(post =>
+        (post.frontmatter?.tags || [])
+            .map(t => t.toLowerCase())
+            .includes(activeTag)
+        )
+    : basePosts;
     
     useEffect(() => {
         async function loadPosts() {
@@ -110,6 +122,7 @@ export default function BlogList() {
             } finally {
                 setLoading(false);
             }
+            
         }
         
         loadPosts();
@@ -124,9 +137,11 @@ export default function BlogList() {
                 <meta name="description" content="Read my latest articles and thoughts on web development, technology, and more." />
             </Helmet>
             
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
                 <header className="mb-8 text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">My Blog</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                        <span className="heading-gradient">My Blog</span>
+                    </h1>
                     <p className="text-foreground/80 text-lg max-w-2xl mx-auto">
                         Thoughts, ideas, and insights on web development, technology, and design.
                     </p>
@@ -144,7 +159,7 @@ export default function BlogList() {
                 </header>
                 
                 {loading ? (
-                    <div className="space-y-6" aria-label="Loading blog posts">
+                    <div className="grid gap-8 md:grid-cols-2" aria-label="Loading blog posts">
                         <BlogPostSkeleton delay={0} />
                         <BlogPostSkeleton delay={150} />
                         <BlogPostSkeleton delay={300} />
@@ -155,8 +170,8 @@ export default function BlogList() {
                         <p>{error}</p>
                     </div>
                 ) : (
-                    <ul className="space-y-6">
-                        {filteredPosts.map((post) => (
+                    <ul className="grid gap-8 md:grid-cols-2">
+                        {visiblePosts.map((post) => (
                             <li key={post.slug} className="blog-post-card relative">
                                 {/* Development-only badge */}
                                 {post.frontmatter.isDevelopmentOnly && (
@@ -165,7 +180,7 @@ export default function BlogList() {
                                     </div>
                                 )}
                                 
-                                <div className="md:flex md:items-start">
+                                <div className="md:flex md:items-start h-full">
                                     {post.frontmatter.coverImage && (
                                         <div className="blog-cover-image md:w-1/3 md:mr-6 mb-4 md:mb-0">
                                             <img 
@@ -201,7 +216,7 @@ export default function BlogList() {
                                             )}
                                         </div>
                                         
-                                        <p className="text-foreground/80 mb-4">{post.frontmatter.excerpt}</p>
+                                        <p className="text-foreground/80 mb-4 line-clamp-3">{post.frontmatter.excerpt}</p>
                                         
                                         <div className="flex flex-wrap gap-2 mt-3">
                                             {post.frontmatter.tags.map((tag) => (
@@ -220,7 +235,7 @@ export default function BlogList() {
                     </ul>
                 )}
                 
-                {!loading && filteredPosts.length === 0 && (
+                {!loading && visiblePosts.length === 0 && (
                     <div className="blog-post-card p-8 text-center">
                         <h2 className="text-xl mb-2">No posts found</h2>
                         <p>There are no blog posts available at this time.</p>

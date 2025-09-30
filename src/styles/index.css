@@ -64,6 +64,12 @@
   letter-spacing: -0.025em;
 }
 
+/* Selection color brand accent */
+::selection {
+  background: linear-gradient(90deg, hsl(var(--brand-1)), hsl(var(--brand-2)));
+  color: white;
+}
+
 .twinkle {
   position: absolute;
   width: 2px;
