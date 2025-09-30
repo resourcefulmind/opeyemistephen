@@ -20,4 +20,8 @@
     --ring: 240 4.9% 83.9%;
     --radius: 0.75rem;
     --shadow: 240 10% 3.9%;
+
+  /* Brand accents for gradient headings */
+  --brand-1: 326 83% 62%; /* pink */
+  --brand-2: 277 82% 61%; /* purple */
   }

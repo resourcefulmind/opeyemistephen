@@ -7,6 +7,8 @@
 import { BlogPost, BlogPostPreview, FrontmatterValidationError, RawFrontmatter } from "./types";
 import { validateFrontmatter, calculateReadingTime } from "./schema";
 import logger from "../utils/logger";
+import { popularSlugs } from '../../content/blog.config';
+import { stats } from "../../content/about.config";
 
 // Cache to avoid reloading posts on every request
 let postsCache: BlogPostPreview[] | null = null;
@@ -175,4 +177,99 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
         }
         return null;
     }
+}
+
+export function getTagStats(posts: BlogPostPreview[]): Array<{ tag: string; count: number; label: string }> {
+  const counts = new Map<string, number>();   // key: normalized tag
+  const labels = new Map<string, string>();   // key: normalized tag -> display label
+
+  for (const post of posts) {
+    const tags = post.frontmatter?.tags ?? [];
+    // De-dup tags per post so accidental duplicates don’t inflate counts
+    const unique = new Set(tags.map(t => t.trim()).filter(Boolean));
+
+    for (const original of unique) {
+      const key = original.toLowerCase();
+      if (!labels.has(key)) labels.set(key, original); // keep first-seen display case
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+
+  const stats: Array<{ tag: string; count: number; label: string }> = [];
+  for (const [tag, count] of counts.entries()) {
+    stats.push({ tag, count, label: labels.get(tag)! });
+  }
+
+  stats.sort((a, b) => (b.count - a.count) || a.tag.localeCompare(b.tag));
+  return stats;
+}
+
+/**
+ * Helper: index posts by slug for fast lookup
+ */
+function indexBySlug(posts: BlogPostPreview[]): Map<string, BlogPostPreview> {
+    const map = new Map<string, BlogPostPreview>();
+    for (const post of posts) {
+      map.set(post.slug, post);
+    }
+    return map;
+}
+  
+  /**
+   * Get popular posts from curated config (Option A)
+   */
+function getPopularFromConfig(
+    posts: BlogPostPreview[], 
+    popularSlugs: readonly string[]
+  ): BlogPostPreview[] {
+    const bySlug = indexBySlug(posts);
+    const result: BlogPostPreview[] = [];
+    
+    for (const slug of popularSlugs) {
+      const post = bySlug.get(slug);
+      if (post) {
+        result.push(post);
+      }
+    }
+    return result;
+}
+  
+  /**
+   * Get popular posts using heuristic (Option B): featured first, then recent
+   */
+function getPopularHeuristic(posts: BlogPostPreview[], limit = 6): BlogPostPreview[] {
+    const withDate = posts.filter(p => !!p.frontmatter?.date);
+  
+    const featured = withDate
+      .filter(p => p.frontmatter?.featured === true)
+      .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+  
+    const nonFeatured = withDate
+      .filter(p => p.frontmatter?.featured !== true)
+      .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+  
+    const merged = [...featured, ...nonFeatured];
+    
+    // Remove duplicates by slug
+    const seen = new Set<string>();
+    const unique: BlogPostPreview[] = [];
+    for (const post of merged) {
+      if (!seen.has(post.slug)) {
+        seen.add(post.slug);
+        unique.push(post);
+      }
+    }
+    return unique.slice(0, limit);
+}
+  
+  /**
+   * Get popular posts: curated first, fallback to heuristic
+   */
+export function getPopularPosts(posts: BlogPostPreview[], limit = 6): BlogPostPreview[] {
+    const curated = getPopularFromConfig(posts, popularSlugs);
+    if (curated.length >= 1) {
+      return curated.slice(0, limit);
+    }
+    
+    return getPopularHeuristic(posts, limit);
 }

@@ -14,6 +14,7 @@ import Navbar from './components/Navbar';
 import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
 import ErrorBoundary from './components/ErrorBoundary';
+import AboutPage from './pages/About';
 
 // Layout component to handle non-Hero pages
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
@@ -115,7 +116,7 @@ const AppRoutes = () => {
       <Route path='/about' element={
         <ErrorBoundary>
           <PageLayout>
-            <div>About Page Content</div>
+            <AboutPage />
           </PageLayout>
         </ErrorBoundary>
       } />

@@ -60,3 +60,65 @@
 .glow-effect {
   animation: skill-glow 2s ease-in-out infinite alternate;
 }
+
+/* Subtle metallic accent for inline highlights (lighter than .metallic-text) */
+.metallic-accent {
+  color: hsl(var(--primary));
+  font-weight: 600;
+  position: relative;
+  text-shadow: 0 0 6px hsla(var(--primary), 0.25), 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* Gradient heading styles */
+.heading-gradient {
+  background: linear-gradient(90deg, hsl(var(--brand-1)) 0%, hsl(var(--brand-2)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heading-accent {
+  background: linear-gradient(90deg, hsl(var(--brand-1)) 0%, hsl(var(--brand-2)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glass card hover glow + lift */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0) scale(1);
+  will-change: transform, box-shadow, border-color, background-color;
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-card:hover {
+  border-color: hsla(var(--primary), 0.35);
+  background-color: color-mix(in oklab, hsl(var(--secondary)) 24%, transparent);
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.18),
+    0 0 32px hsla(var(--primary), 0.24),
+    inset 0 0 0 1px hsla(var(--primary), 0.12);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(120px 60px at 50% 40%, hsla(var(--primary), 0.35), transparent 60%);
+  filter: blur(18px);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.glass-card:hover::after {
+  opacity: 1;
+}
