@@ -5,6 +5,109 @@ import { getPostBySlug, getAllPosts } from "../../lib/blog/loader";
 import MDXComponents from "../MDXComponents";
 import { Helmet } from "react-helmet";
 
+// Inline Table of Contents component
+const InlineTableOfContents = () => {
+  const [headings, setHeadings] = useState<Array<{id: string, text: string, level: number}>>([]);
+  const [activeId, setActiveId] = useState<string>('');
+
+  useEffect(() => {
+    // Wait for content to be rendered
+    const timer = setTimeout(() => {
+      const headingElements = document.querySelectorAll('h2, h3, h4');
+      
+      const items = Array.from(headingElements).map((el, index) => {
+        const text = el.textContent || '';
+        const id = el.id || text.toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+          || `heading-${index}`;
+        
+        // Set ID if it doesn't exist
+        if (!el.id) {
+          el.id = id;
+        }
+        
+        return {
+          id,
+          text: text.replace(/#/g, ''),
+          level: parseInt(el.tagName.charAt(1)),
+        };
+      });
+
+      setHeadings(items);
+
+      // Set up intersection observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries.find(entry => entry.isIntersecting);
+          if (entry) {
+            setActiveId(entry.target.id);
+          }
+        },
+        {
+          rootMargin: '-80px 0px -80% 0px',
+          threshold: 0,
+        }
+      );
+
+      headingElements.forEach(el => {
+        if (el.id) {
+          observer.observe(el);
+        }
+      });
+
+      return () => {
+        headingElements.forEach(el => {
+          if (el.id) {
+            observer.unobserve(el);
+          }
+        });
+      };
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const scrollToHeading = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 100,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  if (headings.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="toc-sidebar-inline">
+      <h3 className="toc-title">
+        Table of Contents
+      </h3>
+      
+      <nav>
+        <ul className="space-y-1">
+          {headings.map((heading) => (
+            <li key={heading.id}>
+              <button
+                onClick={() => scrollToHeading(heading.id)}
+                className={`toc-item ${heading.level === 3 ? 'level-3' : ''} ${activeId === heading.id ? 'active' : ''}`}
+              >
+                {heading.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  );
+};
+
 // Fallback image URL for broken images
 const FALLBACK_IMAGE = "https://placehold.co/600x400/1e293b/ffffff?text=Image+Not+Found";
 
@@ -17,7 +120,7 @@ const BlogCosmic = () => {
     if (!container) return;
     
     // Add twinkling stars
-    const starCount = 40;
+    const starCount = 160;
     const stars: HTMLDivElement[] = [];
     
     for (let i = 0; i < starCount; i++) {
@@ -51,14 +154,16 @@ const ReadingProgress = () => {
     const updateScrollCompletion = () => {
       const currentProgress = window.scrollY;
       const scrollHeight = document.body.scrollHeight - window.innerHeight;
-      if (scrollHeight) {
-        setCompletion(
-          Number((currentProgress / scrollHeight).toFixed(2)) * 100
-        );
+      if (scrollHeight > 0) {
+        const progress = Math.min(100, Math.max(0, (currentProgress / scrollHeight) * 100));
+        setCompletion(progress);
       }
     };
     
-    window.addEventListener('scroll', updateScrollCompletion);
+    // Initial calculation
+    updateScrollCompletion();
+    
+    window.addEventListener('scroll', updateScrollCompletion, { passive: true });
     
     return () => {
       window.removeEventListener('scroll', updateScrollCompletion);
@@ -86,13 +191,13 @@ const ReadingTime = ({ minutes }: { minutes: number }) => (
 // Enhanced skeleton for blog post content with staggered loading
 const PostSkeleton = () => (
   <div 
-    className="blog-container max-w-3xl mx-auto"
+    className="blog-container max-w-3xl mx-auto pt-20"
     role="status"
     aria-live="polite"
   >
     <BlogCosmic />
     
-    <div className="blog-post-card blog-skeleton-shine p-8">
+    <div className="blog-post-card glass-card blog-skeleton-shine p-8">
       {/* Cover image skeleton */}
       <div className="w-full h-[200px] bg-primary/10 rounded-lg blog-skeleton-pulse mb-8"></div>
       
@@ -250,9 +355,9 @@ export default function BlogPost() {
   
   if (error || !post) {
     return (
-      <div className="blog-container max-w-3xl mx-auto text-center">
+      <div className="blog-container max-w-3xl mx-auto text-center pt-20 mb-8">
         <BlogCosmic />
-        <div className="blog-post-card">
+        <div className="blog-post-card glass-card p-8">
           <h1 className="text-2xl font-bold text-destructive mb-4">Post Not Found</h1>
           <p className="mb-6">{error || "We couldn't find the blog post you're looking for."}</p>
           <Link to="/blog" className="inline-block px-6 py-3 bg-primary/20 rounded-lg hover:bg-primary/30 transition-colors">
@@ -295,10 +400,11 @@ export default function BlogPost() {
       
       <ReadingProgress />
       
-      <article className="blog-container">
+      <article className="blog-container pt-20">
         <BlogCosmic />
         
-        <div className="blog-post-card max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto px-6 xl:pr-80 mb-8">
+          <div className="blog-post-card glass-card p-8">
           <header className="mb-6 md:mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 blog-post-header">{title}</h1>
             
@@ -326,7 +432,7 @@ export default function BlogPost() {
                 <img 
                   src={coverImage} 
                   alt={title} 
-                  className="w-full h-auto rounded-lg object-cover"
+                  className="w-full h-auto rounded-lg object-contain"
                   onError={handleImageError}
                   loading="lazy"
                   data-transition-id={`cover-image-${slug}`}
@@ -355,6 +461,10 @@ export default function BlogPost() {
           </div>
           
           <PostNavigation currentSlug={slug!} />
+          </div>
+          
+          {/* Fixed Table of Contents */}
+          <InlineTableOfContents />
         </div>
       </article>
     </>

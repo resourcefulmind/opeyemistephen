@@ -295,4 +295,40 @@
   .page-enter, .page-exit {
     transition: opacity 0.1s ease;
   }
+  
+  .metallic-text {
+    animation: none;
+  }
+  
+  .typewriter {
+    animation: none;
+    border-right: none;
+  }
+  
+  .twinkle {
+    animation: none;
+  }
+  
+  .comet {
+    animation: none;
+  }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  .metallic-text::before {
+    filter: blur(12px); /* Reduce blur on mobile for performance */
+  }
+  
+  .twinkle {
+    animation-duration: 2s; /* Shorter animation on mobile */
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .metallic-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }

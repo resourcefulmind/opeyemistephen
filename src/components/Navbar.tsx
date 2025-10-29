@@ -15,7 +15,7 @@ const NavLink = ({ to, children }: { to: string, children: React.ReactNode }) =>
   return (
     <Link 
       to={to} 
-      className="relative group py-3 px-3 outline-none"
+      className="relative group py-3 px-3 outline-none focus-visible:outline-none"
       onClick={(e) => {
         // If we're already on this page, blur the element to remove focus states
         if (isActive(to)) {
@@ -44,7 +44,7 @@ const Navbar = () => {
   const isBlogActive = location.pathname.startsWith('/blog');
   
   return (
-    <nav className='py-6'>
+    <nav className='py-6' role="navigation" aria-label="Main navigation">
       <ul className='flex items-center gap-2'>
         <li>
           <NavLink to='/'>Home</NavLink>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { intro, experience, skills, principles, story, now } from '../content/about.config';
@@ -10,12 +10,47 @@ const SECTION_ANIMATION = {
   transition: { duration: 0.6 }
 } as const;
 
+// Cosmic background component for About page
+const AboutCosmic = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    
+    // Add twinkling stars
+    const starCount = 160;
+    const stars: HTMLDivElement[] = [];
+    
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'blog-star';
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty('--twinkle-duration', `${Math.random() * 3 + 1}s`);
+      container.appendChild(star);
+      stars.push(star);
+    }
+    
+    return () => {
+      stars.forEach(star => star.remove());
+    };
+  }, []);
+  
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" ref={containerRef}>
+      <div className="blog-nebula blog-nebula-primary"></div>
+      <div className="blog-nebula blog-nebula-secondary"></div>
+    </div>
+  );
+};
+
 function GlassCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-2xl border border-primary/10 bg-secondary/20 backdrop-blur-sm',
-        'shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-shadow glass-card',
+        'rounded-2xl border border-white/3 bg-secondary/8 backdrop-blur-xl',
+        'shadow-[0_4px_20px_-5px_rgba(0,0,0,0.5)] transition-all glass-card',
         className
       )}
     >
@@ -34,8 +69,8 @@ function Section({ title, description, children }: { title: string; description?
       className="max-w-6xl mx-auto"
     >
       <div className="mb-8">
-        <h2 className={cn('text-3xl md:text-4xl font-display font-semibold tracking-tight leading-tight')}>
-          <span className="heading-accent">{title}</span>
+        <h2 className={cn('text-sm font-semibold mb-6 tracking-wider')}>
+          <span className="heading-accent">{title.toUpperCase()}</span>
         </h2>
         {description && (
           <p className="mt-3 text-foreground/80 text-base md:text-lg leading-relaxed">{description}</p>
@@ -81,7 +116,7 @@ function NowFocus() {
 
 function Experience() {
   return (
-    <Section title="Experience" description="Selected roles and impact across engineering and content.">
+    <Section title="Worked with amazing dreamers and builders" description="Selected roles and impact across engineering and content.">
       <div className="grid md:grid-cols-2 gap-6">
         {experience.map((exp) => (
           <GlassCard key={exp.role} className="p-6">
@@ -116,7 +151,7 @@ function Skills() {
                 <span
                   key={skill}
                   className={cn(
-                    'px-3 py-1.5 rounded-full text-sm',
+                    'px-3 py-1.5 rounded-md text-sm',
                     'bg-secondary/20 text-primary border border-primary/10 backdrop-blur-sm'
                   )}
                 >
@@ -162,7 +197,7 @@ function Story() {
 
 function CallToAction() {
   return (
-    <Section title="Let’s build something memorable">
+    <Section title="Let's make magic">
       <GlassCard className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-foreground/90">Have a project or idea? I’m open to collaborations and impactful work.</p>
@@ -188,14 +223,17 @@ function CallToAction() {
 
 export default function AboutPage() {
   return (
-    <div className="space-y-16 md:space-y-24">
-      <Intro />
-      <NowFocus />
-      <Story />
-      <Experience />
-      <Skills />
-      <Values />
-      <CallToAction />
+    <div className="relative min-h-screen">
+      <AboutCosmic />
+      <div className="relative z-10 space-y-16 md:space-y-24 pt-20 pb-20">
+        <Intro />
+        <NowFocus />
+        <Story />
+        <Experience />
+        <Skills />
+        <Values />
+        <CallToAction />
+      </div>
     </div>
   );
 }
