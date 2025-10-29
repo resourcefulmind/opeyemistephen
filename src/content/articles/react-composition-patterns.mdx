@@ -1,0 +1,1096 @@
+---
+title: "React Composition Patterns: The Art of Reusable Components"
+slug: "react-composition-patterns"
+date: "2025-08-01"
+excerpt: "Learn React composition patterns used by senior engineers. Discover container-presentational patterns, render props, compound components, and custom hooks to build scalable, maintainable component architectures."
+tags: ["React", "JavaScript", "Tutorial", "Advanced"]
+featured: true
+author: "Opeyemi Stephen"
+readingTime: 15
+coverImage: "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1761675016/0003_oinnjl.png"
+canonicalUrl: "https://yourdomain.com/blog/react-composition-patterns"
+lastUpdated: "2025-08-01"
+draft: false
+status: "published"
+---
+
+# Composition in React: The Art of Reusable Components
+
+You've built your fifth modal. You copy-paste the same logic… again. The state management, the backdrop click handling, the escape key listener. It's working, but something feels off. You know there's a better way.
+
+This is where composition patterns shine. They're not only techniques, they're a mindset shift from "how do I build this component?" to "how do I build components that work together?"
+
+After building React applications, I've seen the same patterns emerge across teams, codebases, and industries. The patterns that separate good React code from great React code. Let's explore them.
+
+## Why Composition Matters
+
+React's power doesn't come from its syntax, it comes from how components compose together. When you master composition, you stop thinking in terms of individual components and start thinking in terms of systems.
+
+Composition gives you three superpowers:
+
+**Flexibility**: Mix and match behaviors without inheritance chains or prop drilling.
+
+**Reusability**: Write once, use everywhere. Not just the component, but the patterns themselves.
+
+**Testability**: Isolated, focused components are easier to test, debug, and reason about.
+
+The best part? You're probably already using some composition patterns without realizing it. Let's make them explicit.
+
+## Basic Composition Patterns
+
+### Container vs Presentational
+
+This pattern separates data fetching and state management from UI rendering. It's been around since the early days of React, and it's still one of the most powerful patterns in your toolkit.
+
+Here's the classic example, a user list:
+
+```jsx
+// Presentational Component
+function UserList({ users, loading, error }) {
+  if (loading) return <div>Loading users...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>
+          {user.name} - {user.email}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Container Component
+function UserListContainer() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchUsers()
+      .then(setUsers)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return <UserList users={users} loading={loading} error={error} />;
+}
+```
+
+The container handles all the messy stuff, like API calls, loading states, error handling. The presentational component just renders. Clean separation of concerns.
+
+**Why this works**: You can test the UI logic separately from the data logic. You can reuse the `UserList` with different data sources. You can swap out the container implementation without touching the UI.
+
+### Render Props
+
+Render props let you share logic between components by passing a function as a prop. The component calls this function with some data, and the function returns what to render.
+
+Here's a data fetcher using render props:
+
+```jsx
+function DataFetcher({ url, children }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return children({ data, loading, error });
+}
+
+// Usage
+function App() {
+  return (
+    <DataFetcher url="/api/users">
+      {({ data, loading, error }) => {
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error.message}</div>;
+        return <UserList users={data} />;
+      }}
+    </DataFetcher>
+  );
+}
+```
+
+The `DataFetcher` doesn't know or care what it's rendering. It just provides the data and loading states. The parent decides what to do with them.
+
+**The magic**: You can use the same `DataFetcher` for users, posts, comments—any API endpoint. The logic is reusable, the rendering is flexible.
+
+### Children as Function
+
+This is render props with a twist, instead of a custom prop name, you use `children`. It's more idiomatic and feels more natural.
+
+```jsx
+function Toggle({ children }) {
+  const [isOn, setIsOn] = useState(false);
+  
+  const toggle = () => setIsOn(!isOn);
+  
+  return children({ isOn, toggle });
+}
+
+// Usage
+function App() {
+  return (
+    <Toggle>
+      {({ isOn, toggle }) => (
+        <button onClick={toggle}>
+          {isOn ? 'ON' : 'OFF'}
+        </button>
+      )}
+    </Toggle>
+  );
+}
+```
+
+This pattern is everywhere in popular libraries. React Router's `Route` component uses it. Form libraries use it. It's become a React idiom.
+
+**Why it's powerful**: The `Toggle` component encapsulates the state logic. Any component can use it by wrapping its children. No prop drilling, no context needed.
+
+## Advanced Composition
+
+### Higher-Order Components (HOCs)
+
+HOCs are functions that take a component and return a new component with additional props or behavior. They're the original composition pattern in React.
+
+Here's a withLoading HOC:
+
+```jsx
+function withLoading(WrappedComponent) {
+  return function WithLoadingComponent({ isLoading, ...props }) {
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+    
+    return <WrappedComponent {...props} />;
+  };
+}
+
+// Usage
+const UserListWithLoading = withLoading(UserList);
+
+function App() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  return <UserListWithLoading users={users} isLoading={loading} />;
+}
+```
+
+HOCs were the go-to pattern before hooks. They're still useful, but custom hooks often provide a cleaner solution.
+
+**When to use HOCs**: When you need to enhance a component with behavior that doesn't fit the render props pattern. Authentication, logging, error boundaries.
+
+### Custom Hooks for Logic Reuse
+
+Custom hooks are the modern way to share logic between components. They're more flexible than HOCs and more intuitive than render props.
+
+Here's the same data fetching logic as a custom hook:
+
+```jsx
+function useDataFetcher(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Usage
+function UserList() {
+  const { data: users, loading, error } = useDataFetcher('/api/users');
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  
+  return (
+    <ul>
+      {users?.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+Custom hooks are composable. You can combine them, nest them, and build complex behaviors from simple pieces.
+
+**The advantage**: Logic is reusable, testable, and follows React's rules. No wrapper components, no prop drilling, no render prop callbacks.
+
+### Compound Components
+
+Compound components work together to form a complete UI. Think of HTML's `<select>` and `<option>` elements—they're separate components, but they work as a unit.
+
+Here's a modal system using compound components:
+
+```jsx
+const Modal = ({ children, isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const ModalHeader = ({ children }) => (
+  <div className="modal-header">{children}</div>
+);
+
+const ModalBody = ({ children }) => (
+  <div className="modal-body">{children}</div>
+);
+
+const ModalFooter = ({ children }) => (
+  <div className="modal-footer">{children}</div>
+);
+
+// Usage
+function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsModalOpen(true)}>
+        Open Modal
+      </button>
+      
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalHeader>
+          <h2>Confirm Action</h2>
+        </ModalHeader>
+        <ModalBody>
+          <p>Are you sure you want to proceed?</p>
+        </ModalBody>
+        <ModalFooter>
+          <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+          <button onClick={() => setIsModalOpen(false)}>Confirm</button>
+        </ModalFooter>
+      </Modal>
+    </>
+  );
+}
+```
+
+The components work together, but each has a single responsibility. You can mix and match them, or use them independently.
+
+**The beauty**: The API is intuitive. It reads like HTML. You can compose different combinations without changing the individual components.
+
+## Real-World Examples
+
+### Building a Modal System
+
+Let's build a complete modal system that demonstrates multiple composition patterns working together.
+
+```jsx
+// Context for modal state
+const ModalContext = createContext();
+
+function ModalProvider({ children }) {
+  const [modals, setModals] = useState({});
+
+  const openModal = (id, content) => {
+    setModals(prev => ({ ...prev, [id]: content }));
+  };
+
+  const closeModal = (id) => {
+    setModals(prev => {
+      const { [id]: removed, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  return (
+    <ModalContext.Provider value={{ modals, openModal, closeModal }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+// Custom hook for modal management
+function useModal(id) {
+  const { modals, openModal, closeModal } = useContext(ModalContext);
+  
+  return {
+    isOpen: !!modals[id],
+    open: (content) => openModal(id, content),
+    close: () => closeModal(id)
+  };
+}
+
+// Modal components
+function Modal({ id, children }) {
+  const { isOpen, close } = useModal(id);
+  
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={close}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function ModalHeader({ children, onClose }) {
+  return (
+    <div className="modal-header">
+      {children}
+      <button className="modal-close" onClick={onClose}>×</button>
+    </div>
+  );
+}
+
+// Usage
+function App() {
+  return (
+    <ModalProvider>
+      <Dashboard />
+    </ModalProvider>
+  );
+}
+
+function Dashboard() {
+  const userModal = useModal('user');
+  const settingsModal = useModal('settings');
+
+  return (
+    <div>
+      <button onClick={() => userModal.open(<UserForm />)}>
+        Edit User
+      </button>
+      <button onClick={() => settingsModal.open(<SettingsForm />)}>
+        Settings
+      </button>
+      
+      <Modal id="user">
+        <ModalHeader onClose={userModal.close}>
+          <h2>Edit User</h2>
+        </ModalHeader>
+        <div className="modal-body">
+          <UserForm />
+        </div>
+      </Modal>
+      
+      <Modal id="settings">
+        <ModalHeader onClose={settingsModal.close}>
+          <h2>Settings</h2>
+        </ModalHeader>
+        <div className="modal-body">
+          <SettingsForm />
+        </div>
+      </Modal>
+    </div>
+  );
+}
+```
+
+This system combines context, custom hooks, and compound components. Multiple modals can be open simultaneously. Each modal manages its own state through the context.
+
+### Creating a Data Table Component
+
+Data tables are perfect for demonstrating composition patterns. They need sorting, filtering, pagination, and selection, all composable behaviors.
+
+```jsx
+// Base table hook
+function useTableData(data, options = {}) {
+  const [sortConfig, setSortConfig] = useState(null);
+  const [filter, setFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(options.pageSize || 10);
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data;
+    
+    return [...data].sort((a, b) => {
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
+      
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
+
+  const filteredData = useMemo(() => {
+    if (!filter) return sortedData;
+    
+    return sortedData.filter(item =>
+      Object.values(item).some(value =>
+        String(value).toLowerCase().includes(filter.toLowerCase())
+      )
+    );
+  }, [sortedData, filter]);
+
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, currentPage, pageSize]);
+
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+
+  return {
+    data: paginatedData,
+    sortConfig,
+    setSortConfig,
+    filter,
+    setFilter,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalItems: filteredData.length
+  };
+}
+
+// Table components
+function DataTable({ data, children, ...props }) {
+  const tableData = useTableData(data);
+  
+  return (
+    <div className="data-table" {...props}>
+      {children(tableData)}
+    </div>
+  );
+}
+
+function TableHeader({ children }) {
+  return <thead><tr>{children}</tr></thead>;
+}
+
+function TableBody({ children }) {
+  return <tbody>{children}</tbody>;
+}
+
+function SortableHeader({ field, children, sortConfig, onSort }) {
+  const direction = sortConfig?.key === field ? sortConfig.direction : null;
+  
+  return (
+    <th onClick={() => onSort(field)}>
+      {children}
+      {direction && <span>{direction === 'asc' ? '↑' : '↓'}</span>}
+    </th>
+  );
+}
+
+function TableFilter({ value, onChange }) {
+  return (
+    <input
+      type="text"
+      placeholder="Filter data..."
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+}
+
+function TablePagination({ currentPage, totalPages, onPageChange }) {
+  return (
+    <div className="pagination">
+      <button 
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+      >
+        Previous
+      </button>
+      
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
+      
+      <button 
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+      >
+        Next
+      </button>
+    </div>
+  );
+}
+
+// Usage
+function UserTable({ users }) {
+  return (
+    <DataTable data={users}>
+      {({ data, sortConfig, setSortConfig, filter, setFilter, currentPage, setCurrentPage, totalPages }) => (
+        <>
+          <TableFilter value={filter} onChange={setFilter} />
+          
+          <table>
+            <TableHeader>
+              <SortableHeader 
+                field="name" 
+                sortConfig={sortConfig} 
+                onSort={setSortConfig}
+              >
+                Name
+              </SortableHeader>
+              <SortableHeader 
+                field="email" 
+                sortConfig={sortConfig} 
+                onSort={setSortConfig}
+              >
+                Email
+              </SortableHeader>
+              <th>Actions</th>
+            </TableHeader>
+            
+            <TableBody>
+              {data.map(user => (
+                <tr key={user.id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </TableBody>
+          </table>
+          
+          <TablePagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      )}
+    </DataTable>
+  );
+}
+```
+
+This table system is completely composable. You can add new features (selection, column resizing, export) without modifying existing components. Each piece has a single responsibility.
+
+### Building a Form Builder
+
+Form builders are complex, but composition makes them manageable. Here's a system that lets you build forms declaratively:
+
+```jsx
+// Form context
+const FormContext = createContext();
+
+function FormProvider({ children, initialValues = {}, onSubmit }) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const setValue = (name, value) => {
+    setValues(prev => ({ ...prev, [name]: value }));
+  };
+
+  const setError = (name, error) => {
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  const setTouchedField = (name) => {
+    setTouched(prev => ({ ...prev, [name]: true }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(values);
+  };
+
+  return (
+    <FormContext.Provider value={{
+      values,
+      errors,
+      touched,
+      setValue,
+      setError,
+      setTouchedField,
+      handleSubmit
+    }}>
+      {children}
+    </FormContext.Provider>
+  );
+}
+
+// Form components
+function Form({ children, ...props }) {
+  const { handleSubmit } = useContext(FormContext);
+  
+  return (
+    <form onSubmit={handleSubmit} {...props}>
+      {children}
+    </form>
+  );
+}
+
+function Field({ name, children }) {
+  const { values, errors, touched, setValue, setTouchedField } = useContext(FormContext);
+  
+  const value = values[name] || '';
+  const error = errors[name];
+  const isTouched = touched[name];
+
+  return (
+    <div className="field">
+      {children({ 
+        value, 
+        error: isTouched ? error : null, 
+        onChange: (value) => setValue(name, value),
+        onBlur: () => setTouchedField(name)
+      })}
+    </div>
+  );
+}
+
+function Input({ name, type = 'text', placeholder, ...props }) {
+  return (
+    <Field name={name}>
+      {({ value, error, onChange, onBlur }) => (
+        <>
+          <input
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
+            {...props}
+          />
+          {error && <div className="error">{error}</div>}
+        </>
+      )}
+    </Field>
+  );
+}
+
+function Select({ name, options, placeholder, ...props }) {
+  return (
+    <Field name={name}>
+      {({ value, error, onChange, onBlur }) => (
+        <>
+          <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
+            {...props}
+          >
+            <option value="">{placeholder}</option>
+            {options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {error && <div className="error">{error}</div>}
+        </>
+      )}
+    </Field>
+  );
+}
+
+function SubmitButton({ children, ...props }) {
+  return (
+    <button type="submit" {...props}>
+      {children}
+    </button>
+  );
+}
+
+// Usage
+function UserForm() {
+  const handleSubmit = (values) => {
+    console.log('Form submitted:', values);
+  };
+
+  return (
+    <FormProvider onSubmit={handleSubmit}>
+      <Form>
+        <Input 
+          name="firstName" 
+          placeholder="First Name" 
+        />
+        <Input 
+          name="lastName" 
+          placeholder="Last Name" 
+        />
+        <Input 
+          name="email" 
+          type="email" 
+          placeholder="Email" 
+        />
+        <Select 
+          name="role" 
+          placeholder="Select Role"
+          options={[
+            { value: 'admin', label: 'Administrator' },
+            { value: 'user', label: 'User' },
+            { value: 'guest', label: 'Guest' }
+          ]}
+        />
+        <SubmitButton>Create User</SubmitButton>
+      </Form>
+    </FormProvider>
+  );
+}
+```
+
+This form system is completely composable. You can add new field types, validation rules, or styling without touching existing code. The form logic is separated from the UI components.
+
+### Creating a Dashboard Layout System
+
+Dashboard layouts are perfect for compound components. Here's a flexible system:
+
+```jsx
+// Layout context
+const LayoutContext = createContext();
+
+function LayoutProvider({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <LayoutContext.Provider value={{
+      sidebarOpen,
+      setSidebarOpen,
+      theme,
+      setTheme
+    }}>
+      {children}
+    </LayoutContext.Provider>
+  );
+}
+
+// Layout components
+function Dashboard({ children }) {
+  return (
+    <LayoutProvider>
+      <div className="dashboard">
+        {children}
+      </div>
+    </LayoutProvider>
+  );
+}
+
+function Sidebar({ children }) {
+  const { sidebarOpen } = useContext(LayoutContext);
+  
+  return (
+    <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+      {children}
+    </aside>
+  );
+}
+
+function Main({ children }) {
+  const { sidebarOpen } = useContext(LayoutContext);
+  
+  return (
+    <main className={`main ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      {children}
+    </main>
+  );
+}
+
+function Header({ children }) {
+  return (
+    <header className="header">
+      {children}
+    </header>
+  );
+}
+
+function Content({ children }) {
+  return (
+    <div className="content">
+      {children}
+    </div>
+  );
+}
+
+function SidebarToggle() {
+  const { sidebarOpen, setSidebarOpen } = useContext(LayoutContext);
+  
+  return (
+    <button onClick={() => setSidebarOpen(!sidebarOpen)}>
+      {sidebarOpen ? '←' : '→'}
+    </button>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(LayoutContext);
+  
+  return (
+    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+      {theme === 'light' ? '🌙' : '☀️'}
+    </button>
+  );
+}
+
+// Usage
+function App() {
+  return (
+    <Dashboard>
+      <Sidebar>
+        <nav>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#users">Users</a>
+          <a href="#settings">Settings</a>
+        </nav>
+      </Sidebar>
+      
+      <Main>
+        <Header>
+          <SidebarToggle />
+          <h1>My Dashboard</h1>
+          <ThemeToggle />
+        </Header>
+        
+        <Content>
+          <h2>Welcome to your dashboard</h2>
+          <p>This is the main content area.</p>
+        </Content>
+      </Main>
+    </Dashboard>
+  );
+}
+```
+
+This layout system is completely flexible. You can rearrange components, add new ones, or change the behavior without modifying existing code.
+
+## Performance & Best Practices
+
+### Memoization Strategies
+
+Composition patterns can lead to unnecessary re-renders if not handled carefully. Here's how to optimize:
+
+```jsx
+// Memoize expensive components
+const ExpensiveComponent = memo(({ data, onUpdate }) => {
+  const processedData = useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      processed: expensiveCalculation(item)
+    }));
+  }, [data]);
+
+  return (
+    <div>
+      {processedData.map(item => (
+        <div key={item.id}>{item.processed}</div>
+      ))}
+    </div>
+  );
+});
+
+// Memoize callbacks
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+  
+  const handleUpdate = useCallback((newData) => {
+    // Handle update
+  }, []);
+  
+  return (
+    <ExpensiveComponent 
+      data={data} 
+      onUpdate={handleUpdate} 
+    />
+  );
+}
+```
+
+### Context Optimization
+
+Context can cause performance issues if not structured properly:
+
+```jsx
+// Split contexts by update frequency
+const UserContext = createContext();
+const ThemeContext = createContext();
+
+// Use multiple providers
+function App() {
+  return (
+    <UserProvider>
+      <ThemeProvider>
+        <Dashboard />
+      </ThemeProvider>
+    </UserProvider>
+  );
+}
+
+// Or use a single context with multiple values
+const AppContext = createContext();
+
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('light');
+  
+  const value = useMemo(() => ({
+    user: { user, setUser },
+    theme: { theme, setTheme }
+  }), [user, theme]);
+  
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+```
+
+### Code Splitting with Composition
+
+Composition patterns work great with code splitting:
+
+```jsx
+// Lazy load components
+const LazyModal = lazy(() => import('./Modal'));
+const LazyTable = lazy(() => import('./DataTable'));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyModal />
+      <LazyTable />
+    </Suspense>
+  );
+}
+```
+
+## Common Anti-Patterns to Avoid
+
+### Prop Drilling
+
+Don't pass props through multiple levels just to reach a deeply nested component:
+
+```jsx
+// Bad: Prop drilling
+function App() {
+  const [user, setUser] = useState(null);
+  
+  return (
+    <Header user={user} setUser={setUser}>
+      <Navigation user={user} setUser={setUser}>
+        <UserProfile user={user} setUser={setUser} />
+      </Navigation>
+    </Header>
+  );
+}
+
+// Good: Use context or composition
+function App() {
+  return (
+    <UserProvider>
+      <Header>
+        <Navigation>
+          <UserProfile />
+        </Navigation>
+      </Header>
+    </UserProvider>
+  );
+}
+```
+
+### Over-Abstraction
+
+Don't create abstractions until you need them:
+
+```jsx
+// Bad: Premature abstraction
+function GenericDataComponent({ 
+  data, 
+  renderItem, 
+  renderHeader, 
+  renderFooter,
+  onSort,
+  onFilter,
+  onPaginate
+}) {
+  // Complex generic logic
+}
+
+// Good: Start specific, abstract when needed
+function UserList({ users }) {
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Mixing Concerns
+
+Keep data fetching, UI logic, and business logic separate:
+
+```jsx
+// Bad: Mixed concerns
+function UserCard({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetchUser(userId).then(setUser).finally(() => setLoading(false));
+  }, [userId]);
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+      <button onClick={() => deleteUser(userId)}>Delete</button>
+    </div>
+  );
+}
+
+// Good: Separated concerns
+function UserCard({ user, onDelete }) {
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+      <button onClick={() => onDelete(user.id)}>Delete</button>
+    </div>
+  );
+}
+
+function UserCardContainer({ userId }) {
+  const { user, loading, deleteUser } = useUser(userId);
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return <UserCard user={user} onDelete={deleteUser} />;
+}
+```
+
+## Conclusion
+
+Composition is a philosophy, not just a technique. It's about building systems that are greater than the sum of their parts.
+
+When you master composition, you stop thinking in terms of individual components and start thinking in terms of relationships. How do these pieces work together? How can I make this more flexible? How can I make this more reusable?
+
+The patterns we've explored; container-presentational, render props, custom hooks, compound components, they're not just tools. They're ways of thinking about React applications that scale.
+
+The best part? You don't need to master them all at once. Start with one pattern. Use it until it becomes second nature. Then add another. Build your toolkit gradually.
+
+Before you know it, you'll be building components that feel like they were meant to work together. Components that are flexible, reusable, and maintainable. Components that make your codebase a joy to work with.
+
+That's the art of composition. And it's a craft worth mastering.

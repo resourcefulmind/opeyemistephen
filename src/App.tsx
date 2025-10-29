@@ -1,11 +1,13 @@
 import React, { useEffect, useTransition } from 'react';
 import { Hero } from './components/Hero';
 import { ThemeToggle } from './components/ThemeToggle';
+import BlogMobileNavButton from './components/Blog/BlogMobileNavButton';
+import ConditionalHeader from './components/ConditionalHeader';
+import { MobileNavProvider } from './contexts/MobileNavContext';
 import { 
   BrowserRouter as Router, 
   Route, 
   Routes, 
-  useLocation,
   useNavigationType
 } from 'react-router-dom';
 import BlogList from './components/Blog/BlogList';
@@ -64,7 +66,7 @@ const BlogErrorFallback = () => (
 
 // Route change handler for React Router v7 compatibility
 const RouteChangeHandler = () => {
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const navigationType = useNavigationType();
   
   // Apply startTransition for navigation changes
@@ -120,6 +122,20 @@ const AppRoutes = () => {
           </PageLayout>
         </ErrorBoundary>
       } />
+      
+      {/* Community page */}
+      <Route path='/community' element={
+        <ErrorBoundary>
+          <PageLayout>
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold mb-4">Community</h1>
+                <p className="text-lg text-muted-foreground">Coming soon...</p>
+              </div>
+            </div>
+          </PageLayout>
+        </ErrorBoundary>
+      } />
     </Routes>
   );
 };
@@ -138,15 +154,20 @@ function App() {
   // Wrap everything in a global error boundary
   return (
     <ErrorBoundary>
-      <Router>
-        {/* Fixed navbar on top */}
-        <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-6 z-50">
-          <Navbar />
-          <ThemeToggle />
-        </div>
-        
-        <AppRoutes />
-      </Router>
+      <MobileNavProvider>
+        <Router>
+          {/* Fixed navbar on top */}
+          <ConditionalHeader>
+            <Navbar />
+            <div className="flex items-center gap-3">
+              <BlogMobileNavButton />
+              <ThemeToggle />
+            </div>
+          </ConditionalHeader>
+          
+          <AppRoutes />
+        </Router>
+      </MobileNavProvider>
     </ErrorBoundary>
   );
 }

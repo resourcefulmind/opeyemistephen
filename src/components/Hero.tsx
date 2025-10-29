@@ -4,6 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/utils';
 import MeteorShower from './MeteroShower';
 
+// Custom X (formerly Twitter) icon component
+const XIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
+
 // Animation constants
 const ANIMATION_DELAYS = {
   GLOW: 1500,
@@ -56,8 +68,10 @@ export function TwinklingBackground() {
       return comet;
     };
 
-    // Create initial stars
-    const starCount = Math.floor((window.innerWidth * window.innerHeight) / 3000);
+    // Create initial stars with performance optimization
+    const baseStarCount = Math.floor((window.innerWidth * window.innerHeight) / 3000);
+    const maxStars = window.innerWidth < 768 ? 50 : window.innerWidth < 1024 ? 100 : 200;
+    const starCount = Math.min(baseStarCount, maxStars);
     const stars = Array.from({ length: starCount }, createStar);
     stars.forEach(star => container.appendChild(star));
 
@@ -179,7 +193,7 @@ export function ShootingStars() {
 function FallingLetter({ letter, delay, onComplete }: { letter: string; delay: number; onComplete?: () => void }) {
   return (
     <motion.span
-      className="inline-block"
+      className="inline-block relative"
       initial={{ y: 0, rotateX: 0, opacity: 1 }}
       animate={{ 
         y: 100,
@@ -191,6 +205,10 @@ function FallingLetter({ letter, delay, onComplete }: { letter: string; delay: n
         ...EASE_ANIMATION
       }}
       onAnimationComplete={onComplete}
+      style={{ 
+        position: 'relative',
+        zIndex: 1
+      }}
     >
       {letter}
     </motion.span>
@@ -298,9 +316,10 @@ export function Hero() {
   };
 
   const SOCIAL_LINKS = [
-    { Icon: Github, href: "https://github.com", label: "GitHub" },
-    { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-    { Icon: Mail, href: "mailto:contact@example.com", label: "Email" }
+    { Icon: Github, href: "https://github.com/resourcefulmind", label: "GitHub" },
+    { Icon: Linkedin, href: "https://www.linkedin.com/in/opeyemistephen/", label: "LinkedIn" },
+    { Icon: XIcon, href: "https://x.com/devvgbg", label: "X" },
+    { Icon: Mail, href: "mailto:omodaraopeyemi754@gmail.com", label: "Email" }
   ] as const;
 
   const SKILLS = ['React', 'TypeScript', 'Node.js', 'Web3', 'Technical Writing'] as const;
@@ -325,9 +344,18 @@ export function Hero() {
       >
         <motion.h1 
           className={cn(
-            "text-[3rem] sm:text-[4.75rem] md:text-[5.75rem] lg:text-[6.75rem] font-display mb-8 sm:mb-10 flex justify-center items-center gap-3 sm:gap-5 text-primary leading-none",
-            nameAnimation && "metallic-text", 
-            "text-primary"
+            // Mobile: Single line, smaller text to fit
+            "text-[2rem] flex flex-row items-center justify-center gap-2 text-primary leading-tight",
+            // Small mobile: Slightly larger but still single line
+            "sm:text-[2.5rem] sm:gap-3",
+            // Tablet: Medium size
+            "md:text-[3.5rem] md:gap-4",
+            // Desktop: Large size
+            "lg:text-[4.5rem] lg:gap-5",
+            // Large desktop: Extra large
+            "xl:text-[5.5rem] xl:gap-6",
+            "font-display mb-6 sm:mb-8 md:mb-10 lg:mb-12",
+            nameAnimation && "metallic-text"
           )}
           data-text="Opeyemi Bangkok"
           initial={{ scale: 0.9, opacity: 0 }}
@@ -358,11 +386,15 @@ export function Hero() {
             ) : lettersFalling ? (
               <motion.div 
                 key="bangkok-falling"
-                className="relative inline-block" 
-                style={{ minWidth: '520px', minHeight: '150px' }}
+                className="relative flex justify-center items-center" 
+                style={{ 
+                  minWidth: 'clamp(200px, 50vw, 520px)', 
+                  minHeight: 'clamp(80px, 12vw, 150px)',
+                  width: 'clamp(200px, 50vw, 520px)'
+                }}
               >
                 <motion.div
-                  className="metallic-text absolute top-0 left-0"
+                  className="metallic-text relative flex justify-center items-center"
                   data-text="Bangkok"
                 >
                   {['B', 'a', 'n', 'g', 'k', 'o', 'k'].map((letter, index) => (
@@ -395,16 +427,38 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="typewriter text-lg sm:text-xl md:text-2xl lg:text-3xl text-primary/90 mb-12 sm:mb-16 tracking-normal font-display font-medium"
+          className={cn(
+            "typewriter text-primary/90 tracking-normal font-display font-medium",
+            // Mobile: Smaller text, allow wrapping, more padding
+            "text-sm px-4 mb-8 leading-relaxed",
+            // Small mobile: Slightly larger, still allow wrapping
+            "sm:text-base sm:px-2 sm:mb-10 sm:leading-normal",
+            // Tablet: Medium size, single line
+            "md:text-lg md:px-0 md:mb-12 md:whitespace-nowrap",
+            // Desktop: Large size, single line
+            "lg:text-xl lg:mb-14 lg:whitespace-nowrap",
+            // Large desktop: Extra large, single line
+            "xl:text-2xl xl:mb-16 xl:whitespace-nowrap"
+          )}
         >
-          Software Engineer, Technical Writer & Ecosystem Buildoor
+          SDE, Technical Writer & Ecosystem Buildoor
         </motion.p>
 
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="flex justify-center gap-4 sm:gap-8 mb-12 sm:mb-16"
+          className={cn(
+            "flex justify-center mb-8 sm:mb-12 md:mb-14 lg:mb-16",
+            // Mobile: Smaller gaps, more compact
+            "gap-3 px-4",
+            // Small mobile: Slightly larger gaps
+            "sm:gap-4 sm:px-2",
+            // Tablet: Medium gaps
+            "md:gap-6 md:px-0",
+            // Desktop: Large gaps
+            "lg:gap-8"
+          )}
         >
           {SOCIAL_LINKS.map(({ Icon, href, label }) => (
             <motion.a
@@ -413,16 +467,41 @@ export function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                "p-3 sm:p-4 rounded-full transition-all duration-300",
+                "rounded-full transition-all duration-300",
                 "bg-secondary/20 hover:bg-secondary/40",
-                "group relative",
-                "backdrop-blur-sm"
+                "group relative backdrop-blur-sm",
+                // Mobile: Smaller touch targets
+                "p-2.5 min-h-[40px] min-w-[40px]",
+                // Small mobile: Slightly larger
+                "sm:p-3 sm:min-h-[44px] sm:min-w-[44px]",
+                // Tablet: Medium size
+                "md:p-4",
+                // Desktop: Large size
+                "lg:p-5"
               )}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-primary group-hover:scale-110 transition-transform" />
-              <span className="absolute -bottom-6 sm:-bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs sm:text-sm text-primary whitespace-nowrap">
+              <Icon className={cn(
+                "text-primary group-hover:scale-110 transition-transform",
+                // Mobile: Smaller icons
+                "w-4 h-4",
+                // Small mobile: Slightly larger
+                "sm:w-5 sm:h-5",
+                // Tablet: Medium size
+                "md:w-6 md:h-6",
+                // Desktop: Large size
+                "lg:w-7 lg:h-7"
+              )} />
+              <span className={cn(
+                "absolute left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-primary whitespace-nowrap",
+                // Mobile: Closer to icon
+                "-bottom-5 text-xs",
+                // Small mobile: Slightly further
+                "sm:-bottom-6 sm:text-sm",
+                // Tablet: Further away
+                "md:-bottom-8"
+              )}>
                 {label}
               </span>
             </motion.a>
@@ -433,7 +512,17 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-4"
+          className={cn(
+            "flex flex-wrap justify-center",
+            // Mobile: Smaller gaps, more padding
+            "gap-1.5 px-4",
+            // Small mobile: Slightly larger gaps
+            "sm:gap-2 sm:px-2",
+            // Tablet: Medium gaps
+            "md:gap-3 md:px-0",
+            // Desktop: Large gaps
+            "lg:gap-4"
+          )}
         >
           {SKILLS.map((skill, index) => (
             <motion.span
@@ -442,12 +531,15 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 + index * 0.1 }}
               className={cn(
-                "px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-lg",
-                "bg-secondary/20 text-primary",
-                "backdrop-blur-sm",
-                "border border-primary/10",
-                "transition-all duration-300 hover:scale-105",
-                "shine-effect hover:glow-effect"
+                "rounded-full bg-secondary/20 text-primary backdrop-blur-sm border border-primary/10 transition-all duration-300 hover:scale-105 shine-effect hover:glow-effect",
+                // Mobile: Smaller text and padding
+                "px-2.5 py-1.5 text-xs",
+                // Small mobile: Slightly larger
+                "sm:px-3 sm:py-2 sm:text-sm",
+                // Tablet: Medium size
+                "md:px-4 md:py-2.5 md:text-base",
+                // Desktop: Large size
+                "lg:px-6 lg:py-3 lg:text-lg"
               )}
               whileHover={{
                 textShadow: "0 0 15px hsla(var(--primary), 0.8), 0 0 30px hsla(var(--primary), 0.4)"

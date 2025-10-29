@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BlogPostPreview } from "../../lib/blog/types";
-import { getAllPosts } from "../../lib/blog/loader";
+import { getAllPosts, getTagStats, getPopularPosts } from "../../lib/blog/loader";
+import Sidebar from "./SideBar";
+import MobileNavOverlay from "./MobileNavOverlay";
+import { useMobileNav } from "../../contexts/MobileNavContext";
 import { Helmet } from "react-helmet";
 import logger from '../../lib/utils/logger';
 
@@ -79,22 +82,16 @@ const BlogPostSkeleton = ({ delay = 0 }: { delay?: number }) => (
   </div>
 );
 
-// Fallback image URL for broken images
-const FALLBACK_IMAGE = "https://placehold.co/600x400/1e293b/ffffff?text=Image+Not+Found";
-
 export default function BlogList() {
     const [posts, setPosts] = useState<BlogPostPreview[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showAllPosts, setShowAllPosts] = useState(true);
+    const { isMobileNavOpen, setIsMobileNavOpen } = useMobileNav();
     const location = useLocation();
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
     const activeTag = searchParams.get('tag')?.toLowerCase() || null;
-    // Image error handler
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-        e.currentTarget.src = FALLBACK_IMAGE;
-    };
     
     // Only in development: toggle between all posts and production posts
     const isProduction = import.meta.env.PROD;
@@ -108,6 +105,11 @@ export default function BlogList() {
             .includes(activeTag)
         )
     : basePosts;
+
+    // Sidebar data (from basePosts, not filtered)
+    const tagStats = getTagStats(basePosts);
+    const popularPosts = getPopularPosts(basePosts, 6);
+    const recentPosts = basePosts.slice(0, 6); // Most recent posts
     
     useEffect(() => {
         async function loadPosts() {
@@ -138,11 +140,11 @@ export default function BlogList() {
             </Helmet>
             
             <div className="max-w-6xl mx-auto">
-                <header className="mb-8 text-center">
+                <header className="mb-12 text-center pt-8">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        <span className="heading-gradient">My Blog</span>
+                        <span className="heading-gradient">Articles and Tutorials</span>
                     </h1>
-                    <p className="text-foreground/80 text-lg max-w-2xl mx-auto">
+                    <p className="text-foreground/80 text-lg max-w-2xl mx-auto mb-8">
                         Thoughts, ideas, and insights on web development, technology, and design.
                     </p>
                     
@@ -158,90 +160,112 @@ export default function BlogList() {
                     )}
                 </header>
                 
-                {loading ? (
-                    <div className="grid gap-8 md:grid-cols-2" aria-label="Loading blog posts">
-                        <BlogPostSkeleton delay={0} />
-                        <BlogPostSkeleton delay={150} />
-                        <BlogPostSkeleton delay={300} />
-                    </div>
-                ) : error ? (
-                    <div className="blog-post-card p-8 text-center text-destructive">
-                        <h2 className="text-xl mb-2">Error loading posts</h2>
-                        <p>{error}</p>
-                    </div>
-                ) : (
-                    <ul className="grid gap-8 md:grid-cols-2">
-                        {visiblePosts.map((post) => (
-                            <li key={post.slug} className="blog-post-card relative">
-                                {/* Development-only badge */}
-                                {post.frontmatter.isDevelopmentOnly && (
-                                    <div className="absolute top-2 right-2 px-2 py-1 text-xs font-semibold bg-amber-600 text-white rounded-md">
-                                        Development Only
-                                    </div>
-                                )}
-                                
-                                <div className="md:flex md:items-start h-full">
-                                    {post.frontmatter.coverImage && (
-                                        <div className="blog-cover-image md:w-1/3 md:mr-6 mb-4 md:mb-0">
-                                            <img 
-                                                src={post.frontmatter.coverImage}
-                                                alt={post.frontmatter.title}
-                                                className="w-full h-full object-cover rounded-lg"
-                                                onError={handleImageError}
-                                                loading="lazy"
-                                                data-transition-id={`cover-image-${post.slug}`}
-                                            />
-                                        </div>
-                                    )}
-                                    
-                                    <div className={post.frontmatter.coverImage ? "md:w-2/3" : "w-full"}>
-                                        <Link to={`/blog/${post.slug}`} className="text-xl md:text-2xl font-bold text-primary hover:underline block mb-2">
-                                            {post.frontmatter.title}
-                                        </Link>
-                                        
-                                        <div className="flex flex-wrap items-center text-sm text-foreground/60 mb-3">
-                                            <time dateTime={post.frontmatter.date} className="mr-3">
-                                                {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
-                                            </time>
-                                            
-                                            {post.frontmatter.readingTime && (
-                                                <span className="flex items-center">
-                                                    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
-                                                    {post.frontmatter.readingTime} min read
-                                                </span>
-                                            )}
-                                        </div>
-                                        
-                                        <p className="text-foreground/80 mb-4 line-clamp-3">{post.frontmatter.excerpt}</p>
-                                        
-                                        <div className="flex flex-wrap gap-2 mt-3">
-                                            {post.frontmatter.tags.map((tag) => (
-                                                <span
-                                                    key={tag}
-                                                    className="blog-tag"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-8 xl:gap-10">
+  <div>
+    {loading ? (
+      <div className="grid gap-8 md:grid-cols-2 mb-8" aria-label="Loading blog posts">
+        <BlogPostSkeleton delay={0} />
+        <BlogPostSkeleton delay={150} />
+        <BlogPostSkeleton delay={300} />
+      </div>
+    ) : error ? (
+      <div className="blog-post-card p-8 text-center text-destructive mb-8">
+        <h2 className="text-xl mb-2">Error loading posts</h2>
+        <p>{error}</p>
+      </div>
+    ) : (
+      <ul className="grid gap-8 max-w-3xl mx-auto mb-8">
+        {visiblePosts.map((post) => (
+          <li key={post.slug} className="blog-post-card relative p-6">
+            {post.frontmatter.isDevelopmentOnly && (
+              <div className="absolute top-2 right-2 px-2 py-1 text-xs font-semibold bg-amber-600 text-white rounded-md">
+                Development Only
+              </div>
+            )}
+
+
+            <div className="flex flex-col h-full">
+              <Link to={`/blog/${post.slug}`} className="text-xl md:text-2xl font-bold text-primary hover:underline block mb-2">
+                {post.frontmatter.title}
+              </Link>
+
+              <div className="flex flex-wrap items-center text-sm text-foreground/60 mb-3">
+                <time dateTime={post.frontmatter.date} className="mr-3">
+                  {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </time>
+
+                {post.frontmatter.readingTime && (
+                  <span className="flex items-center">
+                    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
+                    {post.frontmatter.readingTime} min read
+                  </span>
                 )}
-                
-                {!loading && visiblePosts.length === 0 && (
-                    <div className="blog-post-card p-8 text-center">
-                        <h2 className="text-xl mb-2">No posts found</h2>
-                        <p>There are no blog posts available at this time.</p>
-                    </div>
-                )}
+              </div>
+
+              <p className="text-foreground/80 mb-4 flex-grow" style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                lineHeight: '1.6'
+              }}>{post.frontmatter.excerpt}</p>
+              
+              <Link to={`/blog/${post.slug}`} className="text-primary hover:underline text-sm font-medium">
+                Read more
+              </Link>
+
             </div>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {!loading && visiblePosts.length === 0 && (
+      <div className="blog-post-card p-8 text-center mb-8">
+        <h2 className="text-xl mb-2">No posts found</h2>
+        <p>There are no blog posts available for this category.</p>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          {activeTag && (
+            <button onClick={() => navigate('/blog')} className="btn btn-primary">
+              Clear filter
+            </button>
+          )}
+          <Link to="/" className="btn btn-ghost">
+            Go home
+          </Link>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <div className="hidden lg:block mt-10 lg:mt-0">
+    <Sidebar
+      tagStats={tagStats}
+      popularPosts={popularPosts}
+      recentPosts={recentPosts}
+      activeTag={activeTag}
+      onSelectTag={(tag) => navigate(`/blog?tag=${encodeURIComponent(tag)}`)}
+      onClear={() => navigate('/blog')}
+    />
+  </div>
+</div>
+            </div>
+            
+            {/* Mobile Navigation Overlay */}
+            <MobileNavOverlay
+                isOpen={isMobileNavOpen}
+                onClose={() => setIsMobileNavOpen(false)}
+                tagStats={tagStats}
+                popularPosts={popularPosts}
+                recentPosts={recentPosts}
+                activeTag={activeTag}
+                onSelectTag={(tag) => navigate(`/blog?tag=${encodeURIComponent(tag)}`)}
+                onClear={() => navigate('/blog')}
+            />
         </div>
     );
 }
