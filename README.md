@@ -45,52 +45,57 @@ npm run dev
 
 Want to adjust the animations? Check `src/components/Hero.tsx`:
 
-## 🔧 Project Layout
+## 🔧 Project Structure
 
 ```
 portfolio-blog/
 ├── src/
 │   ├── components/        # React components
-│   │   ├── Hero.tsx      # Main animated hero section
-│   │   ├── ThemeToggle.tsx   # Theme switcher
-│   │   └── MeteorShower.tsx   # Meteor shower effect
-│   ├── lib/              # Utility functions
+│   │   ├── Blog/         # Blog system components
+│   │   ├── SEO/          # SEO optimization
+│   │   └── ...           # UI components
+│   ├── content/          # Content management
+│   │   └── articles/     # MDX blog posts (28 articles)
+│   ├── lib/              # Core functionality
+│   │   ├── blog/         # Blog system logic
 │   │   ├── hooks/        # Custom React hooks
-│   │   │   └── useTheme.ts  # Your custom theme hook
-│   │   └── utils.ts      # Helper functions
-│   ├── styles/           # Global styles
-│   │   ├── index.css     # Main global styles
-│   │   ├── variables.css  # CSS variables
-│   │   ├── animations.css  # Keyframe animations
-│   │   ├── components.css  # Component-specific styles
-│   │   └── themes.css      # Theme-specific styles
-│   ├── content/          # MDX content for blog posts 
-│   │   └── articles/     # Individual MDX files for articles 
-│   └── pages/            # Pages for routing 
-│       ├── Blog.tsx      # Blog listing page 
-│       ├── Post.tsx      # Blog post page 
-│       ├── About.tsx     # About Me page 
-│       └── Community.tsx  # Community page 
+│   │   └── utils/        # Utility functions
+│   ├── styles/           # Styling system
+│   ├── contexts/         # React contexts
+│   └── pages/            # Page components
 ├── public/               # Static assets
-└── package.json                 
+└── configuration files
 ```
 
 ## 📦 Core Dependencies
 
-- react & react-dom
-- framer-motion
-- tailwindcss
-- lucide-react
-- clsx & tailwind-merge
+- **React & TypeScript** - UI framework with type safety
+- **Vite** - Build tool and dev server
+- **Framer Motion** - Animation library
+- **Tailwind CSS** - Utility-first CSS framework
+- **MDX** - Markdown + JSX for content
+- **React Router** - Client-side routing
+- **Lucide React** - Icon library
+- **React Helmet** - SEO meta tag management
+- **Highlight.js** - Syntax highlighting
+- **clsx & tailwind-merge** - Conditional styling utilities
+
+## ✨ Current Features
+
+- **Complete Blog System** - MDX support with 28 high-quality articles
+- **Responsive Design** - Mobile-first approach with hamburger navigation
+- **SEO Optimized** - Meta tags, structured data, and social sharing
+- **Dark/Light Theme** - Smooth transitions with system preference detection
+- **Performance Optimized** - Lazy loading, code splitting, and smooth animations
+- **Content Management** - Easy-to-update configuration files
+- **PWA Ready** - Web manifest and favicon support
 
 ## 🔮 Future Updates
 
-I'm constantly improving this portfolio. Here's what's coming:
-
-- Blog section with MDX support
 - Interactive project showcases
-- Advanced animation sequences
-- Performance optimizations
+- Newsletter subscription
+- Comment system integration
+- Advanced search functionality
 - More theme variations
 
 ## 👤 About Me
