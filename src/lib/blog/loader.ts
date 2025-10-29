@@ -31,21 +31,24 @@ export async function getAllPosts(forceProduction = false): Promise<BlogPostPrev
 
     // Import all .mdx files from the articles directory using Vite's import.meta.glob
     const postFiles = import.meta.glob('../../content/articles/*.mdx', {
-        eager: true,
+        eager: false, // Lazy load to reduce initial bundle size
     });
 
     logger.info("Found post files:", Object.keys(postFiles));
 
     const posts: BlogPostPreview[] = [];
 
-    // Process each post file
-    Object.entries(postFiles).forEach(([filepath, module]: [string, any]) => {
+    // Process each post file asynchronously
+    const postPromises = Object.entries(postFiles).map(async ([filepath, moduleLoader]: [string, any]) => {
         // Extract slug from filename
         const slug = filepath
             .replace('../../content/articles/', '')
             .replace('.mdx', '');
         
         try {
+            // Load the module asynchronously
+            const module = await moduleLoader();
+            
             // Get raw frontmatter from the MDX module
             const rawFrontmatter: RawFrontmatter = module.frontmatter || {};
             
@@ -57,13 +60,12 @@ export async function getAllPosts(forceProduction = false): Promise<BlogPostPrev
             // Validate frontmatter against schema
             const validatedFrontmatter = validateFrontmatter(rawFrontmatter);
             
-            // Create and add blog post preview to the list
-            posts.push({
+            // Return blog post preview
+            return {
                 frontmatter: validatedFrontmatter,
                 slug,
-            });
+            };
             
-            logger.debug(`Processed post: ${slug}`);
         } catch (error) {
             // Handle validation errors separately for better error messages
             if (error instanceof FrontmatterValidationError) {
@@ -72,11 +74,18 @@ export async function getAllPosts(forceProduction = false): Promise<BlogPostPrev
                 logger.error(`Error processing post ${slug}:`, error);
             }
             // Skip invalid posts to prevent breaking the entire blog
+            return null;
         }
     });
 
+    // Wait for all posts to be processed
+    const postResults = await Promise.all(postPromises);
+    
+    // Filter out null results (failed posts)
+    const validPosts = postResults.filter((post): post is BlogPostPreview => post !== null);
+
     // Sort posts by date in descending order (newest first)
-    const sortedPosts = posts.sort((a, b) => {
+    const sortedPosts = validPosts.sort((a, b) => {
         return new Date(b.frontmatter.date).getTime() - 
         new Date(a.frontmatter.date).getTime();
     });
