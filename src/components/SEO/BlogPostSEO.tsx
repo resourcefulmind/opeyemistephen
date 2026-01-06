@@ -6,15 +6,20 @@ interface BlogPostSEOProps {
   siteUrl?: string;
 }
 
-export default function BlogPostSEO({ post, siteUrl = 'https://opeyemistephen.com' }: BlogPostSEOProps) {
+export default function BlogPostSEO({ post, siteUrl = 'https://www.opeyemibangkok.com' }: BlogPostSEOProps) {
   const {
     frontmatter: { title, excerpt, date, tags, coverImage, author, readingTime },
     slug: postSlug
   } = post;
 
   const postUrl = `${siteUrl}/blog/${postSlug}`;
-  const imageUrl = coverImage ? `${siteUrl}${coverImage}` : `${siteUrl}/images/blog/default-cover.jpg`;
-  const authorName = typeof author === 'string' ? author : author?.name || 'Stephen Opeyemi';
+  // Handle both absolute URLs (Cloudinary) and relative paths
+  const imageUrl = coverImage 
+    ? (coverImage.startsWith('http://') || coverImage.startsWith('https://') 
+        ? coverImage 
+        : `${siteUrl}${coverImage}`)
+    : `${siteUrl}/preview.png`;
+  const authorName = typeof author === 'string' ? author : author?.name || 'Opeyemi Stephen';
   const publishedDate = new Date(date).toISOString();
   const modifiedDate = new Date().toISOString(); // You can add lastUpdated to frontmatter
 
@@ -32,10 +37,10 @@ export default function BlogPostSEO({ post, siteUrl = 'https://opeyemistephen.co
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Stephen Opeyemi",
+      "name": "Opeyemi Stephen",
       "logo": {
         "@type": "ImageObject",
-        "url": `${siteUrl}/logo.png`
+        "url": `${siteUrl}/preview.png`
       }
     },
     "datePublished": publishedDate,
@@ -53,7 +58,7 @@ export default function BlogPostSEO({ post, siteUrl = 'https://opeyemistephen.co
   return (
     <Helmet>
       {/* Basic Meta Tags */}
-      <title>{title} | Stephen Opeyemi's Blog</title>
+      <title>{title} | Opeyemi Stephen</title>
       <meta name="description" content={excerpt} />
       <meta name="keywords" content={tags?.join(', ') || ''} />
       <meta name="author" content={authorName} />
@@ -63,8 +68,12 @@ export default function BlogPostSEO({ post, siteUrl = 'https://opeyemistephen.co
       <meta property="og:title" content={title} />
       <meta property="og:description" content={excerpt} />
       <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={postUrl} />
-      <meta property="og:site_name" content="Stephen Opeyemi's Blog" />
+      <meta property="og:site_name" content="Opeyemi Stephen" />
+      <meta property="og:locale" content="en_US" />
       <meta property="article:published_time" content={publishedDate} />
       <meta property="article:modified_time" content={modifiedDate} />
       <meta property="article:author" content={authorName} />
@@ -77,7 +86,9 @@ export default function BlogPostSEO({ post, siteUrl = 'https://opeyemistephen.co
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={excerpt} />
       <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:image:alt" content={title} />
       <meta name="twitter:creator" content="@devvgbg" />
+      <meta name="twitter:site" content="@devvgbg" />
       
       {/* Additional SEO Tags */}
       <meta name="robots" content="index, follow" />

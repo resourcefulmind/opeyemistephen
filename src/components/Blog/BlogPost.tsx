@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { BlogPost as BlogPostType, BlogPostPreview } from "../../lib/blog/types";
 import { getPostBySlug, getAllPosts } from "../../lib/blog/loader";
 import MDXComponents from "../MDXComponents";
-import { Helmet } from "react-helmet";
+import BlogPostSEO from "../SEO/BlogPostSEO";
 
 // Inline Table of Contents component
 const InlineTableOfContents = () => {
@@ -387,16 +387,7 @@ export default function BlogPost() {
 
   return (
     <>
-      <Helmet>
-        <title>{title} | My Blog</title>
-        <meta name="description" content={post.frontmatter.excerpt} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={post.frontmatter.excerpt} />
-        <meta property="og:type" content="article" />
-        <meta property="article:published_time" content={date} />
-        <meta property="article:tag" content={tags.join(', ')} />
-        {coverImage && <meta property="og:image" content={coverImage} />}
-      </Helmet>
+      <BlogPostSEO post={post} />
       
       <ReadingProgress />
       
