@@ -8,11 +8,11 @@ interface ConditionalHeaderProps {
 export default function ConditionalHeader({ children }: ConditionalHeaderProps) {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  
+
   return (
     <div className={cn(
-      'fixed top-0 left-0 right-0 flex justify-between items-center px-6 z-50',
-      isHomePage 
+      'fixed top-0 left-0 right-0 flex justify-between items-center px-3 sm:px-4 md:px-6 py-2 z-50',
+      isHomePage
         ? '' // Completely transparent on home page
         : 'bg-background/40 backdrop-blur-xl' // Glassmorphism on other pages
     )}>
