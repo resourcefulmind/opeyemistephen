@@ -71,7 +71,10 @@ function generatePostsMeta() {
     if (frontmatter.draft === true) continue;
     if (frontmatter.status && frontmatter.status !== 'published') continue;
 
-    const slug = frontmatter.slug || file.replace('.mdx', '');
+    // Always use filename as slug to ensure consistency between
+    // file paths, URLs, and OG meta tags. This prevents mismatches
+    // where frontmatter slug differs from the actual URL.
+    const slug = file.replace('.mdx', '');
 
     posts[slug] = {
       title: frontmatter.title || 'Untitled',
