@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { BlogPost as BlogPostType, BlogPostPreview } from "../../lib/blog/types";
-import { getPostBySlug, getAllPosts } from "../../lib/blog/loader";
+import { getPostBySlug, getAllPosts, getTagStats, getPopularPosts } from "../../lib/blog/loader";
 import MDXComponents from "../MDXComponents";
 import BlogPostSEO from "../SEO/BlogPostSEO";
+import MobileNavOverlay from "./MobileNavOverlay";
+import { useMobileNav } from "../../contexts/MobileNavContext";
 
 // Inline Table of Contents component
 const InlineTableOfContents = () => {
@@ -318,8 +320,10 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostType | null>(null);
+  const [posts, setPosts] = useState<BlogPostPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isMobileNavOpen, setIsMobileNavOpen } = useMobileNav();
   
   // Handle image errors
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -332,12 +336,16 @@ export default function BlogPost() {
         navigate('/blog');
         return;
       }
-      
+
       try {
         setLoading(true);
         setError(null);
-        const postData = await getPostBySlug(slug);
+        const [postData, allPosts] = await Promise.all([
+          getPostBySlug(slug),
+          getAllPosts()
+        ]);
         setPost(postData);
+        setPosts(allPosts);
       } catch (error) {
         console.error('Failed to load post:', error);
         setError('This post could not be loaded. It may not exist or there was an error.');
@@ -345,9 +353,14 @@ export default function BlogPost() {
         setLoading(false);
       }
     }
-    
+
     loadPost();
   }, [slug, navigate]);
+
+  // Sidebar data for mobile nav
+  const tagStats = getTagStats(posts);
+  const popularPosts = getPopularPosts(posts, 6);
+  const recentPosts = posts.slice(0, 6);
   
   if (loading) {
     return <PostSkeleton />;
@@ -388,76 +401,88 @@ export default function BlogPost() {
   return (
     <>
       <BlogPostSEO post={post} />
-      
+
       <ReadingProgress />
-      
-      <article className="blog-container pt-20">
+
+      <article className="blog-container pt-8 md:pt-16">
         <BlogCosmic />
-        
-        <div className="max-w-6xl mx-auto px-6 xl:pr-80 mb-8">
-          <div className="blog-post-card glass-card p-8">
-          <header className="mb-6 md:mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 blog-post-header">{title}</h1>
-            
-            <div className="flex flex-wrap items-center text-foreground/70 mb-4 space-x-2 md:space-x-4">
-              <time dateTime={date} className="font-medium">
-                {new Date(date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </time>
-              
-              {author && (
-                <span className="flex items-center text-foreground/70">
-                  <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
-                  by {author}
-                </span>
-              )}
-              
-              <ReadingTime minutes={readingTime} />
-            </div>
-            
-            {coverImage && (
-              <div className="blog-cover-image mb-6 mt-4">
-                <img 
-                  src={coverImage} 
-                  alt={title} 
-                  className="w-full h-auto rounded-lg object-contain"
-                  onError={handleImageError}
-                  loading="lazy"
-                  data-transition-id={`cover-image-${slug}`}
-                />
-              </div>
-            )}
-            
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {tags.map((tag) => (
-                  <span 
-                    key={tag} 
-                    className="blog-tag"
-                  >
-                    {tag}
+
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 xl:pr-80 mb-8">
+          <div className="blog-post-card glass-card p-4 sm:p-5 md:p-8">
+            <header className="mb-4 md:mb-6">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 blog-post-header leading-tight">{title}</h1>
+
+              <div className="flex flex-wrap items-center text-xs sm:text-sm text-foreground/70 mb-3 gap-x-2 md:gap-x-4 gap-y-1">
+                <time dateTime={date} className="font-medium">
+                  {new Date(date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </time>
+
+                {author && (
+                  <span className="flex items-center text-foreground/70">
+                    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-1.5 md:mx-2 hide-xs"></span>
+                    by {author}
                   </span>
-                ))}
+                )}
+
+                <ReadingTime minutes={readingTime} />
               </div>
-            )}
-          </header>
-          
-          <div className="blog-content prose dark:prose-invert max-w-none">
-            <MDXComponents frontmatter={post.frontmatter}>
-              <PostContent />
-            </MDXComponents>
+
+              {coverImage && (
+                <div className="blog-cover-image mb-3 md:mb-4">
+                  <img
+                    src={coverImage}
+                    alt={title}
+                    className="w-full h-auto rounded-lg object-contain"
+                    onError={handleImageError}
+                    loading="lazy"
+                    data-transition-id={`cover-image-${slug}`}
+                  />
+                </div>
+              )}
+
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 md:gap-2">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="blog-tag text-xs md:text-sm px-2 py-0.5 md:px-3 md:py-1"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </header>
+
+            <div className="blog-content prose prose-sm md:prose dark:prose-invert max-w-none">
+              <MDXComponents frontmatter={post.frontmatter}>
+                <PostContent />
+              </MDXComponents>
+            </div>
+
+            <PostNavigation currentSlug={slug!} />
           </div>
-          
-          <PostNavigation currentSlug={slug!} />
-          </div>
-          
+
           {/* Fixed Table of Contents */}
           <InlineTableOfContents />
         </div>
       </article>
+
+      {/* Mobile Navigation Overlay */}
+      <MobileNavOverlay
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
+        tagStats={tagStats}
+        popularPosts={popularPosts}
+        recentPosts={recentPosts}
+        activeTag={null}
+        onSelectTag={(tag) => navigate(`/blog?tag=${encodeURIComponent(tag)}`)}
+        onClear={() => navigate('/blog')}
+      />
     </>
   );
 }

@@ -140,11 +140,11 @@ export default function BlogList() {
             </Helmet>
             
             <div className="max-w-6xl mx-auto">
-                <header className="mb-12 text-center pt-8">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                <header className="mb-8 md:mb-12 text-center pt-4 md:pt-8 px-2">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
                         <span className="heading-gradient">Articles and Tutorials</span>
                     </h1>
-                    <p className="text-foreground/80 text-lg max-w-2xl mx-auto mb-8">
+                    <p className="text-foreground/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 md:mb-8 leading-relaxed">
                         Thoughts, ideas, and insights on web development, technology, and design.
                     </p>
                     
@@ -174,47 +174,45 @@ export default function BlogList() {
         <p>{error}</p>
       </div>
     ) : (
-      <ul className="grid gap-8 max-w-3xl mx-auto mb-8">
+      <ul className="grid gap-4 sm:gap-6 md:gap-8 max-w-3xl mx-auto mb-8 px-1">
         {visiblePosts.map((post) => (
-          <li key={post.slug} className="blog-post-card relative p-6">
+          <li key={post.slug} className="blog-post-card relative p-4 sm:p-5 md:p-6">
             {post.frontmatter.isDevelopmentOnly && (
-              <div className="absolute top-2 right-2 px-2 py-1 text-xs font-semibold bg-amber-600 text-white rounded-md">
+              <div className="absolute top-2 right-2 px-2 py-1 text-[10px] md:text-xs font-semibold bg-amber-600 text-white rounded-md">
                 Development Only
               </div>
             )}
 
-
             <div className="flex flex-col h-full">
-              <Link to={`/blog/${post.slug}`} className="text-xl md:text-2xl font-bold text-primary hover:underline block mb-2">
+              <Link to={`/blog/${post.slug}`} className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-primary hover:underline block mb-2 leading-snug">
                 {post.frontmatter.title}
               </Link>
 
-              <div className="flex flex-wrap items-center text-sm text-foreground/60 mb-3">
-                <time dateTime={post.frontmatter.date} className="mr-3">
+              <div className="flex flex-wrap items-center text-xs sm:text-sm text-foreground/60 mb-2 md:mb-3">
+                <time dateTime={post.frontmatter.date} className="mr-2 md:mr-3">
                   {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
                     year: 'numeric',
-                    month: 'long',
+                    month: 'short',
                     day: 'numeric'
                   })}
                 </time>
 
                 {post.frontmatter.readingTime && (
                   <span className="flex items-center">
-                    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-2 hide-xs"></span>
+                    <span className="w-1 h-1 bg-foreground/40 rounded-full mx-1.5 md:mx-2 hide-xs"></span>
                     {post.frontmatter.readingTime} min read
                   </span>
                 )}
               </div>
 
-              <p className="text-foreground/80 mb-4 flex-grow" style={{
+              <p className="text-foreground/80 mb-3 md:mb-4 flex-grow text-sm md:text-base leading-relaxed" style={{
                 display: '-webkit-box',
                 WebkitLineClamp: 3,
                 WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                lineHeight: '1.6'
+                overflow: 'hidden'
               }}>{post.frontmatter.excerpt}</p>
-              
-              <Link to={`/blog/${post.slug}`} className="text-primary hover:underline text-sm font-medium">
+
+              <Link to={`/blog/${post.slug}`} className="text-primary hover:underline text-xs md:text-sm font-medium">
                 Read more
               </Link>
 

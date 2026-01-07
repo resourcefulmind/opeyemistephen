@@ -90,10 +90,10 @@
 @keyframes blink-caret {
   from,
   to {
-    border-color: transparent;
+    opacity: 0;
   }
   50% {
-    border-color: currentColor;
+    opacity: 1;
   }
 }
 

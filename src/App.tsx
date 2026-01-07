@@ -17,6 +17,7 @@ import MeteorShower from './components/MeteroShower';
 import { TwinklingBackground, ShootingStars } from './components/Hero';
 import ErrorBoundary from './components/ErrorBoundary';
 import AboutPage from './pages/About';
+import HomeContent from './components/HomeContent';
 
 // Layout component to handle non-Hero pages
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
@@ -92,7 +93,10 @@ const AppRoutes = () => {
       {/* Home page */}
       <Route path='/' element={
         <ErrorBoundary>
-          <Hero />
+          <div className="min-h-screen bg-background">
+            <Hero />
+            <HomeContent />
+          </div>
         </ErrorBoundary>
       } />
       
@@ -159,7 +163,7 @@ function App() {
           {/* Fixed navbar on top */}
           <ConditionalHeader>
             <Navbar />
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <BlogMobileNavButton />
               <ThemeToggle />
             </div>

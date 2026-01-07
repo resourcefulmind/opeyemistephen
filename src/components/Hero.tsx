@@ -215,16 +215,42 @@ function FallingLetter({ letter, delay, onComplete }: { letter: string; delay: n
   );
 }
 
-function Sweeper() {
+// Scroll indicator for the hero section
+function ScrollIndicator() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY < 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <motion.div
-      className="absolute bottom-0 left-1/2 transform -translate-x-1/2"
-      initial={{ x: -100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ delay: 4, duration: 1 }}
-    >
-      <div className="w-8 h-8 bg-white rounded-full" />
-    </motion.div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, delay: 1.5 }}
+          className="absolute bottom-8 left-0 right-0 flex flex-col items-center justify-center gap-1"
+        >
+          <span className="text-xs text-primary/50 tracking-wide text-center">Scroll to explore</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="text-primary/50"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -383,41 +409,28 @@ export function Hero() {
               >
                 Stephen
               </motion.span>
-            ) : lettersFalling ? (
-              <motion.div 
-                key="bangkok-falling"
-                className="relative flex justify-center items-center" 
-                style={{ 
-                  minWidth: 'clamp(200px, 50vw, 520px)', 
-                  minHeight: 'clamp(80px, 12vw, 150px)',
-                  width: 'clamp(200px, 50vw, 520px)'
-                }}
-              >
-                <motion.div
-                  className="metallic-text relative flex justify-center items-center"
-                  data-text="Bangkok"
-                >
-                  {['B', 'a', 'n', 'g', 'k', 'o', 'k'].map((letter, index) => (
-                    <FallingLetter 
-                      key={index} 
-                      letter={letter} 
-                      delay={index * ANIMATION_DELAYS.LETTER_INTERVAL}
-                      onComplete={handleLetterFall}
-                    />
-                  ))}
-                </motion.div>
-              </motion.div>
             ) : (
               <motion.span
                 key="bangkok"
-                className="metallic-text"
+                className="metallic-text relative"
                 data-text="Bangkok"
-                exit={{ 
+                exit={{
                   opacity: 0,
                   transition: { duration: 0.5 }
                 }}
               >
-                Bangkok
+                {lettersFalling ? (
+                  ['B', 'a', 'n', 'g', 'k', 'o', 'k'].map((letter, index) => (
+                    <FallingLetter
+                      key={index}
+                      letter={letter}
+                      delay={index * ANIMATION_DELAYS.LETTER_INTERVAL}
+                      onComplete={handleLetterFall}
+                    />
+                  ))
+                ) : (
+                  'Bangkok'
+                )}
               </motion.span>
             )}
           </AnimatePresence>
@@ -468,8 +481,10 @@ export function Hero() {
               rel="noopener noreferrer"
               className={cn(
                 "rounded-full transition-all duration-300",
-                "bg-secondary/20 hover:bg-secondary/40",
+                "bg-transparent hover:bg-primary/10",
+                "border-2 border-primary/30 hover:border-primary/60",
                 "group relative backdrop-blur-sm",
+                "hover:ring-2 hover:ring-primary/20 hover:ring-offset-2 hover:ring-offset-background",
                 // Mobile: Smaller touch targets
                 "p-2.5 min-h-[40px] min-w-[40px]",
                 // Small mobile: Slightly larger
@@ -531,7 +546,8 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 + index * 0.1 }}
               className={cn(
-                "rounded-full bg-secondary/20 text-primary backdrop-blur-sm border border-primary/10 transition-all duration-300 hover:scale-105 shine-effect hover:glow-effect",
+                "rounded-lg bg-primary/5 text-primary/80 backdrop-blur-sm",
+                "border-l-2 border-l-primary/50 border-y border-r border-primary/10",
                 // Mobile: Smaller text and padding
                 "px-2.5 py-1.5 text-xs",
                 // Small mobile: Slightly larger
@@ -539,18 +555,15 @@ export function Hero() {
                 // Tablet: Medium size
                 "md:px-4 md:py-2.5 md:text-base",
                 // Desktop: Large size
-                "lg:px-6 lg:py-3 lg:text-lg"
+                "lg:px-5 lg:py-2.5 lg:text-lg"
               )}
-              whileHover={{
-                textShadow: "0 0 15px hsla(var(--primary), 0.8), 0 0 30px hsla(var(--primary), 0.4)"
-              }}
             >
               {skill}
             </motion.span>
           ))}
         </motion.div>
       </motion.div>
-      {lettersFalling && <Sweeper />}
+      <ScrollIndicator />
     </div>
   );
 }
