@@ -321,17 +321,11 @@
   color: hsl(var(--foreground));
 }
 
-/* Bold text styling with gradient colors */
+/* Bold text styling */
 .blog-content strong,
 .blog-content b {
-  background: linear-gradient(135deg, 
-    hsl(var(--primary)) 0%, 
-    hsl(280, 90%, 60%) 50%, 
-    hsl(300, 90%, 60%) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-weight: 600;
+  color: hsl(var(--foreground));
 }
 
 /* Blog post navigation with cosmic animation */
