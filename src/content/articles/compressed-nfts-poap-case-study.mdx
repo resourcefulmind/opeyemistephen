@@ -1,0 +1,281 @@
+---
+title: "Compressed NFTs in Production: A Campus Tour Case Study"
+slug: "compressed-nfts-poap-case-study"
+date: "2026-01-16"
+excerpt: "520 students attended the Solana Students Africa Campus Tour. We wanted to give them permanent, on-chain credentials, not PDF certificates. This is the story of how I minted 214 POAPs for $7 using Metaplex Bubblegum, what broke along the way, and what I learned about data wrangling, cost optimization, and web3 onboarding."
+tags: ["Solana", "NFT", "Web3", "Metaplex", "Case Study", "POAP"]
+featured: true
+coverImage: "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768567394/cover_image_poap_dwyxvq.png"
+canonicalUrl: "https://www.opeyemibangkok.com/blog/compressed-nfts-poap-case-study"
+readingTime: 12
+lastUpdated: "2026-01-16"
+draft: false
+status: "published"
+author: "Opeyemi Stephen"
+---
+
+# Compressed NFTs in Production: A Campus Tour Case Study
+
+520 students attended the Solana Students Africa Campus Tour. We visited five Nigerian universities (University of Lagos, Federal University of Agriculture Abeokuta, University of Uyo, Olabisi Onabanjo University, and University of Abuja) over several weeks in the last quarter of 2025. They learned to build on Solana. Some just attended. Others actually shipped programs on-chain.
+
+We wanted to give them something permanent. Not a PDF certificate that lives in a forgotten email folder. Not a LinkedIn badge. Real, on-chain credentials they own forever. Stored on Solana, verifiable by anyone, and portable to wherever they go next.
+
+Two tiers of recognition. A **Participation POAP** for everyone who showed up and engaged. And a **Builder POAP** for those who went further, who actually deployed a program on-chain during the tour. Proof of attendance is meaningful. Proof of execution opens doors.
+
+The Builder credential isn't just a collectible. It's a signal. It unlocks early access to SSA programs, eligibility for builder spotlights, and priority consideration for future opportunities. For students building their on-chain reputation from scratch, this matters.
+
+I minted 214 POAPs (109 Participation and 105 Builder) for a total cost of about 0.05 SOL. Roughly $7. About 6 hours of work.
+
+This is the story of how I built it, what broke along the way, and what I learned.
+
+### The Credentials
+
+![Participation POAP](https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768677515/participation-poap_xrprqm.png)
+*Participation POAP: awarded to everyone who attended and submitted a wallet address*
+
+![Builder POAP](https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768677515/builder-poap_ne2qe7.png)
+*Builder POAP: awarded to those who deployed a program on-chain during the tour*
+
+---
+
+## Why Compressed NFTs?
+
+Regular NFTs on Solana cost around $2 each to mint. That's the account rent, the SOL you pay to store data on-chain. For 200 POAPs, that's $400. For a student organization running campus events, not viable.
+
+Compressed NFTs change the math entirely. Instead of storing each NFT as a separate on-chain account, they use a data structure called a Merkle tree to store ownership proofs. The actual NFT data lives on Arweave, a permanent storage network. The on-chain footprint shrinks to almost nothing.
+
+The result: minting drops from ~$2 per NFT to ~$0.0001. That's a 10,000x cost reduction.
+
+| | Regular NFTs | Compressed NFTs |
+|---|---|---|
+| **Cost per mint** | ~$2.00 | ~$0.0001 |
+| **200 POAPs** | $400 | $0.02 |
+| **Storage** | On-chain account | Arweave + Merkle proof |
+| **Complexity** | Low | Medium |
+| **Best for** | Small collections, 1/1s | Large-scale drops, credentials |
+
+The tradeoff is complexity. You need to create the Merkle tree upfront. You need to upload metadata to Arweave. You need to understand how Metaplex's Bubblegum protocol works. But for this use case (hundreds of POAPs on a tight budget) the tradeoff was obvious.
+
+### The Stack
+
+Here's what I used:
+
+- **[Bubblegum](https://developers.metaplex.com/bubblegum)**: The machine that mints cheap NFTs. It's Metaplex's protocol for compressed NFTs on Solana.
+- **[Arweave](https://arweave.org)**: Where the images and data live forever. Think of it as a hard drive that never dies and no one controls.
+- **[Irys](https://irys.xyz)**: The delivery truck that gets your files onto Arweave.
+- **[Umi](https://developers.metaplex.com/umi)**: The remote control. It's Metaplex's TypeScript library that lets your code talk to Bubblegum.
+
+No smart contract writing required. Bubblegum already exists on Solana. I just called it from Node.js scripts.
+
+---
+
+## The Architecture
+
+I didn't build a frontend. This was an ops task, not a product. A CLI pipeline made more sense: no users to serve, just data to process.
+
+![System Architecture](https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768568142/architecture_fp0svr.png)
+
+The system is six scripts, run in order:
+
+1. **Consolidate data**: Merge registration data (Luma) with wallet submissions (Google Sheets)
+2. **Validate**: Check wallet addresses, find duplicates, flag issues
+3. **Upload**: Push POAP images and metadata to Arweave
+4. **Create trees**: Deploy Merkle trees on Solana
+5. **Mint**: Issue compressed NFTs to each wallet
+6. **Email**: Notify participants with links to view their POAPs
+
+Each script reads from the previous script's output. Config and state live in JSON files. No database. No server. Just Node.js scripts and a funded wallet.
+
+---
+
+## The Data Problem
+
+This is where it gets messy.
+
+### Who Opted In
+
+520 people attended across five campuses. We asked them to fill out a Google Form with their Solana wallet address. 122 did. After cleaning invalid entries, I had 109 usable records.
+
+109 of 520 attendees submitted valid wallet addresses. Those are the ones who received credentials. The rest either weren't ready for a wallet, didn't complete the form, or simply didn't opt in. And that's okay. On-chain credentials are opt-in by nature.
+
+> "You can't airdrop recognition to someone who didn't raise their hand."
+
+The lesson: on-chain credentials require off-chain onboarding. If you want more people to opt in, you need to meet them where they are. A Google Form asking for a base58-encoded address (Solana's wallet address format) creates unnecessary friction.
+
+### Two Sources, Zero Alignment
+
+I had two data sources that refused to talk to each other.
+
+**Luma** gave me registration data: names and email addresses for 379 people across all campuses.
+
+**Google Sheets** gave me wallet data: names, wallet addresses, Program IDs (for builders), and GitHub profiles for 122 people.
+
+The problem: names didn't match. Luma had "Oluwaseun Jolaoso." The spreadsheet had "Seun Jolaoso." Same person. Different strings.
+
+I built a fuzzy matching script using Levenshtein distance, a measure of how many edits it takes to turn one string into another. Names with 85%+ similarity matched automatically. Names between 70-85% went to a manual review queue. Below 70%, I assumed no match.
+
+This worked. Mostly. I still had to eyeball edge cases where someone registered with their full government name and submitted their wallet with a nickname.
+
+### The Wallet Validation Nightmare
+
+122 wallet submissions. 5 were broken. That's a 4% error rate in "clean" user-submitted data.
+
+The failures were creative:
+
+- **Solana Explorer URLs**: Someone pasted `https://solscan.io/account/7xKX...AsU` instead of just the address
+- **Clipboard artifacts**: One entry read `4nY...xyz copied!` because they'd pasted the "copied" toast message
+- **Wrong length**: A 45-character address when the max valid length is 44
+- **Invalid characters**: Base58 doesn't include `0`, `O`, `I`, or `l`. One address had an `O`.
+
+I built validation into the pipeline:
+
+```javascript
+import { PublicKey } from '@solana/web3.js';
+
+function isValidSolanaAddress(address) {
+  try {
+    const pubkey = new PublicKey(address);
+    return PublicKey.isOnCurve(pubkey.toBytes());
+  } catch {
+    return false;
+  }
+}
+```
+
+Anything that fails gets flagged, not silently dropped.
+
+> "Never trust user-submitted wallet addresses. Validate before you mint."
+
+---
+
+## The Verification Pivot
+
+I wanted the Builder POAP to mean something. Not just "attended" but "shipped." The original plan was straightforward: query each wallet's on-chain history, look for program deployments or significant transactions during the tour dates.
+
+This worked for about 40 wallets. Then Solana's public RPC (the API endpoint you use to read blockchain data) started returning 429 errors. Too Many Requests. I was being rate-limited.
+
+I could have paid for a dedicated RPC endpoint. But I was already over budget in time, and the deadline was approaching.
+
+Then I looked at the spreadsheet again.
+
+The Google Form had a "Program ID" column. Students who'd deployed a program were asked to paste their Program ID as proof. I'd been ignoring it because I wanted to verify on-chain. But the data was already there. Self-reported, yes, but present.
+
+116 entries had a Program ID that wasn't empty or "Nil." Cross-referenced with my cleaned participant list, that gave me 105 verified builders.
+
+The pivot took ten minutes. The original approach would have taken hours of RPC wrangling and probably still failed.
+
+> "Sometimes the answer is in the data you already have."
+
+---
+
+## Cost Optimization
+
+With data cleaned and builders identified, I was ready to create the Merkle trees. This is the upfront cost of compressed NFTs: you pay for the tree once, then minting is nearly free.
+
+I ran the tree creation script. Estimated cost: 7.70 SOL.
+
+My wallet had 0.50 SOL.
+
+The default Merkle tree depth is 14, which supports 16,384 NFTs (2^14). I needed capacity for maybe 300. I was paying for infrastructure sized for a protocol, not a campus tour.
+
+I reduced the tree depth to 9. That's 512 capacity, plenty of headroom for the 214 POAPs, with room for future events. The cost dropped to about 0.02 SOL per tree.
+
+Two trees (one for Participation, one for Builder) cost me roughly 0.04 SOL total. Add upload fees and minting costs, and the whole deployment came in under 0.05 SOL.
+
+The lesson: defaults are configured for scale you probably don't need. Right-size for your actual use case.
+
+---
+
+## Production Day
+
+Pre-flight checklist:
+
+- Switch `.env` to `mainnet-beta`
+- Fund the wallet with 0.5 SOL (more than enough with my optimized trees)
+- Add myself to the participant list (dogfooding)
+- Run the validation script one more time
+- Deep breath
+
+I ran the minting scripts. 109 Participation POAPs first. The terminal scrolled with wallet addresses and transaction confirmations. Around wallet 40, I hit rate limits again: 429 errors. But this time I had retry logic with exponential backoff. The script waited, retried, and kept going.
+
+![Terminal output during minting](https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768568427/IMG_1069_yfz7w7.jpg)
+
+15 minutes later, 109 Participation POAPs minted. I ran the Builder script. 105 more POAPs in another 12 minutes.
+
+Then emails. I used Resend's free tier (100 emails per day). I had 106 to send, so I split across two days. Each email included the POAP image, a link to view it on Solscan, and instructions for finding it in their wallet.
+
+Final cost: ~0.05 SOL. About $7 at the time.
+
+---
+
+## Bugs I Hit
+
+I caught most issues before mainnet. But not all.
+
+| Bug | Symptom | Cause | Fix | Prevention |
+|-----|---------|-------|-----|------------|
+| CSV parser | `val.includes is not a function` | Library returned numbers, not strings | Wrap value in `String()` | Type-check CSV outputs |
+| Overwritten file | Lost 30 min of manual edits | Background process overwrote `builders.json` | Re-do the work | Don't run competing processes on same file |
+
+Nothing complex. Just the kind of things that happen when you're moving fast with real data.
+
+---
+
+## What I'd Do Differently
+
+**Validate wallets at registration.** Don't let people submit invalid addresses. Use a library like `@solana/web3.js` and check `PublicKey.isOnCurve()` client-side. Show a red border and clear error message ("This doesn't look like a valid Solana address") before allowing submission.
+
+**Use a dedicated RPC from day one.** Public endpoints are fine for testing. For production, the rate limits will bite you at the worst moment. Services like [Helius](https://helius.dev) or [Triton](https://triton.one) cost around $20/month and save hours of debugging.
+
+**Build a simple frontend for wallet collection.** A Google Form with a text field introduces multiple failure points: partial copies, clipboard artifacts, accidentally pasting Explorer URLs. A Connect Wallet button eliminates all of this. User clicks "Connect," approves the popup, and you capture the address directly from their wallet. Zero manual copying, guaranteed-valid address. This takes about 30 minutes to build. I built it after the fact. Should have done it first.
+
+**Add idempotency checks.** If the script crashes mid-mint, you should be able to re-run it without double-minting. Store minted wallets in a JSON file and skip them on retry. I didn't build this. I got lucky and didn't need it.
+
+---
+
+## Results
+
+| Metric | Value |
+|--------|-------|
+| Total event attendees | 520 |
+| Wallet submissions | 122 |
+| Participation POAPs minted | 109 |
+| Builder POAPs minted | 105 |
+| Emails sent | 106 |
+| Total cost | ~0.05 SOL (~$7) |
+| Total build time | ~6 hours |
+| Time to mint | ~30 minutes |
+
+### What I Learned
+
+**Compressed NFTs make at-scale credentials viable.** $7 for 214 on-chain credentials is a fundamentally different cost structure than $400+. This unlocks use cases that weren't economically possible before.
+
+**Data wrangling is 60% of the work.** I spent more time cleaning data, matching names, and validating wallets than I did on the actual blockchain integration. If you're building a similar system, budget accordingly.
+
+**Right-size your infrastructure.** Don't pay for 16,384-NFT capacity when you need 300. Don't use a database when JSON files work. Don't build a frontend when a CLI will do.
+
+**The data you need might already exist.** I almost burned hours on RPC calls when the Program ID column was sitting in the spreadsheet the whole time. Look at what you have before building what you think you need.
+
+**Eliminate copy-paste errors.** Even experienced builders make mistakes when manually copying wallet addresses. A "Connect Wallet" button captures the address programmatically: no clipboard artifacts, no accidentally pasting Explorer URLs, no truncated strings.
+
+---
+
+## What's Next
+
+109 students now have on-chain proof they attended the SSA Campus Tour 2025. 105 have proof they shipped code. These aren't just collectibles. They're credentials that can unlock future opportunities: early access to SSA programs, builder spotlights, and priority consideration for grants and accelerators.
+
+These credentials live in their wallets, permanent, verifiable, and theirs. For some, this might be their first on-chain asset. For others, it's the start of a builder reputation that could open doors to opportunities we haven't even created yet. That's the point of on-chain credentials: they compound over time.
+
+The system I built is open source. The scripts, templates, and documentation are on GitHub. If you're running events, hackathons, or bootcamps and want to recognize your participants with credentials that actually mean something, not PDFs, not emails, fork it and adapt it.
+
+520 attendees. 109 opted in. 214 credentials minted. $7 spent.
+
+The infrastructure is built. The playbook exists. Next time, I'll make opting in even easier.
+
+**GitHub:** [github.com/resourcefulmind/ssa-poap-metaplex](https://github.com/resourcefulmind/ssa-poap-metaplex)
+
+Questions? Reach out [@devvgbg](https://twitter.com/devvgbg) on Twitter.
+
+---
+
+*Built for [Solana Students Africa](https://www.solanastudentsafrica.com). Powered by [Metaplex Bubblegum](https://developers.metaplex.com/bubblegum), [Umi](https://developers.metaplex.com/umi), [Irys](https://irys.xyz), and [Resend](https://resend.com).*
