@@ -33,3 +33,6 @@ coverage/
 
 # Bolt folder
 /bolt/
+
+# Local docs and planning (not tracked)
+docs/
