@@ -1,4 +1,19 @@
 {
+  "apple-mail-storage-fix": {
+    "title": "Your Mac's Storage Problem Might Just Be One Apple Mail Folder",
+    "excerpt": "Apple Mail has a hidden folder called MFArchiveFileWrapper that silently caches every attachment you've ever received. Here's how I found it eating 65GB of my storage, deleted it, and made sure it never comes back, for free, in 15 minutes.",
+    "coverImage": "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1773063922/macmemory-blog-article_xlpgfv.png",
+    "date": "2026-03-09",
+    "author": "Opeyemi Stephen",
+    "tags": [
+      "macOS",
+      "Productivity",
+      "Apple Mail",
+      "Storage",
+      "Tutorial"
+    ],
+    "readingTime": "6"
+  },
   "building-connected-communities-data-integration": {
     "title": "Building Connected Communities: Leveraging Data Integration for Personalized Engagement",
     "excerpt": "Learn how to integrate customer and community data to create unified member profiles. A guide for community managers.",
@@ -12,6 +27,22 @@
       "Data"
     ],
     "readingTime": "15"
+  },
+  "compressed-nfts-poap-case-study": {
+    "title": "Compressed NFTs in Production: A Campus Tour Case Study",
+    "excerpt": "520 students attended the Solana Students Africa Campus Tour. We wanted to give them permanent, on-chain credentials, not PDF certificates. This is the story of how I minted 214 POAPs for $7 using Metaplex Bubblegum, what broke along the way, and what I learned about data wrangling, cost optimization, and web3 onboarding.",
+    "coverImage": "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1768567394/cover_image_poap_dwyxvq.png",
+    "date": "2026-01-16",
+    "author": "Opeyemi Stephen",
+    "tags": [
+      "Solana",
+      "NFT",
+      "Web3",
+      "Metaplex",
+      "Case Study",
+      "POAP"
+    ],
+    "readingTime": "12"
   },
   "corporate-l1s-africa-payments": {
     "title": "Corporate L1s vs L2s: Impact on African Payments and Blockchain",
@@ -54,6 +85,21 @@
       "Advanced"
     ],
     "readingTime": "12"
+  },
+  "ethereum-l2-reckoning": {
+    "title": "Vitalik Just Admitted Ethereum's Biggest Bet Failed",
+    "excerpt": "Vitalik admitted Ethereum's L2 roadmap failed. Here's the six-year arc, the technical fix, and what nobody's talking about.",
+    "coverImage": "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1770238839/cover_image_jjfqmq.png",
+    "date": "2026-02-04",
+    "author": "Opeyemi Stephen",
+    "tags": [
+      "Ethereum",
+      "Layer 2",
+      "Blockchain",
+      "Solana",
+      "Analysis"
+    ],
+    "readingTime": "35"
   },
   "flutterwave-mono-analysis": {
     "title": "Beyond the Headlines: What the Flutterwave-Mono Deal Really Means for African Fintech",
