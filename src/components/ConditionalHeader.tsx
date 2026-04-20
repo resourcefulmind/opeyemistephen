@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import { cn } from '../lib/utils';
 
 interface ConditionalHeaderProps {
@@ -8,8 +8,8 @@ interface ConditionalHeaderProps {
 }
 
 export default function ConditionalHeader({ children }: ConditionalHeaderProps) {
-  const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
 
   return (
     <div className={cn(
