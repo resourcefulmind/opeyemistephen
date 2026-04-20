@@ -1,3 +1,5 @@
+'use client';
+
 import { useLocation } from 'react-router-dom';
 import { useMobileNav } from '../../contexts/MobileNavContext';
 import MobileNav from './MobileNav';

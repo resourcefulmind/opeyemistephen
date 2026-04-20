@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import 'highlight.js/styles/github-dark.css'; // Import highlight.js styles

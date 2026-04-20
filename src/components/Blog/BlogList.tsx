@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BlogPostPreview } from "../../lib/blog/types";
