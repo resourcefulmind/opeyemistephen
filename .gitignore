@@ -36,3 +36,6 @@ coverage/
 
 # Local docs and planning (not tracked)
 docs/
+
+# Next.js build output
+.next/
