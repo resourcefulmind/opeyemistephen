@@ -5,7 +5,7 @@ import { useMobileNav } from '../../contexts/MobileNavContext';
 import MobileNav from './MobileNav';
 
 export default function BlogMobileNavButton() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const { isMobileNavOpen, toggleMobileNav } = useMobileNav();
 
   const isBlogPage = pathname.startsWith('/blog');

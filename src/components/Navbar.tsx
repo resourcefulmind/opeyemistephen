@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '../lib/utils';
 
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
-  const currentPath = usePathname();
+  const currentPath = usePathname() ?? '';
 
   const isActive = (path: string) => {
     if (path === '/') return currentPath === '/';

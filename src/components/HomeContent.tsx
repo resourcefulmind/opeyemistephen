@@ -1,22 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { principles, now } from '../content/about.config';
-import { getAllPosts, getPopularPosts } from '../lib/blog/loader';
-import { BlogPostPreview } from '../lib/blog/types';
+import type { BlogPostPreview } from '../lib/blog/types';
 
 const SECTION_ANIMATION = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-50px' },
-  transition: { duration: 0.6 }
+  transition: { duration: 0.6 },
 } as const;
 
-function GlassCard({ children, className }: { children: React.ReactNode; className?: string }) {
+function GlassCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
       className={cn(
@@ -30,35 +34,7 @@ function GlassCard({ children, className }: { children: React.ReactNode; classNa
   );
 }
 
-function FeaturedPosts() {
-  const [posts, setPosts] = useState<BlogPostPreview[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadPosts() {
-      try {
-        const allPosts = await getAllPosts();
-        const popular = getPopularPosts(allPosts, 3);
-        setPosts(popular);
-      } catch (error) {
-        console.error('Failed to load posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPosts();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="grid md:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 rounded-2xl bg-secondary/10 animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
+function FeaturedPosts({ posts }: { posts: BlogPostPreview[] }) {
   if (posts.length === 0) return null;
 
   return (
@@ -74,7 +50,7 @@ function FeaturedPosts() {
           <span className="heading-accent">FEATURED POSTS</span>
         </h2>
         <Link
-          to="/blog"
+          href="/blog"
           className="text-xs md:text-sm text-primary/70 hover:text-primary flex items-center gap-1 transition-colors"
         >
           View all <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
@@ -83,7 +59,7 @@ function FeaturedPosts() {
 
       <div className="grid gap-4 md:grid-cols-3 md:gap-6">
         {posts.map((post) => (
-          <Link key={post.slug} to={`/blog/${post.slug}`}>
+          <Link key={post.slug} href={`/blog/${post.slug}`}>
             <GlassCard className="p-4 md:p-5 h-full hover:border-primary/20">
               <h3 className="text-base md:text-lg font-semibold text-primary mb-2 line-clamp-2">
                 {post.frontmatter.title}
@@ -97,7 +73,7 @@ function FeaturedPosts() {
                   {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
-                    year: 'numeric'
+                    year: 'numeric',
                   })}
                 </span>
                 {post.frontmatter.readingTime && (
@@ -116,7 +92,6 @@ function FeaturedPosts() {
 }
 
 function PrinciplesTeaser() {
-  // Show first 3 principles
   const featuredPrinciples = principles.slice(0, 3);
 
   return (
@@ -132,7 +107,7 @@ function PrinciplesTeaser() {
           <span className="heading-accent">PRINCIPLES</span>
         </h2>
         <Link
-          to="/about"
+          href="/about"
           className="text-xs md:text-sm text-primary/70 hover:text-primary flex items-center gap-1 transition-colors"
         >
           See all <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
@@ -156,7 +131,6 @@ function PrinciplesTeaser() {
 }
 
 function CurrentlySection() {
-  // Show first 3 "now" items
   const currentItems = now.bullets.slice(0, 3);
 
   return (
@@ -172,7 +146,7 @@ function CurrentlySection() {
           <span className="heading-accent">CURRENTLY</span>
         </h2>
         <Link
-          to="/about"
+          href="/about"
           className="text-xs md:text-sm text-primary/70 hover:text-primary flex items-center gap-1 transition-colors"
         >
           More about me <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
@@ -196,10 +170,14 @@ function CurrentlySection() {
   );
 }
 
-export default function HomeContent() {
+export default function HomeContent({
+  featuredPosts = [],
+}: {
+  featuredPosts?: BlogPostPreview[];
+}) {
   return (
     <div className="relative z-10 space-y-12 md:space-y-20 py-12 md:py-24 px-4 sm:px-6 md:px-8">
-      <FeaturedPosts />
+      <FeaturedPosts posts={featuredPosts} />
       <PrinciplesTeaser />
       <CurrentlySection />
     </div>
