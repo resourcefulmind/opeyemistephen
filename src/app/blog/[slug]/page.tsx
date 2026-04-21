@@ -50,10 +50,19 @@ export async function generateMetadata({
   }
 
   const { frontmatter } = post;
-  const { title, excerpt, date, tags = [], coverImage, author, lastUpdated } =
-    frontmatter;
+  const {
+    title,
+    excerpt,
+    date,
+    tags = [],
+    coverImage,
+    author,
+    lastUpdated,
+    canonicalUrl,
+  } = frontmatter;
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
+  const canonical = canonicalUrl ?? postUrl;
   const imageUrl = resolveImageUrl(coverImage);
   const authorName = resolveAuthorName(author);
   const publishedTime = new Date(date).toISOString();
@@ -66,12 +75,12 @@ export async function generateMetadata({
     description: excerpt,
     authors: [{ name: authorName }],
     keywords: tags,
-    alternates: { canonical: postUrl },
+    alternates: { canonical },
     openGraph: {
       type: 'article',
       title,
       description: excerpt,
-      url: postUrl,
+      url: canonical,
       siteName: 'Opeyemi Stephen',
       locale: 'en_US',
       publishedTime,
@@ -121,6 +130,7 @@ export default async function BlogPostPage({
       : null;
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
+  const canonical = post.frontmatter.canonicalUrl ?? postUrl;
   const imageUrl = resolveImageUrl(post.frontmatter.coverImage);
   const authorName = resolveAuthorName(post.frontmatter.author);
   const publishedTime = new Date(post.frontmatter.date).toISOString();
@@ -152,9 +162,9 @@ export default async function BlogPostPage({
     dateModified: modifiedTime,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': postUrl,
+      '@id': canonical,
     },
-    url: postUrl,
+    url: canonical,
     keywords: (post.frontmatter.tags ?? []).join(', '),
     ...(readingTime && {
       wordCount: readingTime * 200,
