@@ -70,11 +70,10 @@ export const viewport: Viewport = {
 
 const themeInitScript = `
     (function() {
-        try{
+        try {
             var stored = localStorage.getItem('theme');
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            var theme = stored || (prefersDark ? 'dark' : 'light');
-            document.documentElement.classList.add(theme); 
+            var theme = stored || 'dark';
+            document.documentElement.classList.add(theme);
         } catch (e) {}
     })();
 `;
