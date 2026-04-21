@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Post status types for better categorization of content
  */
@@ -106,11 +104,12 @@ export interface ValidatedPostMetadata extends PostMetadata {
 export type RawFrontmatter = Record<string, any>;
 
 /**
- * Complete blog post with content and metadata
+ * Complete blog post with raw MDX body and metadata.
+ * Compilation happens at the render site via <MDXRemote>, not in the loader.
  */
 export interface BlogPost {
-  /** React component containing the post content */
-  content: React.ComponentType;
+  /** Raw MDX source (frontmatter stripped) */
+  body: string;
   
   /** Validated metadata from frontmatter */
   frontmatter: ValidatedPostMetadata;

@@ -2,11 +2,7 @@ import 'server-only';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
-import React, { cache } from 'react';
-import { compileMDX } from 'next-mdx-remote/rsc';
-import remarkGfm from 'remark-gfm';
-import rehypeSlug from 'rehype-slug';
-import rehypeHighlight from 'rehype-highlight';
+import { cache } from 'react';
 
 import {
   BlogPost,
@@ -15,7 +11,6 @@ import {
   RawFrontmatter,
 } from './types';
 import { validateFrontmatter, calculateReadingTime } from './schema';
-import { mdxComponents } from '@/components/mdx/mdxComponents';
 import { popularSlugs } from '@/content/blog.config';
 import logger from '../utils/logger';
 
@@ -131,22 +126,8 @@ export const getPostBySlug = cache(
         return null;
       }
 
-      const { content: mdxElement } = await compileMDX({
-        source: body,
-        components: mdxComponents,
-        options: {
-          parseFrontmatter: false,
-          mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [rehypeSlug, rehypeHighlight],
-          },
-        },
-      });
-
-      const Content: React.ComponentType = () => mdxElement;
-
       return {
-        content: Content,
+        body,
         frontmatter,
         slug,
         filePath: file.filePath,
