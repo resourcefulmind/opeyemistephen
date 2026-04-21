@@ -57,7 +57,7 @@ interface CalloutProps {
   children: React.ReactNode;
 }
 
-export const Callout = ({ type = 'info', title, children }: CalloutProps) => {
+const Callout = ({ type = 'info', title, children }: CalloutProps) => {
   const icons = {
     info: <Info size={20} className="text-blue-500" />,
     warning: <AlertTriangle size={20} className="text-amber-500" />,
@@ -84,7 +84,7 @@ export const Callout = ({ type = 'info', title, children }: CalloutProps) => {
   );
 };
 
-export const GridLayout = ({
+const GridLayout = ({
   children,
   className,
   ...props
@@ -94,7 +94,7 @@ export const GridLayout = ({
   </div>
 );
 
-export const GridColumn = ({
+const GridColumn = ({
   children,
   className,
   ...props

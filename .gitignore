@@ -37,6 +37,9 @@ coverage/
 # Local docs and planning (not tracked)
 docs/
 
+# Project-local Claude Code instructions (not tracked)
+CLAUDE.md
+
 # Next.js build output
 .next/
 
