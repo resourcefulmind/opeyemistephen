@@ -7,16 +7,10 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "dev": "vite",
-    "dev:next": "next dev",
-    "prebuild": "node scripts/generate-posts-meta.js",
-    "build": "vite build",
-    "build:next": "next build",
-    "lint": "eslint .",
-    "lint:next": "next lint",
-    "preview": "vite preview",
-    "generate-meta": "node scripts/generate-posts-meta.js",
-    "start:next": "next start"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
