@@ -1,3 +1,5 @@
+'use client';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Mail } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -139,13 +141,15 @@ function ShootingStar() {
   }, []);
 
   const getEndPosition = () => {
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 0;
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 0;
     switch (direction) {
       case 'north':
         return { x: position.x, y: -100 };
       case 'south':
-        return { x: position.x, y: window.innerHeight + 100 };
+        return { x: position.x, y: vh + 100 };
       case 'east':
-        return { x: window.innerWidth + 100, y: position.y };
+        return { x: vw + 100, y: position.y };
       case 'west':
         return { x: -100, y: position.y };
     }

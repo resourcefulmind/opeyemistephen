@@ -1,9 +1,8 @@
+'use client';
+
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from "../lib/hooks/useTheme";
 import { cn } from "../lib/utils";
-
-// Create a global event for theme changes
-const themeChangeEvent = new CustomEvent('themeChange');
 
 interface ThemeToggleProps {
   className?: string;

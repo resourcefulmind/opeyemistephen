@@ -1,3 +1,5 @@
+'use client';
+
 import CategoryList from './CategoryList';
 import PopularList from './PopularList';
 import { BlogPostPreview } from '../../lib/blog/types';

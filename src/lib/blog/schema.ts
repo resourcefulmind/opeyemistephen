@@ -1,9 +1,8 @@
-import { 
-  PostMetadata, 
-  ValidatedPostMetadata, 
-  RawFrontmatter, 
+import {
+  ValidatedPostMetadata,
+  RawFrontmatter,
   FrontmatterValidationError,
-  Author 
+  Author,
 } from './types';
 
 /**

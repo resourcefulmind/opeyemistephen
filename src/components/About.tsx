@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -237,7 +240,7 @@ function CallToAction() {
     <Section title="Let's make magic">
       <GlassCard className="p-4 md:p-6 lg:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-foreground/90 text-sm md:text-base">Have a project or idea? I'm open to collaborations and impactful work.</p>
+          <p className="text-foreground/90 text-sm md:text-base">Have a project or idea? I&apos;m open to collaborations and impactful work.</p>
           <div className="flex gap-2 md:gap-3">
             <a
               href="mailto:contact@example.com"
@@ -245,12 +248,12 @@ function CallToAction() {
             >
               Email me
             </a>
-            <a
+            <Link
               href="/blog"
               className={cn('btn btn-primary text-xs md:text-sm px-3 py-2 md:px-4')}
             >
               Read the blog
-            </a>
+            </Link>
           </div>
         </div>
       </GlassCard>
