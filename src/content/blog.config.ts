@@ -1,5 +1,5 @@
 export const popularSlugs = [
-  'llm-in-the-wrong-place-twice',
+  'ai-agent-vs-function-crewai',
   'ethereum-l2-reckoning',
   'react-hooks-complete-guide',
   'compressed-nfts-poap-case-study',
