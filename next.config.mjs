@@ -8,6 +8,15 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: __dirname,
   transpilePackages: ['next-mdx-remote'],
+  async redirects() {
+    return [
+      {
+        source: '/blog/llm-in-the-wrong-place-twice',
+        destination: '/blog/ai-agent-vs-function-crewai',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
