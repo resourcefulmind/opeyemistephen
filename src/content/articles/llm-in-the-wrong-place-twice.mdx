@@ -1,20 +1,18 @@
 ---
-title: "I Put the LLM in the Wrong Place Twice"
+title: "When Your AI Agent Should Just Be a Function: Lessons from a CrewAI Pipeline"
 slug: "llm-in-the-wrong-place-twice"
 date: "2026-06-11"
-excerpt: "I built a five-agent app to rank the day's arXiv papers in an afternoon, and the framework talked me into putting an LLM in the wrong place. Twice. This is what the agents hid: framework defaults that bit me, a live XSS hole in the report, an agent quietly ignoring its own instructions, and the two days arXiv locked me out before I could prove the whole thing ran."
+excerpt: "Lessons from a CrewAI multi-agent app: two agents that should have been functions, an XSS hole in a framework default, and prompt bugs no test catches."
 tags: ["LLM", "AI Agents", "CrewAI", "Python", "Case Study"]
 featured: true
 coverImage: "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1781179075/Screenshot_2026-06-11_at_12.41.49_PM_y2siep.png"
 canonicalUrl: "https://www.opeyemibangkok.com/blog/llm-in-the-wrong-place-twice"
 readingTime: 11
-lastUpdated: "2026-06-11"
+lastUpdated: "2026-06-12"
 draft: false
 status: "published"
 author: "Opeyemi Stephen"
 ---
-
-# I Put the LLM in the Wrong Place Twice
 
 *Building a small multi-agent paper-ranker, and learning the agents were the easy part.*
 
@@ -37,7 +35,16 @@ I'll be straight about the scale. It scans the day's twenty-five most recent pap
 
 The framework made the agents the easy part, which is exactly why they weren't the part that mattered. The work lived everywhere else.
 
-## I put the LLM in the wrong place twice
+<Callout type="info" title="What I learned">
+
+- An LLM call wrapping a deterministic function is pure overhead. My report generator and my search step both got faster and more reliable as plain code: one agent burned its token budget on CSS, the other spent eighty-five seconds a run narrating results the pipeline ignored.
+- Dropping from a framework helper to the library underneath means inheriting defaults you never chose. Raw Jinja2 ships with autoescaping off, which left a live XSS hole; Pydantic silently turned a class variable into an instance field.
+- An agent's instructions are code that nothing type-checks. A configurable "top N" flowed through every function and stayed hardcoded as ten inside the agent's own goal and backstory, and the tests stayed green.
+- A row of working pieces is not a working system. Until the pipeline ran end to end against live data, I could not honestly claim it ran at all.
+
+</Callout>
+
+## Two places an LLM should have been a plain function
 
 The first time, it was the report.
 
@@ -86,7 +93,7 @@ Twice I reached for an agent where a function belonged, and both times the chang
 
 If your instinct is that this is obvious, that of course you don't put a model where a plain function works, I agree, and I did it twice anyway. The framework is built so that adding an agent is the path of least resistance. Defining one is four lines. Writing and wiring the function is more. CrewAI sells you agents, so I reached for agents, once to fill a template and once to fetch data, and neither step ever needed to think.
 
-## The framework kept changing the rules under me
+## Framework defaults I never chose (one was an XSS hole)
 
 The trouble starts the moment you step outside what the framework manages for you.
 
@@ -118,7 +125,7 @@ It worked anyway, every time search succeeded, because the success path assigned
 
 Three layers down from three different conveniences, three defaults I never chose. The framework hands you a smooth surface. The libraries underneath it have opinions, and you inherit them whether you read them or not.
 
-## The agents were where the quiet bugs lived
+## Agent instructions are code, and nothing type-checks them
 
 A type error stops the program. A bad import throws on the first line. The compiler, the linter, the test suite, they all catch a certain class of mistake the moment you make it. None of that watches the inside of a prompt.
 
