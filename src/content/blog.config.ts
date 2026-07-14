@@ -1,4 +1,5 @@
 export const popularSlugs = [
+  'the-off-ramp-is-still-the-product',
   'ai-agent-vs-function-crewai',
   'ethereum-l2-reckoning',
   'react-hooks-complete-guide',
