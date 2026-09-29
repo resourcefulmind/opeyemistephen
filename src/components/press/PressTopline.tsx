@@ -12,14 +12,14 @@ const NAV = [
   { href: '/about', label: 'About' },
 ];
 
-function lagosDate() {
+function lagosDate(style: 'long' | 'short') {
   return new Date()
     .toLocaleDateString('en-GB', {
       timeZone: 'Africa/Lagos',
-      weekday: 'long',
+      weekday: style,
       day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+      month: style,
+      ...(style === 'long' ? { year: 'numeric' as const } : {}),
     })
     .toUpperCase();
 }
@@ -28,16 +28,23 @@ export default function PressTopline() {
   const pathname = usePathname() ?? '/';
   const { theme, toggleTheme, mounted } = useTheme();
   // Rendered in the browser so a statically built page always shows today's date.
-  const [date, setDate] = useState<string | null>(null);
+  const [date, setDate] = useState<{ long: string; short: string } | null>(null);
 
   useEffect(() => {
-    setDate(lagosDate());
+    setDate({ long: lagosDate('long'), short: lagosDate('short') });
   }, []);
 
   return (
     <div className="press-topline">
       <span>
-        Lagos{date ? <> &middot; <time>{date}</time></> : null}
+        Lagos
+        {date ? (
+          <>
+            {' '}
+            &middot; <time className="date-long">{date.long}</time>
+            <time className="date-short">{date.short}</time>
+          </>
+        ) : null}
       </span>
       <div className="right">
         <nav aria-label="Main navigation">

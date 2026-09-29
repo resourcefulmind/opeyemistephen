@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import type { BlogPostPreview, PostType } from '@/lib/blog/types';
 import { archiveIntro } from '@/content/home.config';
-import { loadReadState } from './readState';
+import { isRead, loadReadState, type ReadState } from './readState';
 import { formatDate } from './format';
 
 const TOPICS: Array<{ id: string; label: string; match: RegExp }> = [
@@ -38,13 +38,32 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
   const topicId = TOPICS.some((t) => t.id === params.get('topic')) ? params.get('topic')! : 'all';
   const topic = TOPICS.find((t) => t.id === topicId)!;
 
-  const [read, setRead] = useState<Set<string>>(new Set());
-  const [seriesLast, setSeriesLast] = useState<Record<string, string>>({});
+  const [reading, setReading] = useState<ReadState>({ progress: {}, seriesLast: {} });
   useEffect(() => {
-    const state = loadReadState();
-    setRead(state.read);
-    setSeriesLast(state.seriesLast);
+    setReading(loadReadState());
   }, []);
+
+  /**
+   * Where each series flag goes: the last part opened, if it was left unfinished
+   * ("You stopped here"), otherwise the part after it ("Up next").
+   */
+  const seriesFlags = useMemo(() => {
+    const flags: Record<string, { slug: string; label: string }> = {};
+    for (const [name, lastSlug] of Object.entries(reading.seriesLast)) {
+      const parts = posts
+        .filter((p) => p.frontmatter.series === name)
+        .sort((a, b) => partNumber(a.slug) - partNumber(b.slug));
+      const idx = parts.findIndex((p) => p.slug === lastSlug);
+      if (idx === -1) continue;
+      if (!isRead(reading, lastSlug)) {
+        const pct = reading.progress[lastSlug] ?? 0;
+        flags[name] = { slug: lastSlug, label: pct > 0 ? `You stopped here \u00b7 ${pct}%` : 'You stopped here' };
+      } else if (parts[idx + 1]) {
+        flags[name] = { slug: parts[idx + 1].slug, label: 'Up next' };
+      }
+    }
+    return flags;
+  }, [posts, reading]);
 
   const visible = useMemo(
     () =>
@@ -69,31 +88,31 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
 
   function Row({ post }: { post: BlogPostPreview }) {
     const fm = post.frontmatter;
-    const isRead = read.has(post.slug);
+    const done = isRead(reading, post.slug);
+    const pct = reading.progress[post.slug] ?? 0;
     const part = fm.series ? partNumber(post.slug) : 0;
     const title = part ? fm.title.replace(/^.*?Part \d+:\s*/i, '') : fm.title;
-    const stoppedHere = fm.series && seriesLast[fm.series] === post.slug;
+    const flag = fm.series && seriesFlags[fm.series]?.slug === post.slug ? seriesFlags[fm.series].label : null;
     return (
-      <article className={`row${isRead ? ' read' : ''}`}>
+      <article className={`row${done ? ' read' : ''}`}>
         <div>
           <h3>
             <Link href={`/blog/${post.slug}`}>
               {part ? <span className="part">Part {part}</span> : null}
               <span className="hl-swipe">{title}</span>
             </Link>
-            {stoppedHere && <span className="chip flag">You stopped here</span>}
+            {flag && <span className="chip flag">{flag}</span>}
           </h3>
           <p>{fm.excerpt}</p>
         </div>
         <div className="when">
           <time dateTime={fm.date}>{formatDate(fm.date)}</time>
-          {fm.readingTime ? <><br />{fm.readingTime} min</> : null}
-          {isRead && (
-            <>
-              <br />
-              <span className="mark">&#10003; Read</span>
-            </>
-          )}
+          {fm.readingTime ? <span className="rt">{fm.readingTime} min</span> : null}
+          {done ? (
+            <span className="mark">&#10003; Read</span>
+          ) : pct >= 5 ? (
+            <span className="mark">{pct}% read</span>
+          ) : null}
         </div>
       </article>
     );
@@ -107,7 +126,7 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
         const parts = visible
           .filter((p) => p.frontmatter.series === name)
           .sort((a, b) => partNumber(a.slug) - partNumber(b.slug));
-        const done = parts.filter((p) => read.has(p.slug)).length;
+        const done = parts.filter((p) => isRead(reading, p.slug)).length;
         groups.push({
           key: `series-${name}`,
           heading: name,
