@@ -25,6 +25,12 @@ const MeteorShower = dynamic(() => import('@/components/MeteroShower'), {
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
+  // The home page and the blog archive render their own Press chrome.
+  const isPressPage = pathname === '/' || pathname === '/blog';
+
+  if (isPressPage) {
+    return <>{children}</>;
+  }
 
   return (
     <>

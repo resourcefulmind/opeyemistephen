@@ -4,6 +4,21 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { MobileNavProvider } from '@/contexts/MobileNavContext';
 import SiteChrome from '@/components/site/SiteChrome';
+import { Archivo, Newsreader } from 'next/font/google';
+
+const archivo = Archivo({
+    subsets: ['latin'],
+    axes: ['wdth'],
+    variable: '--font-archivo',
+    display: 'swap',
+});
+
+const newsreader = Newsreader({
+    subsets: ['latin'],
+    style: ['normal', 'italic'],
+    variable: '--font-newsreader',
+    display: 'swap',
+});
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://www.opeyemibangkok.com'), 
@@ -71,9 +86,12 @@ export const viewport: Viewport = {
 const themeInitScript = `
     (function() {
         try {
+            var root = document.documentElement;
             var stored = localStorage.getItem('theme');
-            var theme = stored || 'dark';
-            document.documentElement.classList.add(theme);
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var theme = stored || (prefersDark ? 'dark' : 'light');
+            root.classList.add(theme);
+            if (!localStorage.getItem('name-correction-seen')) root.classList.add('nc-play');
         } catch (e) {}
     })();
 `;
@@ -84,7 +102,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
+        <html lang="en" className={`${archivo.variable} ${newsreader.variable}`} suppressHydrationWarning>
             <head>
                 <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
             </head>

@@ -1,15 +1,26 @@
-import { Hero } from '@/components/Hero';
-import HomeContent from '@/components/HomeContent';
-import { getAllPosts, getPopularPosts } from '@/lib/blog/loader';
+import FrontPage from '@/components/press/FrontPage';
+import PressLayout from '@/components/press/PressLayout';
+import {
+  getAllPosts,
+  getFrontSlots,
+  getLeadPost,
+  getMoreAnalysis,
+} from '@/lib/blog/loader';
 
 export default async function HomePage() {
   const posts = await getAllPosts();
-  const featuredPosts = getPopularPosts(posts, 3);
+  const lead = getLeadPost(posts);
+  const slots = getFrontSlots(posts, lead?.slug);
+  const moreAnalysis = getMoreAnalysis(posts, lead?.slug);
 
   return (
-    <>
-      <Hero />
-      <HomeContent featuredPosts={featuredPosts} />
-    </>
+    <PressLayout>
+      <FrontPage
+        issueNumber={posts.length}
+        lead={lead}
+        slots={slots}
+        moreAnalysis={moreAnalysis}
+      />
+    </PressLayout>
   );
 }

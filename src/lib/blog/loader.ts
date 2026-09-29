@@ -237,3 +237,85 @@ export function getPopularPosts(
   }
   return getPopularHeuristic(posts, limit);
 }
+
+// ---------------------------------------------------------------------------
+// Press front page selection
+// ---------------------------------------------------------------------------
+
+export type FrontSlotKind = 'case-study' | 'explainer' | 'tutorial';
+
+export interface SeriesSummary {
+  name: string;
+  parts: BlogPostPreview[];
+  totalMinutes: number;
+}
+
+export type FrontSlot =
+  | { kind: FrontSlotKind; post: BlogPostPreview; series?: undefined }
+  | { kind: 'explainer'; series: SeriesSummary; post?: undefined };
+
+export function seriesPartNumber(post: BlogPostPreview): number {
+  const match = post.slug.match(/part(\d+)/i);
+  return match ? Number(match[1]) : 0;
+}
+
+export function postType(post: BlogPostPreview) {
+  return post.frontmatter.type ?? 'tutorial';
+}
+
+export function getSeries(
+  posts: BlogPostPreview[],
+  name: string
+): SeriesSummary {
+  const parts = posts
+    .filter((p) => p.frontmatter.series === name)
+    .sort((a, b) => seriesPartNumber(a) - seriesPartNumber(b));
+  const totalMinutes = parts.reduce(
+    (sum, p) => sum + (p.frontmatter.readingTime ?? 0),
+    0
+  );
+  return { name, parts, totalMinutes };
+}
+
+/** The pinned lead (`lead: true`), else the newest post that is not a note. */
+export function getLeadPost(
+  posts: BlogPostPreview[]
+): BlogPostPreview | undefined {
+  const eligible = posts.filter((p) => postType(p) !== 'note');
+  return eligible.find((p) => p.frontmatter.lead === true) ?? eligible[0];
+}
+
+/** Newest case study, explainer and tutorial. A series explainer shows as the whole series. */
+export function getFrontSlots(
+  posts: BlogPostPreview[],
+  leadSlug?: string
+): FrontSlot[] {
+  const kinds: FrontSlotKind[] = ['case-study', 'explainer', 'tutorial'];
+  const slots: FrontSlot[] = [];
+
+  for (const kind of kinds) {
+    const post = posts.find(
+      (p) => p.slug !== leadSlug && postType(p) === kind
+    );
+    if (!post) continue;
+
+    const seriesName = post.frontmatter.series;
+    if (kind === 'explainer' && seriesName) {
+      slots.push({ kind, series: getSeries(posts, seriesName) });
+    } else {
+      slots.push({ kind, post });
+    }
+  }
+
+  return slots;
+}
+
+export function getMoreAnalysis(
+  posts: BlogPostPreview[],
+  leadSlug?: string,
+  limit = 3
+): BlogPostPreview[] {
+  return posts
+    .filter((p) => p.slug !== leadSlug && postType(p) === 'analysis')
+    .slice(0, limit);
+}

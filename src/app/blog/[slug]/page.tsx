@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
 import BlogPostClient from '@/components/Blog/BlogPostClient';
+import ReadMarker from '@/components/press/ReadMarker';
 import { mdxComponents } from '@/components/mdx/mdxComponents';
 import {
   getAllPosts,
@@ -178,6 +179,7 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
+      <ReadMarker slug={slug} series={post.frontmatter.series} />
       <BlogPostClient
         frontmatter={post.frontmatter}
         slug={slug}
