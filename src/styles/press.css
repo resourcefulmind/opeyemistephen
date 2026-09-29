@@ -762,3 +762,89 @@ a.hl-swipe:focus-visible,
   .press-topline nav ul { gap: 12px; }
   .press-topline .right { gap: 10px; }
 }
+
+/* Archive: filtered by an old-style tag link */
+.archive-head .tagged {
+  margin: 12px 0 0;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.archive-head .tagged .chip { font-size: 12px; padding: 2px 6px; }
+.archive-head .tagged button {
+  font: inherit;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/*
+ * Resume pill. Lives on the article pages, which are not Press pages yet, so it
+ * carries its own colours instead of the .press tokens.
+ */
+.resume-pill {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  background: #0d0d0c;
+  color: #edece7;
+  border: 2px solid #f2c200;
+  box-shadow: 4px 4px 0 #f2c200;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  max-width: calc(100vw - 32px);
+  animation: resume-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.resume-pill button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+.resume-pill .go {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.resume-pill .pct {
+  background: #f2c200;
+  color: #0d0d0c;
+  font-size: 12px;
+  padding: 1px 6px;
+}
+.resume-pill .close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(237, 236, 231, 0.7);
+}
+.resume-pill .close svg { width: 12px; height: 12px; }
+.resume-pill button:hover { color: #f2c200; }
+.resume-pill button:focus-visible { outline: 2px solid #f2c200; outline-offset: -4px; }
+@keyframes resume-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (max-width: 420px) {
+  .resume-pill .go { font-size: 13px; padding: 10px 12px; white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .resume-pill { animation: none; }
+}

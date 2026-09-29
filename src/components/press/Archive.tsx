@@ -37,6 +37,11 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
   const params = useSearchParams();
   const topicId = TOPICS.some((t) => t.id === params.get('topic')) ? params.get('topic')! : 'all';
   const topic = TOPICS.find((t) => t.id === topicId)!;
+  // Older links (the article page menu, search results) filter by a single tag: /blog?tag=React
+  const tagParam = params.get('tag')?.trim() || null;
+  const tagLabel = tagParam
+    ? posts.flatMap((p) => p.frontmatter.tags).find((t) => t.toLowerCase() === tagParam.toLowerCase()) ?? tagParam
+    : null;
 
   const [reading, setReading] = useState<ReadState>({ progress: {}, seriesLast: {} });
   useEffect(() => {
@@ -65,13 +70,15 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
     return flags;
   }, [posts, reading]);
 
-  const visible = useMemo(
-    () =>
-      topicId === 'all'
-        ? posts
-        : posts.filter((p) => p.frontmatter.tags.some((tag) => topic.match.test(tag))),
-    [posts, topic, topicId]
-  );
+  const visible = useMemo(() => {
+    if (tagParam) {
+      const wanted = tagParam.toLowerCase();
+      return posts.filter((p) => p.frontmatter.tags.some((tag) => tag.toLowerCase() === wanted));
+    }
+    return topicId === 'all'
+      ? posts
+      : posts.filter((p) => p.frontmatter.tags.some((tag) => topic.match.test(tag)));
+  }, [posts, topic, topicId, tagParam]);
 
   const seriesNames = useMemo(
     () => Array.from(new Set(visible.map((p) => p.frontmatter.series).filter(Boolean))) as string[],
@@ -80,6 +87,7 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
 
   function setTopic(id: string) {
     const next = new URLSearchParams(params.toString());
+    next.delete('tag');
     if (id === 'all') next.delete('topic');
     else next.set('topic', id);
     const qs = next.toString();
@@ -97,7 +105,7 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
       <article className={`row${done ? ' read' : ''}`}>
         <div>
           <h3>
-            <Link href={`/blog/${post.slug}`}>
+            <Link href={flag?.startsWith('You stopped here') ? `/blog/${post.slug}?resume=1` : `/blog/${post.slug}`}>
               {part ? <span className="part">Part {part}</span> : null}
               <span className="hl-swipe">{title}</span>
             </Link>
@@ -146,16 +154,29 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
         <p>{archiveIntro}</p>
         <div className="topics" role="group" aria-label="Filter by topic">
           {TOPICS.map((t) => (
-            <button key={t.id} type="button" aria-pressed={t.id === topicId} onClick={() => setTopic(t.id)}>
+            <button
+              key={t.id}
+              type="button"
+              aria-pressed={!tagParam && t.id === topicId}
+              onClick={() => setTopic(t.id)}
+            >
               {t.label}
             </button>
           ))}
         </div>
+        {tagLabel && (
+          <p className="tagged">
+            Tagged <span className="chip">{tagLabel}</span>{' '}
+            <button type="button" onClick={() => setTopic('all')}>
+              Clear
+            </button>
+          </p>
+        )}
       </header>
 
       {sections.length === 0 ? (
         <p className="empty">
-          Nothing under {topic.label} yet.{' '}
+          Nothing under {tagLabel ?? topic.label} yet.{' '}
           <button type="button" onClick={() => setTopic('all')}>
             Show everything
           </button>
