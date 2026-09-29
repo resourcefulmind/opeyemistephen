@@ -3,6 +3,8 @@ import {
   RawFrontmatter,
   FrontmatterValidationError,
   Author,
+  PostType,
+  POST_TYPES,
 } from './types';
 
 /**
@@ -128,6 +130,24 @@ function validateOptionalNumber(value: any, fieldName: string): number | undefin
 }
 
 /**
+ * Validates the optional post type against the allowed values
+ */
+function validatePostType(value: any, fieldName: string): PostType | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  if (typeof value !== 'string' || !POST_TYPES.includes(value as PostType)) {
+    throw new FrontmatterValidationError(
+      `${fieldName} must be one of: ${POST_TYPES.join(', ')}`,
+      fieldName
+    );
+  }
+
+  return value as PostType;
+}
+
+/**
  * Validates author field which can be either a string or an Author object
  */
 function validateAuthor(value: any, fieldName: string): string | Author | undefined {
@@ -199,6 +219,9 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
       : undefined;
     const draft = validateOptionalBoolean(raw.draft, 'draft');
     const status = raw.status ? validateOptionalString(raw.status, 'status') : undefined;
+    const type = validatePostType(raw.type, 'type');
+    const lead = validateOptionalBoolean(raw.lead, 'lead');
+    const series = validateOptionalString(raw.series, 'series');
     
     // Construct validated frontmatter
     return {
@@ -215,6 +238,9 @@ export function validateFrontmatter(raw: RawFrontmatter): ValidatedPostMetadata 
       ...(lastUpdated && { lastUpdated }),
       ...(draft !== undefined && { draft }),
       ...(status && { status }),
+      ...(type && { type }),
+      ...(lead !== undefined && { lead }),
+      ...(series && { series }),
     } as ValidatedPostMetadata;
   } catch (error) {
     if (error instanceof FrontmatterValidationError) {

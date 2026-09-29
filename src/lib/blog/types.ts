@@ -4,6 +4,20 @@
 export type PostStatus = 'draft' | 'published' | 'archived' | 'scheduled';
 
 /**
+ * What kind of piece a post is. Drives the archive sections and the
+ * homepage slots. `note` never appears on the homepage.
+ */
+export type PostType = 'analysis' | 'case-study' | 'explainer' | 'tutorial' | 'note';
+
+export const POST_TYPES: readonly PostType[] = [
+  'analysis',
+  'case-study',
+  'explainer',
+  'tutorial',
+  'note',
+] as const;
+
+/**
  * Author information with detailed metadata
  */
 export interface Author {
@@ -71,6 +85,15 @@ export interface PostMetadata {
   
   /** Whether the post is a draft and shouldn't be published (optional) */
   draft?: boolean;
+
+  /** What kind of piece this is (optional; untyped posts fall back to `tutorial` in listings) */
+  type?: PostType;
+
+  /** Pin this post as the homepage lead story (optional; newest post leads otherwise) */
+  lead?: boolean;
+
+  /** Name of the series this post belongs to (optional) */
+  series?: string;
 }
 
 /**
