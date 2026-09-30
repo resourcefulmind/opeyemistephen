@@ -43,21 +43,12 @@ export const metadata: Metadata = {
         title: 'Opeyemi Stephen - Software Engineer & Technical Writer', 
         description: 'Building the future of web3 and developer education. Explore my technical articles and projects.', 
         url: 'https://www.opeyemibangkok.com', 
-        locale: 'en_US', 
-        images: [
-            { 
-                url: 'https://www.opeyemibangkok.com/preview.png',  
-                width: 1182, 
-                height: 806, 
-                alt: 'Opeyemi Stephen - Portfolio Preview', 
-            }, 
-        ], 
+        locale: 'en_US',  
     }, 
     twitter: {
         card: 'summary_large_image', 
         title: 'Opeyemi Stephen - Software Engineer & Technical Writer', 
         description: 'Building the future of web3 and developer education. Explore my technical articles and projects.', 
-        images: ['https://www.opeyemibangkok.com/preview.png'], 
         creator: '@devvgbg', 
         site: '@devvgbg', 
     }, 

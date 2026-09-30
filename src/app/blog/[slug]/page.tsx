@@ -53,7 +53,6 @@ export async function generateMetadata({
     excerpt,
     date,
     tags = [],
-    coverImage,
     author,
     lastUpdated,
     canonicalUrl,
@@ -61,7 +60,6 @@ export async function generateMetadata({
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
   const canonical = canonicalUrl ?? postUrl;
-  const imageUrl = resolveImageUrl(coverImage);
   const authorName = resolveAuthorName(author);
   const publishedTime = new Date(date).toISOString();
   const modifiedTime = lastUpdated
@@ -85,20 +83,11 @@ export async function generateMetadata({
       modifiedTime,
       authors: [authorName],
       tags,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: excerpt,
-      images: [imageUrl],
       creator: '@devvgbg',
       site: '@devvgbg',
     },
