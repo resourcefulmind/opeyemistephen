@@ -91,7 +91,7 @@ const themeInitScript = `
             var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             var theme = stored || (prefersDark ? 'dark' : 'light');
             root.classList.add(theme);
-            if (!localStorage.getItem('name-correction-seen')) root.classList.add('nc-play');
+            if (!sessionStorage.getItem('name-correction-seen')) root.classList.add('nc-play');
         } catch (e) {}
     })();
 `;

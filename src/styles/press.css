@@ -980,7 +980,21 @@ a.hl-swipe:focus-visible,
 }
 .record h2 .chip { font-family: var(--sans); font-size: 13px; padding: 2px 8px; letter-spacing: 0.04em; text-transform: none; }
 .record ol { list-style: none; margin: 0; padding: 0; }
-.record > ol > li {
+.record .lane { margin-top: 26px; }
+.record .lane > h3 {
+  font-family: var(--sans);
+  font-stretch: 100%;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+}
+.record .year .now { display: block; width: max-content; margin-top: 6px; font-size: 11px; }
+.record .lane > ol > li {
   display: grid;
   grid-template-columns: 90px 1fr;
   gap: 24px;
@@ -988,7 +1002,7 @@ a.hl-swipe:focus-visible,
   border-bottom: 1px solid var(--rule);
 }
 .record .year { font-weight: 700; font-size: 14px; letter-spacing: 0.04em; padding-top: 4px; }
-.record h3 {
+.record h4 {
   font-family: var(--display);
   font-stretch: 75%;
   font-weight: 800;
@@ -1036,6 +1050,7 @@ a.hl-swipe:focus-visible,
 
 :root.dark .press .profile { border-top-color: var(--rule-strong); border-bottom-color: var(--rule-strong); }
 :root.dark .press .record h2,
+:root.dark .press .record .lane > h3,
 :root.dark .press .index h2,
 :root.dark .press .index h3 { border-color: var(--rule-strong); }
 :root.dark .press .portrait img { outline-color: var(--rule-strong); }
@@ -1046,7 +1061,7 @@ a.hl-swipe:focus-visible,
   .profile h1 { font-size: 15vw; }
   .story { grid-template-columns: 1fr; gap: 16px; padding: 28px 0; }
   .story-body p { font-size: 18px; }
-  .record > ol > li { grid-template-columns: 1fr; gap: 4px; }
+  .record .lane > ol > li { grid-template-columns: 1fr; gap: 4px; }
   .contact { grid-template-columns: 1fr; }
   .contact p { font-size: 18px; }
 }

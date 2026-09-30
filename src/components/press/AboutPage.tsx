@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { experience, intro, principles, skills, story } from '@/content/about.config';
+import { experience, intro, lanes, principles, skills, story } from '@/content/about.config';
 import { contactEmail, now, socialLinks } from '@/content/home.config';
 import NowTicker from './NowTicker';
 import PressFooter from './PressFooter';
@@ -54,24 +54,36 @@ export default function AboutPage() {
 
       <section className="record" aria-labelledby="record-heading">
         <h2 id="record-heading">
-          The record <span className="chip">{experience.length} roles</span>
+          The record <span className="chip">2023 to now</span>
         </h2>
-        <ol>
-          {experience.map((role) => (
-            <li key={`${role.company}-${role.role}`}>
-              <span className="year">{role.period}</span>
-              <div>
-                <h3>{role.role}</h3>
-                <p className="company">{role.company}</p>
-                <ul>
-                  {role.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ol>
+        {lanes.map((lane) => {
+          const roles = experience.filter((r) => r.lane === lane.id);
+          if (roles.length === 0) return null;
+          return (
+            <div key={lane.id} className="lane">
+              <h3>{lane.label}</h3>
+              <ol>
+                {roles.map((role) => (
+                  <li key={`${role.company}-${role.role}`}>
+                    <span className="year">
+                      {role.period}
+                      {role.current && <span className="chip now">Now</span>}
+                    </span>
+                    <div>
+                      <h4>{role.role}</h4>
+                      <p className="company">{role.company}</p>
+                      <ul>
+                        {role.bullets.map((b) => (
+                          <li key={b}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          );
+        })}
       </section>
 
       <section className="principles" aria-labelledby="principles-heading">
