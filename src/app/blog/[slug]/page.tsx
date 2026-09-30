@@ -14,7 +14,7 @@ import { DISPLAY_NAME, SITE_URL, bylineName, personJsonLd } from '@/content/iden
 
 
 function resolveImageUrl(coverImage?: string): string {
-  if (!coverImage) return `${SITE_URL}/preview.png`;
+  if (!coverImage) return `${SITE_URL}/opengraph-image`;
   if (coverImage.startsWith('http://') || coverImage.startsWith('https://')) {
     return coverImage;
   }

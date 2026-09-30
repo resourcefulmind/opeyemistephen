@@ -1,7 +1,7 @@
 {
-  "name": "Opeyemi Stephen - Portfolio",
-  "short_name": "Opeyemi Stephen",
-  "description": "Software Engineer, Technical Writer & Ecosystem Builder",
+  "name": "Opeyemi Bangkok",
+  "short_name": "Bangkok",
+  "description": "Analysis of Web3 and African fintech, and courses and guides that teach developers to build.",
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -17,12 +17,16 @@
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#5046e6",
-  "background_color": "#0a0a0a",
+  "theme_color": "#0d0d0c",
+  "background_color": "#e3e5e3",
   "display": "standalone",
   "start_url": "/",
   "scope": "/"
 }
-
