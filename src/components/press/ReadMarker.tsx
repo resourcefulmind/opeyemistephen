@@ -1,14 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PROGRESS_KEY, READ_THRESHOLD, SERIES_KEY } from './readState';
+import { PROGRESS_KEY, READ_THRESHOLD, SERIES_KEY, articleBody, bodyProgress } from './readState';
 
 /** Below this, there is nothing worth resuming. */
 const RESUME_MIN = 5;
-
-function articleBody() {
-  return document.querySelector<HTMLElement>('.blog-content');
-}
 
 /** Scroll position at which `pct` percent of the article body has passed the bottom of the viewport. */
 function scrollTargetFor(pct: number) {
@@ -75,10 +71,7 @@ export default function ReadMarker({ slug, series }: { slug: string; series?: st
       frame = 0;
       const body = articleBody();
       if (!body) return;
-      const rect = body.getBoundingClientRect();
-      // Share of the article body that has passed the bottom of the viewport.
-      const seen = (window.innerHeight - rect.top) / rect.height;
-      const pct = Math.max(0, Math.min(100, Math.round(seen * 100)));
+      const pct = bodyProgress(body);
       if (pct <= bestRef.current) return;
       bestRef.current = pct;
       // Once the reader is back past where they stopped, the offer has done its job.

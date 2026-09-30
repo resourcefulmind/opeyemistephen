@@ -4,15 +4,12 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
-import BlogPostClient from '@/components/Blog/BlogPostClient';
+import ArticleView from '@/components/press/ArticleView';
+import PressLayout from '@/components/press/PressLayout';
 import ReadMarker from '@/components/press/ReadMarker';
-import { mdxComponents } from '@/components/mdx/mdxComponents';
-import {
-  getAllPosts,
-  getPostBySlug,
-  getTagStats,
-  getPopularPosts,
-} from '@/lib/blog/loader';
+import { articleMdx } from '@/components/press/articleMdx';
+import { extractHeadings } from '@/lib/blog/headings';
+import { getAllPosts, getPostBySlug, getSeries, postType } from '@/lib/blog/loader';
 
 const SITE_URL = 'https://www.opeyemibangkok.com';
 
@@ -123,12 +120,13 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
-  const prev = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
-  const next =
-    currentIndex >= 0 && currentIndex < allPosts.length - 1
-      ? allPosts[currentIndex + 1]
-      : null;
+  const series = post.frontmatter.series;
+  const seriesParts = series ? getSeries(allPosts, series).parts : [];
+  const type = post.frontmatter.type ?? 'tutorial';
+  const related = series
+    ? []
+    : allPosts.filter((p) => p.slug !== slug && postType(p) === type).slice(0, 2);
+  const headings = extractHeadings(post.body);
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
   const canonical = post.frontmatter.canonicalUrl ?? postUrl;
@@ -179,28 +177,28 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <ReadMarker slug={slug} series={post.frontmatter.series} />
-      <BlogPostClient
-        frontmatter={post.frontmatter}
-        slug={slug}
-        prev={prev}
-        next={next}
-        tagStats={getTagStats(allPosts)}
-        popularPosts={getPopularPosts(allPosts, 6)}
-        recentPosts={allPosts.slice(0, 6)}
-      >
-        <MDXRemote
-          source={post.body}
-          components={mdxComponents}
-          options={{
-            parseFrontmatter: false,
-            mdxOptions: {
-              remarkPlugins: [remarkGfm],
-              rehypePlugins: [rehypeSlug, rehypeHighlight],
-            },
-          }}
-        />
-      </BlogPostClient>
+      <PressLayout>
+        <ReadMarker slug={slug} series={series} />
+        <ArticleView
+          slug={slug}
+          frontmatter={post.frontmatter}
+          headings={headings}
+          seriesParts={seriesParts}
+          related={related}
+        >
+          <MDXRemote
+            source={post.body}
+            components={articleMdx}
+            options={{
+              parseFrontmatter: false,
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+                rehypePlugins: [rehypeSlug, rehypeHighlight],
+              },
+            }}
+          />
+        </ArticleView>
+      </PressLayout>
     </>
   );
 }

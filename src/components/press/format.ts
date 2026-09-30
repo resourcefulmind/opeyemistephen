@@ -14,3 +14,11 @@ export const TYPE_LABEL: Record<string, string> = {
   tutorial: 'Tutorial',
   note: 'Note',
 };
+
+export const TYPE_PLURAL: Record<string, string> = {
+  analysis: 'More analysis',
+  'case-study': 'More case studies',
+  explainer: 'More explainers',
+  tutorial: 'More tutorials',
+  note: 'More notes',
+};
