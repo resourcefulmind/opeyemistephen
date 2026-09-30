@@ -243,7 +243,7 @@ function CallToAction() {
           <p className="text-foreground/90 text-sm md:text-base">Have a project or idea? I&apos;m open to collaborations and impactful work.</p>
           <div className="flex gap-2 md:gap-3">
             <a
-              href="mailto:contact@example.com"
+              href="mailto:omodaraopeyemi754@gmail.com"
               className={cn('btn btn-ghost text-xs md:text-sm px-3 py-2 md:px-4')}
             >
               Email me
