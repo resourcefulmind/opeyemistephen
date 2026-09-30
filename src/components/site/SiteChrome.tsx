@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import ConditionalHeader from '@/components/ConditionalHeader';
 import Navbar from '@/components/Navbar';
-import BlogMobileNavButton from '@/components/Blog/BlogMobileNavButton';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const TwinklingBackground = dynamic(
@@ -38,7 +37,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       <ConditionalHeader>
         <Navbar />
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <BlogMobileNavButton />
           <ThemeToggle />
         </div>
       </ConditionalHeader>
