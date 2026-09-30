@@ -33,9 +33,10 @@ export const experience: Array<{
     lane: 'software',
     current: true,
     bullets: [
-      'Gating and shipping production releases end to end, from migrations to a verified deploy.',
-      'Running manual QA across the dashboard and keeping the regression register true to the code.',
-      'Reviewing pull requests and dependency updates against the code, not the description.',
+      'The human gate between a fast-moving, AI-assisted codebase and production: every release read change by change, every migration checked against its rollback, and production verified by behaviour, not by tag.',
+      'Gated more than twenty production releases and stopped release-blocking defects before they reached users.',
+      'Built the Coinbase on-ramp integration end to end, from embedded orders to a reusable buyer token that lets a returning buyer skip verification, and hardened the MoneyGram flow with tests and production checks.',
+      'Reviewed whole features and modules end to end, including Workflow Builder, the largest change shipped in my time there, testing each claim against the code rather than the description.',
     ],
   },
   {
