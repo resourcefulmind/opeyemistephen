@@ -27,7 +27,7 @@ export const experience: Array<{
   bullets: string[];
 }> = [
   {
-    role: 'QA and Release Manager',
+    role: 'QA and Releases Manager',
     company: 'Solana Foundation (Solana Developer Platform)',
     period: '2026',
     lane: 'software',
