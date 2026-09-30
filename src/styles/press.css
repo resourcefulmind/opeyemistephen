@@ -375,7 +375,7 @@ a[aria-current='page'] > .hl-swipe {
   letter-spacing: -0.01em;
   line-height: 1.02;
   font-size: clamp(34px, 4.2vw, 56px);
-  margin: 20px 0 12px;
+  margin: 26px 0 12px;
   text-wrap: balance;
 }
 .lead .dek {
@@ -1454,3 +1454,47 @@ main:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .icon-swap > svg { transition: none; }
 }
+
+/* Lead story reads headline first, then the chart, as on a newspaper front */
+.lead .meta + .shot { margin-top: 20px; }
+.lead .stamp { top: 10px; }
+
+/* Code colours drawn from the Press palette instead of the stock GitHub theme */
+.codeblock .hljs-keyword,
+.codeblock .hljs-selector-tag,
+.codeblock .hljs-meta .hljs-keyword,
+.codeblock .hljs-doctag { color: #f2c200; }
+.codeblock .hljs-string,
+.codeblock .hljs-regexp,
+.codeblock .hljs-meta .hljs-string,
+.codeblock .hljs-template-tag,
+.codeblock .hljs-template-variable { color: #d9c9a3; }
+.codeblock .hljs-number,
+.codeblock .hljs-literal,
+.codeblock .hljs-symbol,
+.codeblock .hljs-bullet { color: #ff8a7a; }
+.codeblock .hljs-comment,
+.codeblock .hljs-quote { color: #9a958c; font-style: italic; }
+.codeblock .hljs-title,
+.codeblock .hljs-title.function_,
+.codeblock .hljs-title.class_,
+.codeblock .hljs-section { color: #ffffff; font-weight: 600; }
+.codeblock .hljs-name,
+.codeblock .hljs-tag,
+.codeblock .hljs-selector-class,
+.codeblock .hljs-selector-id { color: #f2c200; }
+.codeblock .hljs-attr,
+.codeblock .hljs-attribute,
+.codeblock .hljs-property,
+.codeblock .hljs-variable,
+.codeblock .hljs-params,
+.codeblock .hljs-built_in,
+.codeblock .hljs-type,
+.codeblock .hljs-meta,
+.codeblock .hljs-subst,
+.codeblock .hljs-operator,
+.codeblock .hljs-punctuation { color: var(--code-fg); }
+.codeblock .hljs-built_in,
+.codeblock .hljs-type { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.25); text-underline-offset: 3px; }
+.codeblock .hljs-addition { color: #b8e0a8; background: rgba(184, 224, 168, 0.08); }
+.codeblock .hljs-deletion { color: #ff8a7a; background: rgba(255, 138, 122, 0.08); }

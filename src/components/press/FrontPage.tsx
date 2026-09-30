@@ -76,17 +76,6 @@ export default function FrontPage({ issueNumber, lead, slots, moreAnalysis }: Fr
             <span className="stamp" aria-hidden="true">
               Latest
             </span>
-            {lead.frontmatter.coverImage && (
-              <Link href={`/blog/${lead.slug}`} className="shot" tabIndex={-1} aria-hidden="true">
-                <Image
-                  src={lead.frontmatter.coverImage}
-                  alt=""
-                  fill
-                  priority
-                  sizes="(max-width: 820px) 100vw, 740px"
-                />
-              </Link>
-            )}
             <h2>
               <Link href={`/blog/${lead.slug}`}>
                 <span className="hl-swipe">{lead.frontmatter.title}</span>
@@ -98,6 +87,17 @@ export default function FrontPage({ issueNumber, lead, slots, moreAnalysis }: Fr
               <time dateTime={lead.frontmatter.date}>{formatDate(lead.frontmatter.date)}</time>
               {lead.frontmatter.readingTime ? <> &middot; {lead.frontmatter.readingTime} min read</> : null}
             </div>
+            {lead.frontmatter.coverImage && (
+              <Link href={`/blog/${lead.slug}`} className="shot" tabIndex={-1} aria-hidden="true">
+                <Image
+                  src={lead.frontmatter.coverImage}
+                  alt=""
+                  fill
+                  priority
+                  sizes="(max-width: 820px) 100vw, 740px"
+                />
+              </Link>
+            )}
 
             {moreAnalysis.length > 0 && (
               <nav className="more" aria-labelledby="more-analysis">
