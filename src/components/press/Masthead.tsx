@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { masthead, socialLinks } from '@/content/home.config';
-import NameSeen from './NameSeen';
 
 export default function Masthead({ issueNumber }: { issueNumber: number }) {
   return (
@@ -17,7 +16,6 @@ export default function Masthead({ issueNumber }: { issueNumber: number }) {
           <span className="new">Bangkok</span>
         </span>
       </h1>
-      <NameSeen />
       <p className="role">{masthead.role}</p>
       <div className="issue">
         <span>{masthead.edition}</span>

@@ -196,14 +196,14 @@ a.hl-swipe:focus-visible,
   font-size: 0.4em;
   font-weight: 400;
 }
-/* First visit only: the class is set before paint by the inline script in layout.tsx */
-:root.nc-play .fix .old::after {
+/* Plays on every page load; reduced-motion visitors get the finished correction. */
+.masthead .fix .old::after {
   animation: nc-strike 0.38s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-:root.nc-play .fix .new {
+.masthead .fix .new {
   animation: nc-write 0.5s 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-:root.nc-play .fix .caret {
+.masthead .fix .caret {
   animation: nc-fade 0.3s 0.8s both;
 }
 @keyframes nc-strike {
@@ -701,9 +701,9 @@ a.hl-swipe:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .track { animation: none; flex-wrap: wrap; width: auto; }
   .stamp { animation: none; }
-  :root.nc-play .fix .old::after,
-  :root.nc-play .fix .new,
-  :root.nc-play .fix .caret { animation: none; }
+  .masthead .fix .old::after,
+  .masthead .fix .new,
+  .masthead .fix .caret { animation: none; }
   .hl-swipe, .cta, .socials a { transition: none; }
 }
 
