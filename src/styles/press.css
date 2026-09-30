@@ -404,15 +404,15 @@ a.hl-swipe:focus-visible,
   transform: rotate(-3deg);
   transform-origin: 30% 60%;
   box-shadow: 3px 3px 0 var(--hl);
-  animation: stamp-dance 8s ease-in-out 2s infinite;
+  animation: stamp-dance 4s ease-in-out infinite;
 }
 :root.dark .stamp { background: var(--hl); color: #0d0d0c; box-shadow: 3px 3px 0 #0d0d0c; }
+/* Rests for about 3.3s, then a ~0.65s shake, every 4 seconds. */
 @keyframes stamp-dance {
-  0%, 88%, 100% { transform: rotate(-3deg) scale(1); }
-  90% { transform: rotate(3deg) scale(1.08); }
+  0%, 84%, 100% { transform: rotate(-3deg) scale(1); }
+  88% { transform: rotate(3deg) scale(1.08); }
   92% { transform: rotate(-6deg) scale(1.08); }
-  94% { transform: rotate(2deg) scale(1.04); }
-  96% { transform: rotate(-4deg) scale(1); }
+  96% { transform: rotate(2deg) scale(1.04); }
 }
 
 .more {
