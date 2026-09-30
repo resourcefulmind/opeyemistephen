@@ -43,7 +43,7 @@ export const archiveIntro =
 export const seriesBlurb =
   'Ten parts on how Solana works, from Proof of History to tokenomics, written for engineers who know REST but not Solana. Start at Part 1.';
 
-export const openTo = 'Open to developer relations and developer experience roles, remote or relocating.';
+export const openTo = 'Currently open to developer relations and developer experience roles, remote or relocating.';
 
 export const contactLine =
   'Hiring for developer relations, or building something that needs teaching? My inbox is open.';

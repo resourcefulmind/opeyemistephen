@@ -24,7 +24,6 @@ export default function AboutPage() {
           </h1>
           <p className="profile-tagline">{intro.tagline}</p>
           <p className="profile-bio">{intro.bio}</p>
-          <p className="open-to">{openTo}</p>
           <div className="profile-actions">
             <a href={`mailto:${contactEmail}`} className="cta">
               Email me <span aria-hidden="true">&rarr;</span>
@@ -118,6 +117,7 @@ export default function AboutPage() {
       <section className="contact" aria-labelledby="contact-heading">
         <h2 id="contact-heading">Let’s make magic</h2>
         <p>{contactLine}</p>
+        <p className="open-to">{openTo}</p>
         <div className="contact-actions">
           <a href={`mailto:${contactEmail}`} className="cta">
             Email me <span aria-hidden="true">&rarr;</span>

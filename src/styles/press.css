@@ -1620,15 +1620,13 @@ button.cta { cursor: pointer; font-family: var(--display); }
 .track a { color: inherit; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--hl) 70%, transparent); text-underline-offset: 3px; }
 .track a:hover { color: var(--hl); }
 .ticker .tag { white-space: nowrap; }
-.open-to {
-  display: inline-block;
-  margin: 0 0 20px;
-  padding: 4px 10px;
-  background: var(--hl);
-  color: var(--on-hl);
-  font-weight: 700;
-  font-size: 15px;
-  line-height: 1.4;
+.contact .open-to {
+  grid-column: 1;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--muted);
+  margin: 0;
 }
 @media (max-width: 820px) {
   .ticker .tag { font-size: 12px; letter-spacing: 0.04em; }
