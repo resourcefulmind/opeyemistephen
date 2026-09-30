@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Archivo, Newsreader } from 'next/font/google';
+import { DISPLAY_NAME, SITE_URL, seo } from '@/content/identity';
 
 const archivo = Archivo({
     subsets: ['latin'],
@@ -19,39 +20,40 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://www.opeyemibangkok.com'), 
+    metadataBase: new URL(SITE_URL),
     title: {
-        default: 'Opeyemi Stephen - Software Engineer & Technical Writer',
-        template: '%s | Opeyemi Stephen', 
-    }, 
-    description: 'Opeyemi Stephen. Software Engineer, Technical Writer & Ecosystem Builder. Building the future of web3 and developer education. Explore my technical articles and projects.', 
+        default: seo.homeTitle,
+        template: `%s | ${DISPLAY_NAME}`,
+    },
+    description: seo.homeDescription,
     keywords: [
-        'software engineer',
-        'technical writer',
-        'web3',
-        'blockchain',
-        'React',
-        'TypeScript',
+        'Opeyemi Bangkok',
+        'Opeyemi Stephen',
+        'Web3 infrastructure',
+        'African fintech',
+        'Solana',
         'developer education',
-    ], 
-    authors: [{ name: 'Opeyemi Stephen', url: 'https://www.opeyemibangkok.com' }], 
-    creator: 'Opeyemi Stephen', 
-    robots: { index: true, follow: true }, 
+        'developer relations',
+        'technical writer',
+    ],
+    authors: [{ name: DISPLAY_NAME, url: SITE_URL }],
+    creator: DISPLAY_NAME,
+    robots: { index: true, follow: true },
     openGraph: {
-        type: 'website', 
-        siteName: 'Opeyemi Stephen', 
-        title: 'Opeyemi Stephen - Software Engineer & Technical Writer', 
-        description: 'Building the future of web3 and developer education. Explore my technical articles and projects.', 
-        url: 'https://www.opeyemibangkok.com', 
-        locale: 'en_US',  
-    }, 
+        type: 'website',
+        siteName: DISPLAY_NAME,
+        title: seo.homeTitle,
+        description: seo.homeDescription,
+        url: SITE_URL,
+        locale: 'en_US',
+    },
     twitter: {
-        card: 'summary_large_image', 
-        title: 'Opeyemi Stephen - Software Engineer & Technical Writer', 
-        description: 'Building the future of web3 and developer education. Explore my technical articles and projects.', 
-        creator: '@devvgbg', 
-        site: '@devvgbg', 
-    }, 
+        card: 'summary_large_image',
+        title: seo.homeTitle,
+        description: seo.homeDescription,
+        creator: '@devvgbg',
+        site: '@devvgbg',
+    },
     icons: {
         icon: [
             { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
@@ -64,7 +66,7 @@ export const metadata: Metadata = {
     },
     manifest: '/site.webmanifest',
     alternates: {
-        canonical: 'https://www.opeyemibangkok.com',
+        canonical: SITE_URL,
     },
 };
 

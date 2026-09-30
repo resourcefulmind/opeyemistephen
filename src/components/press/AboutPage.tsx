@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { experience, intro, lanes, principles, skills, story } from '@/content/about.config';
-import { contactEmail, now, socialLinks } from '@/content/home.config';
+import { contactEmail, contactLine, inProduction, openTo, socialLinks } from '@/content/home.config';
 import NowTicker from './NowTicker';
 import PressFooter from './PressFooter';
 
@@ -24,6 +24,7 @@ export default function AboutPage() {
           </h1>
           <p className="profile-tagline">{intro.tagline}</p>
           <p className="profile-bio">{intro.bio}</p>
+          <p className="open-to">{openTo}</p>
           <div className="profile-actions">
             <a href={`mailto:${contactEmail}`} className="cta">
               Email me <span aria-hidden="true">&rarr;</span>
@@ -41,7 +42,7 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <NowTicker items={now} />
+      <NowTicker items={inProduction} />
 
       <article className="story" aria-labelledby="story-heading">
         <h2 id="story-heading">{story.title}</h2>
@@ -116,7 +117,7 @@ export default function AboutPage() {
 
       <section className="contact" aria-labelledby="contact-heading">
         <h2 id="contact-heading">Let’s make magic</h2>
-        <p>Have a project or idea? I’m open to collaborations and impactful work.</p>
+        <p>{contactLine}</p>
         <div className="contact-actions">
           <a href={`mailto:${contactEmail}`} className="cta">
             Email me <span aria-hidden="true">&rarr;</span>

@@ -10,8 +10,8 @@ import ReadMarker from '@/components/press/ReadMarker';
 import { articleMdx } from '@/components/press/articleMdx';
 import { extractHeadings } from '@/lib/blog/headings';
 import { getAllPosts, getPostBySlug, getSeries, postType } from '@/lib/blog/loader';
+import { DISPLAY_NAME, SITE_URL, bylineName, personJsonLd } from '@/content/identity';
 
-const SITE_URL = 'https://www.opeyemibangkok.com';
 
 function resolveImageUrl(coverImage?: string): string {
   if (!coverImage) return `${SITE_URL}/preview.png`;
@@ -22,12 +22,12 @@ function resolveImageUrl(coverImage?: string): string {
 }
 
 function resolveAuthorName(author: unknown): string {
-  if (typeof author === 'string') return author;
+  if (typeof author === 'string') return bylineName(author);
   if (author && typeof author === 'object' && 'name' in author) {
     const name = (author as { name?: unknown }).name;
-    if (typeof name === 'string') return name;
+    if (typeof name === 'string') return bylineName(name);
   }
-  return 'Opeyemi Stephen';
+  return DISPLAY_NAME;
 }
 
 export async function generateStaticParams() {
@@ -77,7 +77,7 @@ export async function generateMetadata({
       title,
       description: excerpt,
       url: canonical,
-      siteName: 'Opeyemi Stephen',
+      siteName: DISPLAY_NAME,
       locale: 'en_US',
       publishedTime,
       modifiedTime,
@@ -133,19 +133,8 @@ export default async function BlogPostPage({
     headline: post.frontmatter.title,
     description: post.frontmatter.excerpt,
     image: imageUrl,
-    author: {
-      '@type': 'Person',
-      name: authorName,
-      url: SITE_URL,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Opeyemi Stephen',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/preview.png`,
-      },
-    },
+    author: authorName === DISPLAY_NAME ? personJsonLd : { '@type': 'Person', name: authorName },
+    publisher: { '@id': `${SITE_URL}/#person`, '@type': 'Person', name: DISPLAY_NAME, url: SITE_URL },
     datePublished: publishedTime,
     dateModified: modifiedTime,
     mainEntityOfPage: {

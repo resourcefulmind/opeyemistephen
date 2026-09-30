@@ -6,6 +6,7 @@ import ArticleProgress from './ArticleProgress';
 import ArticleToc from './ArticleToc';
 import PressFooter from './PressFooter';
 import { formatDate, TYPE_LABEL, TYPE_PLURAL } from './format';
+import { bylineName } from '@/content/identity';
 
 interface ArticleViewProps {
   slug: string;
@@ -24,8 +25,7 @@ function partNumber(slug: string) {
 }
 
 function authorName(author: ValidatedPostMetadata['author']) {
-  if (!author) return 'Opeyemi Stephen';
-  return typeof author === 'string' ? author : author.name;
+  return bylineName(author);
 }
 
 function EndCard({ post, label }: { post: BlogPostPreview; label: string }) {

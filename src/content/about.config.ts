@@ -1,8 +1,8 @@
 export const intro = {
-  title: 'About Opeyemi Stephen',
+  title: 'About Opeyemi Bangkok',
   tagline: 'A trusted voice, a cool head, and an undaunted initiative in messy situations.',
   bio:
-    "I sit at my desk, look at my screens, create magic for you with my computer and get paid for it. I try to keep things simple, functional, readable, and fast, because the best work is the kind people actually use.",
+    'I\u2019m a software engineer and technical writer who builds developer education and ships the software it teaches. I try to keep things simple, functional, readable, and fast, because the best work is the kind people actually use.',
 };
 
 /**

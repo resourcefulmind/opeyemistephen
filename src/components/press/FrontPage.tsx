@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { BlogPostPreview } from '@/lib/blog/types';
 import type { FrontSlot } from '@/lib/blog/loader';
 import { principles } from '@/content/about.config';
-import { now, seriesBlurb } from '@/content/home.config';
+import { inProduction, seriesBlurb } from '@/content/home.config';
 import Masthead from './Masthead';
 import NowTicker from './NowTicker';
 import PressFooter from './PressFooter';
@@ -68,7 +68,7 @@ export default function FrontPage({ issueNumber, lead, slots, moreAnalysis }: Fr
   return (
     <>
       <Masthead issueNumber={issueNumber} />
-      <NowTicker items={now} />
+      <NowTicker items={inProduction} />
 
       <section className="front" aria-label="Latest writing">
         {lead && (

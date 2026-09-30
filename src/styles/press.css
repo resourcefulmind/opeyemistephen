@@ -1615,3 +1615,21 @@ button.cta { cursor: pointer; font-family: var(--display); }
   .press-topline .right { width: 100%; justify-content: space-between; }
   .press-topline nav ul { gap: 14px; }
 }
+
+/* ---- In production ticker and the About availability line ---- */
+.track a { color: inherit; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--hl) 70%, transparent); text-underline-offset: 3px; }
+.track a:hover { color: var(--hl); }
+.ticker .tag { white-space: nowrap; }
+.open-to {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 4px 10px;
+  background: var(--hl);
+  color: var(--on-hl);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.4;
+}
+@media (max-width: 820px) {
+  .ticker .tag { font-size: 12px; letter-spacing: 0.04em; }
+}

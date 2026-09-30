@@ -4,45 +4,57 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 const PIXELS_PER_SECOND = 45;
 
-export default function NowTicker({ items }: { items: string[] }) {
+type Item = { text: string; href?: string };
+
+/**
+ * The "In production" strip. The moving copy is decorative (hidden from assistive
+ * tech, links out of the tab order); the list under it is the accessible version,
+ * with the same links reachable by keyboard.
+ */
+export default function NowTicker({ items, label = 'In production' }: { items: Item[]; label?: string }) {
   const [paused, setPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // Constant reading speed no matter how long the items are.
   useLayoutEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const half = track.scrollWidth / 2;
-    track.style.setProperty('--dur', `${half / PIXELS_PER_SECOND}s`);
+    track.style.setProperty('--dur', `${track.scrollWidth / 2 / PIXELS_PER_SECOND}s`);
   }, [items]);
 
-  const run = items.map((item, i) => <span key={i}>{item}</span>);
+  const run = (dup: boolean) =>
+    items.map((item, i) => (
+      <span key={`${dup ? 'dup' : 'run'}-${i}`} className={dup ? 'dup' : undefined}>
+        {item.href ? (
+          <a href={item.href} tabIndex={-1} rel="noopener">
+            {item.text}
+          </a>
+        ) : (
+          item.text
+        )}
+      </span>
+    ));
 
   return (
-    <section className={`ticker${paused ? ' paused' : ''}`} aria-label="Now">
+    <section className={`ticker${paused ? ' paused' : ''}`} aria-label={label}>
       <span className="tag" aria-hidden="true">
-        Now
+        {label}
       </span>
       <div className="stage" aria-hidden="true">
         <div className="track" ref={trackRef}>
-          {run}
-          {items.map((item, i) => (
-            <span key={`dup-${i}`} className="dup">
-              {item}
-            </span>
-          ))}
+          {run(false)}
+          {run(true)}
         </div>
       </div>
       <ul className="sr-only-press">
         {items.map((item, i) => (
-          <li key={i}>{item}</li>
+          <li key={i}>{item.href ? <a href={item.href}>{item.text}</a> : item.text}</li>
         ))}
       </ul>
       <button
         type="button"
         className="ctl"
         onClick={() => setPaused((p) => !p)}
-        aria-label={paused ? 'Play the Now ticker' : 'Pause the Now ticker'}
+        aria-label={paused ? `Play the ${label} ticker` : `Pause the ${label} ticker`}
         aria-pressed={paused}
       >
         {paused ? (

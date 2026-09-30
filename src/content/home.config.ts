@@ -5,7 +5,7 @@
 
 export const masthead = {
   role:
-    'Education Architect at the Solana Foundation. I write about Web3 infrastructure and African fintech, and I read the receipts before the press release.',
+    'I build developer education and ship software for Web3 and African fintech, and I read the receipts before the press release.',
   edition: 'Lagos edition',
   topics: [
     { label: 'Web3', topic: 'web3' },
@@ -23,11 +23,18 @@ export const socialLinks = [
   { label: 'Email', href: `mailto:${contactEmail}` },
 ];
 
-export const now = [
-  'Designing the education arm at the Solana Foundation',
-  'Reading stablecoin settlement claims against the receipts',
-  'Building calmer interfaces, with motion only where it earns a place',
-  'Simplifying content pipelines and docs for teams that ship',
+/** The "In production" ticker: named projects, each true for a season. Keep it current. */
+export const inProduction: Array<{ text: string; href?: string }> = [
+  {
+    text: 'Kronos: wallet and transaction components for Solana\u2019s framework-kit',
+    href: 'https://github.com/Kronos-Guild/framework-kit',
+  },
+  {
+    text: 'arch-angel: persistent architectural memory for engineering teams',
+    href: 'https://github.com/resourcefulmind/arch-angel',
+  },
+  { text: 'swarm-trader: a Solana trading harness built to be trusted with real money' },
+  { text: 'Writing: case studies on shipping developer platforms' },
 ];
 
 export const archiveIntro =
@@ -35,5 +42,10 @@ export const archiveIntro =
 
 export const seriesBlurb =
   'Ten parts on how Solana works, from Proof of History to tokenomics, written for engineers who know REST but not Solana. Start at Part 1.';
+
+export const openTo = 'Open to developer relations and developer experience roles, remote or relocating.';
+
+export const contactLine =
+  'Hiring for developer relations, or building something that needs teaching? My inbox is open.';
 
 export const motto = 'Sic Parvis Magna';

@@ -1,7 +1,7 @@
 import { getAllPosts } from '@/lib/blog/loader';
 
 const SITE_URL = 'https://www.opeyemibangkok.com';
-const FEED_TITLE = 'Opeyemi Stephen';
+const FEED_TITLE = 'Opeyemi Bangkok';
 const FEED_DESCRIPTION =
   'Articles on blockchain, web3, React, JavaScript, infrastructure, and technical writing.';
 

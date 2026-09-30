@@ -4,11 +4,11 @@ import Archive from '@/components/press/Archive';
 import PressFooter from '@/components/press/PressFooter';
 import PressLayout from '@/components/press/PressLayout';
 import { getAllPosts } from '@/lib/blog/loader';
+import { seo } from '@/content/identity';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description:
-    'Analysis, case studies, explainers and tutorials on Web3 infrastructure, African fintech, React and technical writing.',
+  description: seo.blogDescription,
   alternates: { canonical: 'https://www.opeyemibangkok.com/blog' },
 };
 
