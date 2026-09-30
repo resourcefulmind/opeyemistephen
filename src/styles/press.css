@@ -13,6 +13,12 @@
   --hl: #f2c200;
   --on-hl: #0d0d0c;
   --band: #0d0d0c;
+  --on-band: #e3e5e3;
+  --hl-line: #8a6d00;
+  --letterbox: #fbfaf7;
+  --code-bg: #0d0d0c;
+  --code-fg: #e6e6e1;
+  --code-rule: rgba(255, 255, 255, 0.12);
   --display: var(--font-archivo), 'Arial Narrow', system-ui, sans-serif;
   --serif: var(--font-newsreader), Georgia, serif;
   --sans: 'Satoshi', system-ui, sans-serif;
@@ -30,14 +36,19 @@
   /* Night edition: everything one notch quieter than the day paper. */
   --paper: #121211;
   --ink: #dcd9d2;
-  --muted: #a6a29a;
+  --muted: #c4c0b7;
   --rule: rgba(220, 217, 210, 0.18);
   --rule-strong: rgba(220, 217, 210, 0.55);
   --pen: #e5584c;
   --hl: #d4a82a;
   --band: #1a1a18;
+  --on-band: var(--ink);
+  --hl-line: var(--hl);
+  /* The chart backdrop dimmed by the same 0.86 as the images, so letterbox strips don't glare */
+  --letterbox: #d8d7d4;
 }
 
+/* The body sits outside .press, so it cannot read the tokens; these mirror --paper. */
 html:has(.press) body {
   background: var(--press-body, #e3e5e3);
 }
@@ -74,7 +85,7 @@ a:hover > .hl-swipe,
 a:focus-visible > .hl-swipe,
 a.hl-swipe:hover,
 a.hl-swipe:focus-visible,
-.hl-swipe[aria-current='page'] {
+a[aria-current='page'] > .hl-swipe {
   /* The highlight only exists while hovered, focused or current, so at rest the
      text sits on plain paper (and contrast checkers read it correctly). */
   background-image: linear-gradient(var(--hl), var(--hl));
@@ -93,7 +104,7 @@ a.hl-swipe:focus-visible,
   color: var(--on-hl);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   padding: 1px 5px;
   line-height: 1.5;
@@ -244,6 +255,7 @@ a.hl-swipe:focus-visible,
 .issue .chip:hover { background: var(--ink); color: var(--hl); }
 .socials {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 18px;
   flex-wrap: wrap;
@@ -270,10 +282,11 @@ a.hl-swipe:focus-visible,
   display: flex;
   align-items: stretch;
   background: var(--band);
-  color: #e3e5e3;
+  color: var(--on-band);
   min-height: 48px;
 }
 .ticker .tag {
+  text-transform: uppercase;
   background: var(--hl);
   color: var(--on-hl);
   font-family: var(--display);
@@ -327,7 +340,7 @@ a.hl-swipe:focus-visible,
 .ticker .ctl {
   background: none;
   border: 0;
-  color: rgba(255, 255, 255, 0.45);
+  color: color-mix(in srgb, var(--on-band) 45%, transparent);
   width: 40px;
   display: grid;
   place-items: center;
@@ -352,7 +365,7 @@ a.hl-swipe:focus-visible,
   display: block;
   aspect-ratio: 3 / 2;
   outline: 1px solid var(--ink);
-  background: #fbfaf7;
+  background: var(--letterbox);
 }
 .lead .shot img { object-fit: contain; }
 .lead h2 {
@@ -404,9 +417,10 @@ a.hl-swipe:focus-visible,
   transform: rotate(-3deg);
   transform-origin: 30% 60%;
   box-shadow: 3px 3px 0 var(--hl);
+  text-transform: uppercase;
   animation: stamp-dance 4s ease-in-out infinite;
 }
-:root.dark .stamp { background: var(--hl); color: #0d0d0c; box-shadow: 3px 3px 0 #0d0d0c; }
+:root.dark .stamp { background: var(--hl); color: var(--on-hl); box-shadow: 3px 3px 0 var(--on-hl); }
 /* Rests for about 3.3s, then a ~0.65s shake, every 4 seconds. */
 @keyframes stamp-dance {
   0%, 84%, 100% { transform: rotate(-3deg) scale(1); }
@@ -464,7 +478,7 @@ a.hl-swipe:focus-visible,
   overflow: hidden;
   outline: 1px solid var(--ink);
   margin-bottom: 12px;
-  background: #fbfaf7;
+  background: var(--letterbox);
 }
 .side .thumb img { object-fit: cover; object-position: top center; }
 .side h3 {
@@ -490,7 +504,7 @@ a.hl-swipe:focus-visible,
 /* ---- Principles band ---- */
 .principles {
   background: var(--band);
-  color: #e3e5e3;
+  color: var(--on-band);
   padding: 26px 32px 30px;
 }
 .principles h2 {
@@ -512,7 +526,7 @@ a.hl-swipe:focus-visible,
 }
 .principles li {
   padding: 10px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid color-mix(in srgb, var(--on-band) 18%, transparent);
 }
 .principles strong {
   display: block;
@@ -523,7 +537,7 @@ a.hl-swipe:focus-visible,
 }
 .principles span {
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.72);
+  color: color-mix(in srgb, var(--on-band) 72%, transparent);
 }
 
 /* ---- Footer ---- */
@@ -564,7 +578,7 @@ a.hl-swipe:focus-visible,
 /* ---- Archive ---- */
 .archive-head {
   background: var(--band);
-  color: #e3e5e3;
+  color: var(--on-band);
   padding: 34px 32px 22px;
   margin-top: 6px;
 }
@@ -580,7 +594,7 @@ a.hl-swipe:focus-visible,
   margin: 0;
 }
 .archive-head p {
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in srgb, var(--on-band) 78%, transparent);
   font-family: var(--serif);
   font-size: 19px;
   margin: 10px 0 14px;
@@ -598,7 +612,7 @@ a.hl-swipe:focus-visible,
   border: 0;
   padding: 3px 8px;
   margin-left: -8px;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--on-band) 70%, transparent);
   font-weight: 500;
   cursor: pointer;
 }
@@ -699,7 +713,11 @@ a.hl-swipe:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track { animation: none; flex-wrap: wrap; width: auto; }
+  .track { animation: none; flex-wrap: wrap; width: auto; padding: 8px 0; }
+  .track span { white-space: normal; }
+  .track span::after { display: none; }
+  .track .dup,
+  .ticker .ctl { display: none; }
   .stamp { animation: none; }
   .masthead .fix .old::after,
   .masthead .fix .new,
@@ -712,10 +730,6 @@ a.hl-swipe:focus-visible,
 .press a.cta {
   color: var(--on-hl);
 }
-:root.dark .press .hl-swipe[aria-current='page'] {
-  color: var(--on-hl);
-  background-size: 100% 100%;
-}
 
 /* Night edition: thick rules recede, bands get a hairline edge, big yellow type softens */
 :root.dark .press .masthead { border-top-color: var(--rule-strong); border-bottom-color: var(--rule-strong); }
@@ -724,14 +738,11 @@ a.hl-swipe:focus-visible,
 :root.dark .press .section h2 { border-color: var(--rule-strong); }
 :root.dark .press .ticker,
 :root.dark .press .principles,
-:root.dark .press .archive-head { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07); }
-:root.dark .press .ticker,
-:root.dark .press .principles,
-:root.dark .press .archive-head { color: var(--ink); }
+:root.dark .press .archive-head { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--on-band) 7%, transparent); }
 :root.dark .press .principles span,
 :root.dark .press .archive-head p { color: var(--muted); }
 :root.dark .press .archive-head h1 { color: var(--hl); opacity: 0.92; }
-:root.dark .press .hl-swipe[aria-current='page'] { color: inherit; background-size: 100% 2px; background-position: 0 100%; }
+:root.dark .press a[aria-current='page'] > .hl-swipe { color: inherit; background-size: 100% 2px; background-position: 0 100%; }
 :root.dark .press .lead .shot,
 :root.dark .press .side .thumb { outline-color: var(--rule-strong); }
 
@@ -785,24 +796,23 @@ a.hl-swipe:focus-visible,
   padding: 0;
 }
 
-/*
- * Resume pill. Lives on the article pages, which are not Press pages yet, so it
- * carries its own colours instead of the .press tokens.
- */
+/* Resume pill on article pages: offers to jump back to where the reader stopped. */
 .resume-pill {
   position: fixed;
-  left: 50%;
+  left: 16px;
+  right: 16px;
   bottom: 20px;
-  transform: translateX(-50%);
+  margin-inline: auto;
+  width: max-content;
+  max-width: calc(100vw - 32px);
   z-index: 60;
   display: flex;
   align-items: stretch;
-  background: #0d0d0c;
-  color: #edece7;
-  border: 2px solid #f2c200;
-  box-shadow: 4px 4px 0 #f2c200;
-  font-family: 'Satoshi', system-ui, sans-serif;
-  max-width: calc(100vw - 32px);
+  background: var(--band);
+  color: var(--on-band);
+  border: 2px solid var(--hl);
+  box-shadow: 4px 4px 0 var(--hl);
+  font-family: var(--sans);
   animation: resume-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .resume-pill button {
@@ -823,24 +833,24 @@ a.hl-swipe:focus-visible,
   white-space: nowrap;
 }
 .resume-pill .pct {
-  background: #f2c200;
-  color: #0d0d0c;
+  background: var(--hl);
+  color: var(--on-hl);
   font-size: 12px;
   padding: 1px 6px;
 }
 .resume-pill .close {
   display: grid;
   place-items: center;
-  width: 40px;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(237, 236, 231, 0.7);
+  flex: 0 0 40px;
+  border-left: 1px solid color-mix(in srgb, var(--on-band) 20%, transparent);
+  color: color-mix(in srgb, var(--on-band) 70%, transparent);
 }
 .resume-pill .close svg { width: 12px; height: 12px; }
-.resume-pill button:hover { color: #f2c200; }
-.resume-pill button:focus-visible { outline: 2px solid #f2c200; outline-offset: -4px; }
+.resume-pill button:hover { color: var(--hl); }
+.resume-pill button:focus-visible { outline: 2px solid var(--hl); outline-offset: -4px; }
 @keyframes resume-in {
-  from { opacity: 0; transform: translate(-50%, 12px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 420px) {
   .resume-pill .go { font-size: 13px; padding: 10px 12px; white-space: normal; }
@@ -993,7 +1003,7 @@ a.hl-swipe:focus-visible,
   padding-bottom: 6px;
   border-bottom: 1px solid var(--ink);
 }
-.record .year .now { display: block; width: max-content; margin-top: 6px; font-size: 11px; }
+.record .year .now { display: block; width: max-content; margin-top: 6px; font-size: 12px; }
 .record .lane > ol > li {
   display: grid;
   grid-template-columns: 90px 1fr;
@@ -1118,12 +1128,12 @@ a.hl-swipe:focus-visible,
   font-weight: 500;
   margin: 0 0 12px;
 }
-.article-meta > * + *:not(.chip)::before {
+.article-meta > * { white-space: nowrap; }
+.article-meta > :not(.chip):not(:last-child)::after {
   content: '\00b7';
-  margin-right: 14px;
+  margin-left: 14px;
   color: var(--muted);
 }
-.article-meta .chip + *::before { content: none; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; font-size: 13px; }
 .article-tags a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
 .article-tags a:hover { color: var(--ink); text-decoration-color: var(--hl); }
@@ -1175,7 +1185,7 @@ a.hl-swipe:focus-visible,
   font-family: var(--serif);
   font-size: 20px;
   line-height: 1.7;
-  max-width: 68ch;
+  max-width: 60ch;
   min-width: 0;
 }
 .article-body > * { margin: 0 0 1.1em; }
@@ -1193,16 +1203,24 @@ a.hl-swipe:focus-visible,
 .article-body h2 { font-weight: 900; font-size: 34px; margin: 1.8em 0 0.6em; padding-top: 14px; border-top: 1px solid var(--ink); }
 .article-body h3 { font-weight: 800; font-size: 26px; margin: 1.5em 0 0.5em; }
 .article-body h4 { font-weight: 800; font-size: 21px; margin: 1.3em 0 0.4em; }
+/* Section links sit beside the heading; the wrapper carries the heading's spacing and rule. */
+.article-body .hwrap { display: flex; align-items: baseline; gap: 10px; }
+.article-body .hwrap > :is(h2, h3, h4, h5, h6) { margin: 0; padding: 0; border: 0; }
+.article-body .hwrap-h2 { margin: 1.8em 0 0.6em; padding-top: 14px; border-top: 1px solid var(--ink); }
+.article-body .hwrap-h3 { margin: 1.5em 0 0.5em; }
+.article-body .hwrap-h4 { margin: 1.3em 0 0.4em; }
+.article-body .hwrap-h5,
+.article-body .hwrap-h6 { margin: 1.2em 0 0.4em; }
 .article-body h5,
 .article-body h6 { font-weight: 800; font-size: 18px; margin: 1.2em 0 0.4em; }
 .article-body .anchor {
-  margin-left: 10px;
+  margin-left: 0;
   color: var(--muted);
   font-weight: 400;
   opacity: 0;
   text-decoration: none;
 }
-.article-body :is(h2, h3, h4, h5, h6):hover .anchor,
+.article-body .hwrap:hover .anchor,
 .article-body .anchor:focus-visible { opacity: 1; }
 .article-body a:not(.anchor) {
   text-decoration: underline;
@@ -1240,8 +1258,8 @@ a.hl-swipe:focus-visible,
 /* Code blocks: dark in both themes */
 .codeblock {
   margin: 1.6em 0;
-  background: #0d0d0c;
-  color: #e6e6e1;
+  background: var(--code-bg);
+  color: var(--code-fg);
   outline: 1px solid var(--ink);
   font-size: 15px;
   line-height: 1.6;
@@ -1251,13 +1269,13 @@ a.hl-swipe:focus-visible,
   justify-content: space-between;
   align-items: center;
   padding: 6px 8px 6px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--code-rule);
   font-family: var(--sans);
 }
 .codeblock-lang {
   background: var(--hl);
-  color: #0d0d0c;
-  font-size: 11px;
+  color: var(--on-hl);
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1268,8 +1286,8 @@ a.hl-swipe:focus-visible,
   align-items: center;
   gap: 6px;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e6e6e1;
+  border: 1px solid var(--code-rule);
+  color: var(--code-fg);
   font: 600 12px var(--sans);
   padding: 4px 8px;
   cursor: pointer;
@@ -1278,7 +1296,7 @@ a.hl-swipe:focus-visible,
 .codeblock-bar button svg { width: 13px; height: 13px; }
 .codeblock pre { margin: 0; padding: 16px 18px; overflow-x: auto; }
 .codeblock pre code { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; background: none; padding: 0; }
-.codeblock pre code.hljs { background: none; padding: 0; }
+.codeblock pre code.hljs { background: none; padding: 0; overflow: visible; display: inline; }
 
 /* Figures */
 .article-figure { margin: 1.8em 0; }
@@ -1336,9 +1354,12 @@ a.hl-swipe:focus-visible,
 :root.dark .press .article-head,
 :root.dark .press .article-grid,
 :root.dark .press .article-end { border-color: var(--rule-strong); }
-:root.dark .press .article-body h2 { border-color: var(--rule-strong); }
+:root.dark .press .article-body h2,
+:root.dark .press .article-body .hwrap-h2 { border-color: var(--rule-strong); }
 :root.dark .press .article-cover,
-:root.dark .press .article-figure a { outline-color: var(--rule-strong); }
+:root.dark .press .article-figure a,
+:root.dark .press .codeblock,
+:root.dark .press .callout { outline-color: var(--rule-strong); }
 
 @media (max-width: 1100px) {
   .article-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -1348,7 +1369,7 @@ a.hl-swipe:focus-visible,
     margin: 0 0 24px;
     border: 1px solid var(--ink);
     padding: 10px 14px;
-    max-width: 68ch;
+    max-width: 60ch;
   }
   .toc-mobile summary { cursor: pointer; margin: 0; list-style-position: inside; }
   .toc-mobile[open] summary { margin-bottom: 8px; }
@@ -1382,11 +1403,11 @@ a.hl-swipe:focus-visible,
   outline: 2px solid var(--ink);
 }
 .skip-link:focus { top: 12px; }
+.press a.skip-link { color: var(--on-hl); }
 main:focus { outline: none; }
 
 /* Prose links: a visible underline in the light theme (yellow alone was 1.3:1 on the paper) */
-.article-body a:not(.anchor) { text-decoration-color: #8a6d00; }
-:root.dark .press .article-body a:not(.anchor) { text-decoration-color: var(--hl); }
+.article-body a:not(.anchor) { text-decoration-color: var(--hl-line); }
 
 /* Code that scrolls sideways can be reached and scrolled with the keyboard */
 .codeblock pre:focus-visible { outline: 2px solid var(--hl); outline-offset: -2px; }
@@ -1407,5 +1428,29 @@ main:focus { outline: none; }
   /* Visible chips: at least the 24px minimum target size without turning into slabs */
   .issue .chip { padding: 5px 8px; }
   .topics button { min-height: 32px; }
-  .toc-mobile summary { min-height: 44px; display: flex; align-items: center; }
+  .toc-mobile summary { display: list-item; padding-block: 12px; min-height: 44px; }
+}
+
+/* ---- Theme switch and icon swaps ---- */
+.theme-switching *:not(.icon-swap > svg),
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+/* Two icons stacked in one cell; the hidden one scales down, blurs and fades. */
+.icon-swap { display: inline-grid; place-items: center; }
+.icon-swap > svg {
+  grid-area: 1 / 1;
+  transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s ease;
+}
+.icon-swap[data-show='a'] > svg:nth-child(2),
+.icon-swap[data-show='b'] > svg:nth-child(1) {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+.press-topline .theme-btn .icon-swap > svg { width: 16px; height: 16px; }
+.codeblock-bar button .icon-swap > svg { width: 13px; height: 13px; }
+@media (prefers-reduced-motion: reduce) {
+  .icon-swap > svg { transition: none; }
 }

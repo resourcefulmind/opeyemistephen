@@ -18,12 +18,21 @@ export function useTheme() {
   useEffect(() => {
     if (!mounted) return;
 
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
+    const root = document.documentElement;
+    // Suppress colour transitions for the instant of the switch so the page doesn't
+    // fade through half-states; the theme icon's own cross-fade is exempt in CSS.
+    root.classList.add('theme-switching');
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+    void root.offsetWidth;
+    const frame = requestAnimationFrame(() =>
+      requestAnimationFrame(() => root.classList.remove('theme-switching'))
+    );
     localStorage.setItem('theme', theme);
     
     // Dispatch theme change event
     document.dispatchEvent(new CustomEvent('themeChange'));
+    return () => cancelAnimationFrame(frame);
   }, [theme, mounted]);
 
   const toggleTheme = () => {

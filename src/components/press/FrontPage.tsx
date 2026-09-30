@@ -74,7 +74,7 @@ export default function FrontPage({ issueNumber, lead, slots, moreAnalysis }: Fr
         {lead && (
           <article className="lead">
             <span className="stamp" aria-hidden="true">
-              LATEST
+              Latest
             </span>
             {lead.frontmatter.coverImage && (
               <Link href={`/blog/${lead.slug}`} className="shot" tabIndex={-1} aria-hidden="true">

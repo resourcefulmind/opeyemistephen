@@ -13,7 +13,7 @@ export default function PressFooter({ to }: { to: 'archive' | 'home' }) {
         </Link>
       ) : (
         <Link href="/" className="cta">
-          <span aria-hidden="true">&larr;</span> Front page
+          <span aria-hidden="true">&larr;</span> Home
         </Link>
       )}
     </footer>

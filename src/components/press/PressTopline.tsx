@@ -8,7 +8,7 @@ import { useTheme } from '@/lib/hooks/useTheme';
 
 const NAV = [
   { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/blog', label: 'Archive' },
   { href: '/about', label: 'About' },
 ];
 
@@ -20,8 +20,7 @@ function lagosDate(style: 'long' | 'short') {
       day: 'numeric',
       month: style,
       ...(style === 'long' ? { year: 'numeric' as const } : {}),
-    })
-    .toUpperCase();
+    });
 }
 
 export default function PressTopline() {
@@ -53,12 +52,8 @@ export default function PressTopline() {
               const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
               return (
                 <li key={href}>
-                  <Link
-                    href={href}
-                    className="hl-swipe"
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    {label}
+                  <Link href={href} aria-current={active ? 'page' : undefined}>
+                    <span className="hl-swipe">{label}</span>
                   </Link>
                 </li>
               );
@@ -72,7 +67,10 @@ export default function PressTopline() {
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
           >
-            {theme === 'dark' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+            <span className="icon-swap" data-show={theme === 'dark' ? 'a' : 'b'} aria-hidden="true">
+              <Sun />
+              <Moon />
+            </span>
           </button>
         )}
       </div>

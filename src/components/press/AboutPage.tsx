@@ -115,8 +115,8 @@ export default function AboutPage() {
       </section>
 
       <section className="contact" aria-labelledby="contact-heading">
-        <h2 id="contact-heading">Let&apos;s make magic</h2>
-        <p>Have a project or idea? I&apos;m open to collaborations and impactful work.</p>
+        <h2 id="contact-heading">Let’s make magic</h2>
+        <p>Have a project or idea? I’m open to collaborations and impactful work.</p>
         <div className="contact-actions">
           <a href={`mailto:${contactEmail}`} className="cta">
             Email me <span aria-hidden="true">&rarr;</span>

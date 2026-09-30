@@ -5,16 +5,30 @@ import PressCodeBlock from './PressCodeBlock';
 
 type HeadingProps = React.HTMLAttributes<HTMLHeadingElement>;
 
+/** Visible text of a React node tree, for the section link's accessible name. */
+function textOf(node: React.ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join('');
+  if (isValidElement<{ children?: React.ReactNode }>(node)) return textOf(node.props.children);
+  return '';
+}
+
+/**
+ * Heading with a "#" section link beside it. The link sits outside the heading, so a
+ * screen reader's heading list reads only the heading text, and the link keeps its
+ * own name ("Link to section: ...") for keyboard and pointer users alike.
+ */
 function AnchoredHeading({ as: Tag, id, children, ...props }: HeadingProps & { as: 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }) {
+  if (!id) return <Tag {...props}>{children}</Tag>;
   return (
-    <Tag id={id} {...props}>
-      {children}
-      {id ? (
-        <a href={`#${id}`} className="anchor" aria-label="Link to this section">
-          #
-        </a>
-      ) : null}
-    </Tag>
+    <div className={`hwrap hwrap-${Tag}`}>
+      <Tag id={id} {...props}>
+        {children}
+      </Tag>
+      <a href={`#${id}`} className="anchor" aria-label={`Link to section: ${textOf(children)}`}>
+        #
+      </a>
+    </div>
   );
 }
 

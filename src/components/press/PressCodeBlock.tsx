@@ -29,7 +29,10 @@ export default function PressCodeBlock({
       <div className="codeblock-bar">
         {language ? <span className="codeblock-lang">{language}</span> : <span />}
         <button type="button" onClick={copy} aria-label={copied ? 'Copied' : 'Copy code'}>
-          {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+          <span className="icon-swap" data-show={copied ? 'b' : 'a'} aria-hidden="true">
+            <Copy />
+            <Check />
+          </span>
           <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>

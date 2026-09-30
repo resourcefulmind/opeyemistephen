@@ -21,13 +21,15 @@ export default function NowTicker({ items }: { items: string[] }) {
   return (
     <section className={`ticker${paused ? ' paused' : ''}`} aria-label="Now">
       <span className="tag" aria-hidden="true">
-        NOW
+        Now
       </span>
       <div className="stage" aria-hidden="true">
         <div className="track" ref={trackRef}>
           {run}
           {items.map((item, i) => (
-            <span key={`dup-${i}`}>{item}</span>
+            <span key={`dup-${i}`} className="dup">
+              {item}
+            </span>
           ))}
         </div>
       </div>
