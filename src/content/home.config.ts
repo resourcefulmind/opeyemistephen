@@ -14,11 +14,13 @@ export const masthead = {
   ],
 };
 
+export const contactEmail = 'omodaraopeyemi754@gmail.com';
+
 export const socialLinks = [
   { label: 'GitHub', href: 'https://github.com/resourcefulmind' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/opeyemistephen/' },
   { label: 'X', href: 'https://x.com/devvgbg' },
-  { label: 'Email', href: 'mailto:omodaraopeyemi754@gmail.com' },
+  { label: 'Email', href: `mailto:${contactEmail}` },
 ];
 
 export const now = [

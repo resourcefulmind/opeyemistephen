@@ -5,21 +5,6 @@ export const intro = {
     "I sit at my desk, look at my screens, create magic for you with my computer and get paid for it. I try to keep things simple, functional, readable, and fast, because the best work is the kind people actually use.",
 };
 
-export const stats = [];
-
-export const now = {
-  title: 'Now',
-  bullets: [
-    'Simplifying Everything', 
-    'Designing calmer interfaces with motion used sparingly.', 
-    'Building & Redefining Education for the Solana Foundation', 
-    'Writing about front‑end systems and developer experience.',
-    'Helping teams simplify content pipelines and documentation.', 
-    'Building Ecosystems', 
-    'The Gym, Swimming & Tennis', 
-  ],
-};
-
 export const experience = [
   {
     role: 'Education Architect, Solana',
@@ -97,21 +82,6 @@ export const experience = [
   },
 ];
 
-export const caseStudies = [
-  {
-    title: 'MDX Content System',
-    summary: 'Schema-driven blog pipeline with TOC, fast previews, and robust authoring.',
-    tags: ['MDX', 'Content'],
-    link: '/blog',
-  },
-  {
-    title: 'Design System & Motion',
-    summary: 'Accessible component kit with subtle motion and performance budgets.',
-    tags: ['React', 'Framer Motion'],
-    link: '/',
-  },
-];
-
 export const skills = [
   {
     group: 'Core',
@@ -172,10 +142,6 @@ export const principles = [
     title: 'Impact or it is irrelevant',
     desc: 'Technology must materially improve human lives, usefulness is the only justification for building.'
   }
-];
-
-export const testimonials = [
-  // Optional; left empty for now
 ];
 
 export const story = {

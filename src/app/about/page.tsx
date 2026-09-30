@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
-import About from '@/components/About';
+import AboutPage from '@/components/press/AboutPage';
+import PressLayout from '@/components/press/PressLayout';
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'About Opeyemi Stephen. Software engineer, technical writer, and ecosystem builder.',
+    'About Opeyemi Bangkok (Opeyemi Stephen): Education Architect at the Solana Foundation, technical writer and fintech co-founder in Lagos.',
   alternates: { canonical: 'https://www.opeyemibangkok.com/about' },
 };
 
-export default function AboutPage() {
-  return <About />;
+export default function About() {
+  return (
+    <PressLayout>
+      <AboutPage />
+    </PressLayout>
+  );
 }
