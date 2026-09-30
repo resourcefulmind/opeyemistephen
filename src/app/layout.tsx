@@ -2,7 +2,6 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import SiteChrome from '@/components/site/SiteChrome';
 import { Archivo, Newsreader } from 'next/font/google';
 
 const archivo = Archivo({
@@ -105,7 +104,7 @@ export default function RootLayout({
                 <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
             </head>
             <body className="bg-background text-foreground">
-                <SiteChrome>{children}</SiteChrome>
+                {children}
                 <Analytics />
                 <SpeedInsights />
             </body>

@@ -1498,3 +1498,112 @@ main:focus { outline: none; }
 .codeblock .hljs-type { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.25); text-underline-offset: 3px; }
 .codeblock .hljs-addition { color: #b8e0a8; background: rgba(184, 224, 168, 0.08); }
 .codeblock .hljs-deletion { color: #ff8a7a; background: rgba(255, 138, 122, 0.08); }
+
+/* ======================================================================
+   Community (classifieds), 404 (correction) and error pages
+   ====================================================================== */
+.classifieds-head { position: relative; }
+.classifieds-head .stamp.in-press {
+  top: 22px;
+  left: auto;
+  right: 28px;
+  transform: rotate(4deg);
+}
+.classifieds {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: dense;
+  gap: 0;
+  margin: 28px 0 8px;
+  border-top: 3px solid var(--ink);
+  border-left: 1px solid var(--rule);
+}
+.ad {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px 22px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.ad-wide { grid-column: span 2; }
+.ad-full { grid-column: 1 / -1; }
+.ad-full p { max-width: 60ch; }
+.ad h2 {
+  font-family: var(--display);
+  font-stretch: 62%;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 34px;
+  line-height: 0.95;
+  margin: 0;
+}
+.ad p { font-family: var(--serif); font-size: 18px; line-height: 1.5; margin: 0; max-width: 46ch; }
+.ad-action { margin-top: auto; font-weight: 700; font-size: 14px; }
+
+.notfound-head { padding-bottom: 30px; }
+.notfound-head h1 {
+  font-family: var(--display);
+  font-stretch: 75%;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 84px);
+  line-height: 0.98;
+  text-transform: none;
+  max-width: 16ch;
+  margin: 18px auto 0;
+  text-wrap: balance;
+}
+.struck-path {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: clamp(22px, 3.4vw, 40px);
+  margin: 46px 0 0;
+  color: var(--muted);
+}
+.struck-path .fix .old { color: var(--muted); }
+.struck-path .fix .new { font-size: 1.5em; bottom: 62%; }
+.correction {
+  max-width: 640px;
+  margin: 32px auto 8px;
+  padding: 20px 24px 24px;
+  outline: 1px solid var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+}
+.correction p { margin: 0 0 10px; }
+.correction-label {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--hl);
+  color: var(--on-hl);
+  padding: 2px 8px;
+}
+.correction-ref { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+.correction-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 16px; font-weight: 700; font-size: 15px; font-family: var(--sans); }
+button.cta { cursor: pointer; font-family: var(--display); }
+.meanwhile { margin: 40px 0 0; padding-top: 18px; border-top: 3px solid var(--ink); }
+.meanwhile h2 {
+  font-family: var(--display);
+  font-stretch: 75%;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 26px;
+  margin: 0 0 16px;
+}
+.end-row-3 { grid-template-columns: repeat(3, 1fr); }
+:root.dark .press .classifieds,
+:root.dark .press .meanwhile { border-top-color: var(--rule-strong); }
+:root.dark .press .correction { outline-color: var(--rule-strong); }
+
+@media (max-width: 820px) {
+  .classifieds { grid-template-columns: 1fr; }
+  .ad-wide { grid-column: auto; }
+  .ad-full { grid-column: auto; }
+  .ad h2 { font-size: 30px; }
+  .classifieds-head .stamp.in-press { position: static; display: inline-block; margin: 0 0 14px; font-size: 14px; }
+  .end-row-3 { grid-template-columns: 1fr; }
+  .correction { margin-inline: 0; }
+}
