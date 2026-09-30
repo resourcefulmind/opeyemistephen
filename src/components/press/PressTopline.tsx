@@ -8,7 +8,7 @@ import { useTheme } from '@/lib/hooks/useTheme';
 
 const NAV = [
   { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Archive' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ];
 
