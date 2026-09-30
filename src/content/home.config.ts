@@ -5,7 +5,7 @@
 
 export const masthead = {
   role:
-    'I build developer education and ship software for Web3 and African fintech, and I read the receipts before the press release.',
+    'I ship software, write the courses and guides that teach developers to build, and read the receipts before the press release.',
   edition: 'Lagos edition',
   topics: [
     { label: 'Web3', topic: 'web3' },
@@ -38,7 +38,7 @@ export const inProduction: Array<{ text: string; href?: string }> = [
 ];
 
 export const archiveIntro =
-  'Analysis first, then case studies, the Solana series, and the tutorials I started with.';
+  'Analysis, case studies, explainers and tutorials, newest first in each section.';
 
 export const seriesBlurb =
   'Ten parts on how Solana works, from Proof of History to tokenomics, written for engineers who know REST but not Solana. Start at Part 1.';

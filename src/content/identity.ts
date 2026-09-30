@@ -18,7 +18,7 @@ export const PROFILES = [
 export const seo = {
   homeTitle: 'Opeyemi Bangkok (Opeyemi Stephen): Web3, fintech, education',
   homeDescription:
-    'Opeyemi Bangkok, also known as Opeyemi Stephen, writes operator-grade analysis of Web3 infrastructure and African fintech, and builds developer education.',
+    'Opeyemi Bangkok, also known as Opeyemi Stephen, writes analysis of Web3 and African fintech, and courses and guides that teach developers to build.',
   aboutTitle: 'About Opeyemi Bangkok (Opeyemi Stephen)',
   aboutDescription:
     'Opeyemi Bangkok, also known as Opeyemi Stephen: software engineer, technical writer and educator. Open to developer relations and developer experience roles.',
@@ -36,7 +36,7 @@ export const personJsonLd = {
   image: `${SITE_URL}/images/about/opeyemi-portrait.jpg`,
   jobTitle: 'Software engineer and technical writer',
   description:
-    'Writes operator-grade analysis of Web3 infrastructure and African fintech, and builds developer education.',
+    'Writes operator-grade analysis of Web3 infrastructure and African fintech, and courses and guides that teach developers to build.',
   knowsAbout: [
     'Web3 infrastructure',
     'Solana',
