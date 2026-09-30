@@ -11,7 +11,6 @@ import {
   RawFrontmatter,
 } from './types';
 import { validateFrontmatter, calculateReadingTime } from './schema';
-import { popularSlugs } from '@/content/blog.config';
 import logger from '../utils/logger';
 
 const ARTICLES_DIR = path.join(process.cwd(), 'src/content/articles');
@@ -143,97 +142,84 @@ export const getPostBySlug = cache(
   }
 );
 
-export function getTagStats(
+// ---------------------------------------------------------------------------
+// Press front page selection
+// ---------------------------------------------------------------------------
+
+export type FrontSlotKind = 'case-study' | 'explainer' | 'tutorial';
+
+export interface SeriesSummary {
+  name: string;
+  parts: BlogPostPreview[];
+  totalMinutes: number;
+}
+
+export type FrontSlot =
+  | { kind: FrontSlotKind; post: BlogPostPreview; series?: undefined }
+  | { kind: 'explainer'; series: SeriesSummary; post?: undefined };
+
+export function seriesPartNumber(post: BlogPostPreview): number {
+  const match = post.slug.match(/part(\d+)/i);
+  return match ? Number(match[1]) : 0;
+}
+
+export function postType(post: BlogPostPreview) {
+  return post.frontmatter.type ?? 'tutorial';
+}
+
+export function getSeries(
+  posts: BlogPostPreview[],
+  name: string
+): SeriesSummary {
+  const parts = posts
+    .filter((p) => p.frontmatter.series === name)
+    .sort((a, b) => seriesPartNumber(a) - seriesPartNumber(b));
+  const totalMinutes = parts.reduce(
+    (sum, p) => sum + (p.frontmatter.readingTime ?? 0),
+    0
+  );
+  return { name, parts, totalMinutes };
+}
+
+/** The pinned lead (`lead: true`), else the newest post that is not a note. */
+export function getLeadPost(
   posts: BlogPostPreview[]
-): Array<{ tag: string; count: number; label: string }> {
-  const counts = new Map<string, number>();
-  const labels = new Map<string, string>();
+): BlogPostPreview | undefined {
+  const eligible = posts.filter((p) => postType(p) !== 'note');
+  return eligible.find((p) => p.frontmatter.lead === true) ?? eligible[0];
+}
 
-  for (const post of posts) {
-    const tags = post.frontmatter?.tags ?? [];
-    const unique = new Set(tags.map((t) => t.trim()).filter(Boolean));
+/** Newest case study, explainer and tutorial. A series explainer shows as the whole series. */
+export function getFrontSlots(
+  posts: BlogPostPreview[],
+  leadSlug?: string
+): FrontSlot[] {
+  const kinds: FrontSlotKind[] = ['case-study', 'explainer', 'tutorial'];
+  const slots: FrontSlot[] = [];
 
-    for (const original of unique) {
-      const key = original.toLowerCase();
-      if (!labels.has(key)) labels.set(key, original);
-      counts.set(key, (counts.get(key) ?? 0) + 1);
+  for (const kind of kinds) {
+    const post = posts.find(
+      (p) => p.slug !== leadSlug && postType(p) === kind
+    );
+    if (!post) continue;
+
+    const seriesName = post.frontmatter.series;
+    if (kind === 'explainer' && seriesName) {
+      slots.push({ kind, series: getSeries(posts, seriesName) });
+    } else {
+      slots.push({ kind, post });
     }
   }
 
-  const stats: Array<{ tag: string; count: number; label: string }> = [];
-  for (const [tag, count] of counts.entries()) {
-    stats.push({ tag, count, label: labels.get(tag)! });
-  }
-
-  stats.sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
-  return stats;
+  return slots;
 }
 
-function indexBySlug(
-  posts: BlogPostPreview[]
-): Map<string, BlogPostPreview> {
-  const map = new Map<string, BlogPostPreview>();
-  for (const post of posts) {
-    map.set(post.slug, post);
-  }
-  return map;
-}
-
-function getPopularFromConfig(
+export function getMoreAnalysis(
   posts: BlogPostPreview[],
-  slugs: readonly string[]
+  leadSlug?: string,
+  limit = 3
 ): BlogPostPreview[] {
-  const bySlug = indexBySlug(posts);
-  const result: BlogPostPreview[] = [];
-  for (const slug of slugs) {
-    const post = bySlug.get(slug);
-    if (post) result.push(post);
-  }
-  return result;
-}
-
-function getPopularHeuristic(
-  posts: BlogPostPreview[],
-  limit = 6
-): BlogPostPreview[] {
-  const withDate = posts.filter((p) => !!p.frontmatter?.date);
-
-  const featured = withDate
-    .filter((p) => p.frontmatter?.featured === true)
-    .sort(
-      (a, b) =>
-        new Date(b.frontmatter.date).getTime() -
-        new Date(a.frontmatter.date).getTime()
-    );
-
-  const nonFeatured = withDate
-    .filter((p) => p.frontmatter?.featured !== true)
-    .sort(
-      (a, b) =>
-        new Date(b.frontmatter.date).getTime() -
-        new Date(a.frontmatter.date).getTime()
-    );
-
-  const merged = [...featured, ...nonFeatured];
-
-  const seen = new Set<string>();
-  const unique: BlogPostPreview[] = [];
-  for (const post of merged) {
-    if (!seen.has(post.slug)) {
-      seen.add(post.slug);
-      unique.push(post);
-    }
-  }
-  return unique.slice(0, limit);
-}
-
-export function getPopularPosts(
-  posts: BlogPostPreview[],
-  limit = 6
-): BlogPostPreview[] {
-  const curated = getPopularFromConfig(posts, popularSlugs);
-  if (curated.length >= 1) {
-    return curated.slice(0, limit);
-  }
-  return getPopularHeuristic(posts, limit);
+  return posts
+    .filter((p) => p.slug !== leadSlug && postType(p) === 'analysis')
+    .slice(0, limit);
 }

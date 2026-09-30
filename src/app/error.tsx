@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect } from 'react';
+import PressLayout from '@/components/press/PressLayout';
 
 export default function ErrorPage({
   error,
@@ -14,22 +16,23 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="p-6 bg-gray-800 text-white rounded-lg shadow-lg max-w-md">
-        <h2 className="text-xl font-bold mb-4">Something went wrong</h2>
-        <p className="mb-4">
-          The application encountered an unexpected error.
-        </p>
-        <p className="text-sm text-gray-400">
-          Error: {error.message || 'Unknown error'}
-        </p>
-        <button
-          onClick={reset}
-          className="mt-4 px-4 py-2 bg-primary/30 hover:bg-primary/50 transition-colors rounded"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
+    <PressLayout>
+      <header className="masthead notfound-head">
+        <h1>Stop the presses</h1>
+      </header>
+      <aside className="correction" role="alert">
+        <p className="correction-label">Printing error</p>
+        <p>Something went wrong while this page was being set. Try it again; if it keeps happening, the front page still works.</p>
+        {error.digest ? <p className="correction-ref">Reference: {error.digest}</p> : null}
+        <div className="correction-actions">
+          <button type="button" onClick={reset} className="cta">
+            Try again
+          </button>
+          <Link href="/">
+            <span className="hl-swipe">Front page</span>
+          </Link>
+        </div>
+      </aside>
+    </PressLayout>
   );
 }

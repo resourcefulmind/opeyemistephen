@@ -4,7 +4,6 @@ This directory contains MDX blog posts for the portfolio website.
 
 ## Directory Structure
 - `articles/` - MDX blog post files
-- `articles/template.mdx.example` - Template for creating new posts
 
 ## Documentation
 For complete information on creating and managing blog posts, please see:
@@ -27,6 +26,7 @@ title: "My Sample Post"
 date: "2023-12-22"
 excerpt: "This is a sample post showing the basic structure"
 slug: "sample-post"
+type: "tutorial"   # analysis | case-study | explainer | tutorial | note
 tags: ["sample", "example"]
 author: "Your Name"
 ---

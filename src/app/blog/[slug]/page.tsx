@@ -4,19 +4,17 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
-import BlogPostClient from '@/components/Blog/BlogPostClient';
-import { mdxComponents } from '@/components/mdx/mdxComponents';
-import {
-  getAllPosts,
-  getPostBySlug,
-  getTagStats,
-  getPopularPosts,
-} from '@/lib/blog/loader';
+import ArticleView from '@/components/press/ArticleView';
+import PressLayout from '@/components/press/PressLayout';
+import ReadMarker from '@/components/press/ReadMarker';
+import { articleMdx } from '@/components/press/articleMdx';
+import { extractHeadings } from '@/lib/blog/headings';
+import { getAllPosts, getPostBySlug, getSeries, postType } from '@/lib/blog/loader';
+import { DISPLAY_NAME, SITE_URL, bylineName, personJsonLd } from '@/content/identity';
 
-const SITE_URL = 'https://www.opeyemibangkok.com';
 
 function resolveImageUrl(coverImage?: string): string {
-  if (!coverImage) return `${SITE_URL}/preview.png`;
+  if (!coverImage) return `${SITE_URL}/opengraph-image`;
   if (coverImage.startsWith('http://') || coverImage.startsWith('https://')) {
     return coverImage;
   }
@@ -24,12 +22,12 @@ function resolveImageUrl(coverImage?: string): string {
 }
 
 function resolveAuthorName(author: unknown): string {
-  if (typeof author === 'string') return author;
+  if (typeof author === 'string') return bylineName(author);
   if (author && typeof author === 'object' && 'name' in author) {
     const name = (author as { name?: unknown }).name;
-    if (typeof name === 'string') return name;
+    if (typeof name === 'string') return bylineName(name);
   }
-  return 'Opeyemi Stephen';
+  return DISPLAY_NAME;
 }
 
 export async function generateStaticParams() {
@@ -55,7 +53,6 @@ export async function generateMetadata({
     excerpt,
     date,
     tags = [],
-    coverImage,
     author,
     lastUpdated,
     canonicalUrl,
@@ -63,7 +60,6 @@ export async function generateMetadata({
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
   const canonical = canonicalUrl ?? postUrl;
-  const imageUrl = resolveImageUrl(coverImage);
   const authorName = resolveAuthorName(author);
   const publishedTime = new Date(date).toISOString();
   const modifiedTime = lastUpdated
@@ -81,26 +77,17 @@ export async function generateMetadata({
       title,
       description: excerpt,
       url: canonical,
-      siteName: 'Opeyemi Stephen',
+      siteName: DISPLAY_NAME,
       locale: 'en_US',
       publishedTime,
       modifiedTime,
       authors: [authorName],
       tags,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: excerpt,
-      images: [imageUrl],
       creator: '@devvgbg',
       site: '@devvgbg',
     },
@@ -122,12 +109,13 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
-  const prev = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
-  const next =
-    currentIndex >= 0 && currentIndex < allPosts.length - 1
-      ? allPosts[currentIndex + 1]
-      : null;
+  const series = post.frontmatter.series;
+  const seriesParts = series ? getSeries(allPosts, series).parts : [];
+  const type = post.frontmatter.type ?? 'tutorial';
+  const related = series
+    ? []
+    : allPosts.filter((p) => p.slug !== slug && postType(p) === type).slice(0, 2);
+  const headings = extractHeadings(post.body);
 
   const postUrl = `${SITE_URL}/blog/${slug}`;
   const canonical = post.frontmatter.canonicalUrl ?? postUrl;
@@ -145,19 +133,8 @@ export default async function BlogPostPage({
     headline: post.frontmatter.title,
     description: post.frontmatter.excerpt,
     image: imageUrl,
-    author: {
-      '@type': 'Person',
-      name: authorName,
-      url: SITE_URL,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Opeyemi Stephen',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/preview.png`,
-      },
-    },
+    author: authorName === DISPLAY_NAME ? personJsonLd : { '@type': 'Person', name: authorName },
+    publisher: { '@id': `${SITE_URL}/#person`, '@type': 'Person', name: DISPLAY_NAME, url: SITE_URL },
     datePublished: publishedTime,
     dateModified: modifiedTime,
     mainEntityOfPage: {
@@ -178,27 +155,28 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <BlogPostClient
-        frontmatter={post.frontmatter}
-        slug={slug}
-        prev={prev}
-        next={next}
-        tagStats={getTagStats(allPosts)}
-        popularPosts={getPopularPosts(allPosts, 6)}
-        recentPosts={allPosts.slice(0, 6)}
-      >
-        <MDXRemote
-          source={post.body}
-          components={mdxComponents}
-          options={{
-            parseFrontmatter: false,
-            mdxOptions: {
-              remarkPlugins: [remarkGfm],
-              rehypePlugins: [rehypeSlug, rehypeHighlight],
-            },
-          }}
-        />
-      </BlogPostClient>
+      <PressLayout>
+        <ReadMarker slug={slug} series={series} />
+        <ArticleView
+          slug={slug}
+          frontmatter={post.frontmatter}
+          headings={headings}
+          seriesParts={seriesParts}
+          related={related}
+        >
+          <MDXRemote
+            source={post.body}
+            components={articleMdx}
+            options={{
+              parseFrontmatter: false,
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+                rehypePlugins: [rehypeSlug, rehypeHighlight],
+              },
+            }}
+          />
+        </ArticleView>
+      </PressLayout>
     </>
   );
 }

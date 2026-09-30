@@ -45,3 +45,5 @@ CLAUDE.md
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+# impeccable design tool scratch state
+.impeccable/

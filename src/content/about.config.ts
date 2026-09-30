@@ -1,30 +1,49 @@
 export const intro = {
-  title: 'About Opeyemi Stephen',
+  title: 'About Opeyemi Bangkok',
   tagline: 'A trusted voice, a cool head, and an undaunted initiative in messy situations.',
   bio:
-    "I sit at my desk, look at my screens, create magic for you with my computer and get paid for it. I try to keep things simple, functional, readable, and fast, because the best work is the kind people actually use.",
+    'I\u2019m a software engineer and technical writer who ships software and writes the courses and guides that teach developers to build. I try to keep things simple, functional, readable, and fast, because the best work is the kind people actually use.',
 };
 
-export const stats = [];
+/**
+ * Roles grouped into the three lanes named in the story (software, technical
+ * education, ecosystem growth). Several ran at the same time, so the page shows
+ * them by lane rather than as one timeline. `current` marks roles still running.
+ */
+export type Lane = 'software' | 'education' | 'ecosystems';
 
-export const now = {
-  title: 'Now',
-  bullets: [
-    'Simplifying Everything', 
-    'Designing calmer interfaces with motion used sparingly.', 
-    'Building & Redefining Education for the Solana Foundation', 
-    'Writing about front‑end systems and developer experience.',
-    'Helping teams simplify content pipelines and documentation.', 
-    'Building Ecosystems', 
-    'The Gym, Swimming & Tennis', 
-  ],
-};
+export const lanes: Array<{ id: Lane; label: string }> = [
+  { id: 'software', label: 'Software' },
+  { id: 'education', label: 'Technical education' },
+  { id: 'ecosystems', label: 'Ecosystem growth' },
+];
 
-export const experience = [
+export const experience: Array<{
+  role: string;
+  company: string;
+  period: string;
+  lane: Lane;
+  current?: boolean;
+  bullets: string[];
+}> = [
+  {
+    role: 'QA and Releases Manager',
+    company: 'Solana Foundation (Solana Developer Platform)',
+    period: '2026',
+    lane: 'software',
+    current: true,
+    bullets: [
+      'The human gate between a fast-moving, AI-assisted codebase and production: every release read change by change, every migration checked against its rollback, and production verified by behaviour, not by tag.',
+      'Gated more than twenty production releases and stopped release-blocking defects before they reached users.',
+      'Built the Coinbase on-ramp integration end to end, from embedded orders to a reusable buyer token that lets a returning buyer skip verification, and hardened the MoneyGram flow with tests and production checks.',
+      'Reviewed whole features and modules end to end, including Workflow Builder, the largest change shipped in my time there, testing each claim against the code rather than the description.',
+    ],
+  },
   {
     role: 'Education Architect, Solana',
     company: 'Solana Foundation',
     period: '2025',
+    lane: 'education',
     bullets: [
       'Designing the education arm for onboarding and maturing Solana builders.',
       'Creating developer-ready curriculum and structured learning paths.',
@@ -35,6 +54,7 @@ export const experience = [
     role: 'Co-Lead — Builder Community',
     company: 'Solana Students Africa',
     period: '2025',
+    lane: 'ecosystems',
     bullets: [
       'Leading student engineers from “project” to “product” readiness.',
       'Running accelerators, reviews, and curriculum-aligned initiatives.',
@@ -44,6 +64,7 @@ export const experience = [
     role: 'Co-Founder / Curriculum & Product',
     company: 'Kronos',
     period: '2025',
+    lane: 'education',
     bullets: [
       'Building self-paced and bootcamp learning infra for Web3 builders.',
       'Converting hard protocol topics into structured, real-use education.',
@@ -53,6 +74,7 @@ export const experience = [
     role: 'Co-Founder / Product',
     company: 'Daneizo',
     period: '2024',
+    lane: 'software',
     bullets: [
       'Building SME lending infrastructure to unlock capital access.',
       'Designing underwriting logic and product go-to-market.',
@@ -62,6 +84,7 @@ export const experience = [
     role: 'TCM & Ecosystem Builder',
     company: 'Fuel',
     period: '2024',
+    lane: 'ecosystems',
     bullets: [
       'Shaped community-led education and content for builder activation.',
       'Supported awareness and technical on-ramp initiatives.',
@@ -71,6 +94,7 @@ export const experience = [
     role: 'TCM, Ecosystems Builder & Documentations',
     company: 'Hyperbolic',
     period: '2024',
+    lane: 'ecosystems',
     bullets: [
       'Helped build community and ecosystem readiness.',
       'Produced technical documentation and onboarding content.',
@@ -80,6 +104,7 @@ export const experience = [
     role: 'Curriculum Architect',
     company: 'Chainlink',
     period: '2024',
+    lane: 'education',
     bullets: [
       'Designed track to move Web2 engineers to Web3 solutions architects.',
       'Built structured learning paths with real-world protocol alignment.',
@@ -89,26 +114,12 @@ export const experience = [
     role: 'Technical Community Manager & Technical Writer',
     company: 'Consensys (MetaMask • Linea • Infura • Consensys Academy)',
     period: '2023',
+    lane: 'ecosystems',
     bullets: [
       'Managed Consensys Academy community and alumni growth.',
       'Created technical education for MetaMask, Linea, and Infura.',
       'Improved MetaMask UX literacy for everyday users.',
     ],
-  },
-];
-
-export const caseStudies = [
-  {
-    title: 'MDX Content System',
-    summary: 'Schema-driven blog pipeline with TOC, fast previews, and robust authoring.',
-    tags: ['MDX', 'Content'],
-    link: '/blog',
-  },
-  {
-    title: 'Design System & Motion',
-    summary: 'Accessible component kit with subtle motion and performance budgets.',
-    tags: ['React', 'Framer Motion'],
-    link: '/',
   },
 ];
 
@@ -172,10 +183,6 @@ export const principles = [
     title: 'Impact or it is irrelevant',
     desc: 'Technology must materially improve human lives, usefulness is the only justification for building.'
   }
-];
-
-export const testimonials = [
-  // Optional; left empty for now
 ];
 
 export const story = {
