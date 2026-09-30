@@ -87,7 +87,7 @@ export default function AboutPage() {
       </section>
 
       <section className="principles" aria-labelledby="principles-heading">
-        <h2 id="principles-heading">Principles</h2>
+        <h2 id="principles-heading">Where I stand</h2>
         <ol>
           {principles.map((p) => (
             <li key={p.title}>
@@ -115,7 +115,7 @@ export default function AboutPage() {
       </section>
 
       <section className="contact" aria-labelledby="contact-heading">
-        <h2 id="contact-heading">Let’s make magic</h2>
+        <h2 id="contact-heading">Let’s make magic!</h2>
         <p>{contactLine}</p>
         <p className="open-to">{openTo}</p>
         <div className="contact-actions">

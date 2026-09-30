@@ -124,7 +124,7 @@ export default function FrontPage({ issueNumber, lead, slots, moreAnalysis }: Fr
       </section>
 
       <section className="principles" aria-labelledby="principles-heading">
-        <h2 id="principles-heading">Principles</h2>
+        <h2 id="principles-heading">Where I stand</h2>
         <ol>
           {principles.slice(0, 4).map((p) => (
             <li key={p.title}>
