@@ -10,6 +10,7 @@ const NAV = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
+  { href: '/community', label: 'Community' },
 ];
 
 function lagosDate(style: 'long' | 'short') {

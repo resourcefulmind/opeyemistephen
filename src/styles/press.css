@@ -1607,3 +1607,11 @@ button.cta { cursor: pointer; font-family: var(--display); }
   .end-row-3 { grid-template-columns: 1fr; }
   .correction { margin-inline: 0; }
 }
+
+/* Small phones: the date takes its own line so four nav links and the theme toggle fit beneath it */
+@media (max-width: 480px) {
+  .press-topline { flex-wrap: wrap; row-gap: 0; padding-top: 10px; }
+  .press-topline > span { flex-basis: 100%; }
+  .press-topline .right { width: 100%; justify-content: space-between; }
+  .press-topline nav ul { gap: 14px; }
+}
