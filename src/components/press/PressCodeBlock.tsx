@@ -33,7 +33,7 @@ export default function PressCodeBlock({
           <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
-      <pre>
+      <pre tabIndex={0} role="region" aria-label={language ? `${language} code` : 'Code'}>
         <code ref={codeRef} className={className} {...props}>
           {children}
         </code>

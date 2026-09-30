@@ -174,6 +174,12 @@ export default function Archive({ posts }: { posts: BlogPostPreview[] }) {
         )}
       </header>
 
+      <p className="sr-only-press" aria-live="polite">
+        {visible.length === posts.length
+          ? `Showing all ${posts.length} articles`
+          : `Showing ${visible.length} of ${posts.length} articles`}
+      </p>
+
       {sections.length === 0 ? (
         <p className="empty">
           Nothing under {tagLabel ?? topic.label} yet.{' '}

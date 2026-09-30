@@ -74,7 +74,21 @@ function Pre({ children }: React.HTMLAttributes<HTMLPreElement>) {
   return <pre>{children}</pre>;
 }
 
+/**
+ * Markdown wraps a lone image in a paragraph, and a <figure> inside a <p> is invalid
+ * HTML (React then throws a hydration error). Paragraphs holding an image render as a
+ * plain block instead.
+ */
+function Paragraph({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+  const holdsFigure = Children.toArray(children).some(
+    (child) => isValidElement(child) && child.type === Figure
+  );
+  if (holdsFigure) return <div className="figure-block">{children}</div>;
+  return <p {...props}>{children}</p>;
+}
+
 export const articleMdx = {
+  p: Paragraph,
   // The page renders the only h1; a stray body h1 becomes an h2 so the outline stays valid.
   h1: (p: HeadingProps) => <AnchoredHeading as="h2" {...p} />,
   h2: (p: HeadingProps) => <AnchoredHeading as="h2" {...p} />,

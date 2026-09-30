@@ -23,7 +23,7 @@ function SideStory({ slot }: { slot: FrontSlot }) {
       <article>
         {first?.frontmatter.coverImage && (
           <Link href={`/blog/${first.slug}`} className="thumb" tabIndex={-1} aria-hidden="true">
-            <Image src={first.frontmatter.coverImage} alt="" fill sizes="(max-width: 820px) 100vw, 380px" />
+            <Image src={first.frontmatter.coverImage} alt="" fill loading="eager" sizes="(max-width: 820px) 100vw, 380px" />
           </Link>
         )}
         <h3>
@@ -46,7 +46,7 @@ function SideStory({ slot }: { slot: FrontSlot }) {
     <article>
       {fm.coverImage && (
         <Link href={`/blog/${post.slug}`} className="thumb" tabIndex={-1} aria-hidden="true">
-          <Image src={fm.coverImage} alt="" fill sizes="(max-width: 820px) 100vw, 380px" />
+          <Image src={fm.coverImage} alt="" fill loading="eager" sizes="(max-width: 820px) 100vw, 380px" />
         </Link>
       )}
       <h3>
