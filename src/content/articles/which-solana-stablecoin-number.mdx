@@ -1,0 +1,102 @@
+---
+title: "Which Solana Stablecoin Number Would You Build a Payments Product On?"
+date: "2026-10-14"
+excerpt: "A record holder count, a supply drop and a $1 billion card figure each count something different, and none says how many people paid anyone. What each Solana stablecoin number counts, and the four I'd ask for before building on any of it."
+slug: "which-solana-stablecoin-number"
+type: "analysis"
+tags: ["Stablecoins", "Solana", "Payments", "On-chain Data"]
+author: "Opeyemi Stephen"
+coverImage: "https://res.cloudinary.com/resourcefulmind-inc/image/upload/v1791991179/one-chain-one-day_rsberq.png"
+canonicalUrl: "https://www.opeyemibangkok.com/blog/which-solana-stablecoin-number"
+status: "published"
+---
+
+*Disclosure: I've worked on a few projects with the Solana Foundation. Blockworks, whose data sets the record below, disclosed that the Solana Foundation funded its Q2 2026 Solana Tokenholder Report. Details in the footnote.*
+
+On October 7, 2026, [Solana's official account posted a record](https://x.com/solana/status/2107752110133825546): "Stablecoin holders on Solana hit a record 14M+, up from under 4M in late 2024". Within a day outlets were printing it beside two others: more than $15 billion of stablecoin supply, which one of them set against September's $17.3 billion peak, and more than $1 billion of card spending. Read together, they looked like a paradox. More holders, less money.
+
+The drop sets Solana's own September record against a figure the coverage printed with no source. Check it on a single series and it halves. The holder count tells you how many addresses held a stablecoin, not how many people paid anyone, and the card figure arrived with no scope, provider or start date. If you're weighing Solana for stablecoin payments, here is what each number actually counts, and what I'd ask for instead.
+
+## The 13% drop sets a record against a number with no source
+
+Start with the drop, because the coverage leans on it hardest. On September 25, 2026, Solana's account posted a new high of $17.3 billion in stablecoin supply, on a chart credited to "Artemis, Powered by Flipside". The October 7 post was about holders and gave no supply figure. The "above $15 billion" appeared in [Bitcoin.com's report](https://news.bitcoin.com/stablecoins/solana-hits-14m-stablecoin-holders-card-volume-tops-1b/) that day, in the sentence right after it credited "Blockworks data cited by Solana": "The network also holds more than $15 billion in stablecoin supply". The next day, [Crypto Briefing](https://cryptobriefing.com/solana-stablecoin-holders-top-14-million/) repeated it and wrote of "The drop in supply from September". Do the subtraction and you get about 13%.
+
+That 13% compares a sourced peak with an unsourced floor. Put both dates on one tracker and the gap shrinks. [DefiLlama's Solana dollar-stablecoin series](https://stablecoins.llama.fi/stablecoincharts/Solana) peaked at $17.45 billion on September 25, 2026 and read $16.31 billion on October 9, 2026, a fall of 6.5%. DefiLlama has since revised that series; on October 14, 2026 its October 9 point read $16.13 billion, a fall of 7.6%. DefiLlama keeps its own basket of what counts as a stablecoin (more on that below), but a comparison needs the same tracker on both dates, and this is that. [rwa.xyz](https://app.rwa.xyz/networks/solana), a second tracker, shows supply down 1.21% over a different window, the 30 days to October 9.
+
+The peak itself came at the top of a few jumpy days. DefiLlama has $17.11 billion on September 22, 2026, $16.18 billion on September 24, $17.45 billion the next day, and $16.75 billion the day after. The October 9, 2026 level still sits above the $15.84 billion of September 21, 2026, four days before the record. On DefiLlama's per-coin data, USDC accounts for the entire decline since the spike, down $1.47 billion, while USDT rose $0.25 billion.
+
+My read: whatever moved DefiLlama's series up $1.26 billion in a day and gave back more than half of it the next, it wasn't millions of people deciding overnight to hold dollars.
+
+The paradox needed both supply figures to come from the same place. They didn't.
+
+## As of October 9, 2026, Solana's stablecoin supply and holder count depended on who was counting
+
+Here is one chain, with the latest figure each source had published as of October 9, 2026.
+
+| What is counted | Figure | Who counted, and when |
+| --- | --- | --- |
+| Mint supply, five dollar-stablecoin mints listed in the appendix (includes issuer-held reserve) | $14.27B | Solana RPC, `getTokenSupply`, slot 454837470, October 9, 2026 |
+| Circulating supply, USDC and USDT only, as the issuers report it | $9.50B | Circle ($6.59B), October 9, 2026; Tether ($2.91B), undated file read October 9, 2026 |
+| Tracker basket (includes BlackRock's BUIDL and bridged tokens) | $16.31B | DefiLlama, October 9, 2026 |
+| Tracker total | $14.96B | rwa.xyz, October 9, 2026 |
+| Holders | 14M+ | Blockworks, as posted by Solana on October 7, 2026 |
+| Holders | 13.17M | rwa.xyz, October 9, 2026 |
+| Holders | 13.07M | Birdeye, Q3 2026 to September 22, 2026 |
+| Holders, 30-day change | +6.8% | rwa.xyz, 30 days to October 9, 2026 |
+| Addresses active in the trailing 30 days, 30-day change | -0.9% | rwa.xyz, 30 days to October 9, 2026 |
+| 30-day transfer volume against circulating supply | about 34x | rwa.xyz, 30 days to October 9, 2026 |
+
+Every supply figure in that table is honest, and they still sit billions apart. A mint is the on-chain account that defines a token, and its supply is everything issued and not yet burned, including tokens the issuer is holding in its own treasury. For USDC and USDT alone on October 9, 2026, mint supply came to $11.52 billion while the issuers' own circulating figures came to $9.50 billion. Tether, for instance, reports $0.93 billion of its Solana issuance as reserve rather than circulating. DefiLlama's figure is bigger again; its basket also counts coins outside those five, USDGO among them, plus BUIDL, a tokenized Treasury fund worth $0.92 billion, and bridged tokens. On September 25, 2026, the day of the supply record, Solana Compass noted that whether the total read $16.6 billion or $17.3 billion "depends on the tracker".
+
+Holders split too, and not only because the counts were taken on different days. Birdeye had 13.07 million to September 22 and Blockworks 14 million and change for the week to October 4. Some of that gap is growth, since holders were rising about 6.8% a month on rwa.xyz's count. But rwa.xyz counted 13.17 million on October 9, five days after Blockworks' last week, and still came in about 850,000 lower, so that gap is how they count, not when. Blockworks' chart, as Solana posted it, defines its metric in one line: "Number of addresses holding a stablecoin on Solana". That leaves me with three questions the line doesn't answer. On Solana a wallet holds each token in a [separate token account](https://solana.com/docs/tokens), so does a wallet holding USDC and USDT count once or twice? Does a one-cent balance count? Does an exchange wallet holding funds for thousands of customers count as one holder?
+
+Blockworks also disclosed that its Q2 2026 Solana Tokenholder Report "has been funded by Solana Foundation", saying the sponsor "may have input on the content" while Blockworks Advisory "maintains editorial control over the final report". I'm not raising that as a gotcha. A published counting method is how a reader checks the number without taking anyone's word for it.
+
+That table has ten rows for one chain, and not one of them separates a payment from a trade.
+
+## Holders rose 6.8% in a month while active addresses went flat
+
+Of the three holder counters, rwa.xyz publishes holders and activity side by side, which makes it the cleanest test I have of what the holder line can tell you. On its page as it read on October 9, 2026, its count of Solana stablecoin holders rose 6.8% over 30 days, from 12,334,083 to 13,169,113; rwa.xyz has since revised those figures. Its count of addresses active in the trailing 30 days fell 0.9%, from 10,220,652 to 10,126,396. rwa.xyz publishes both 30-day changes itself, though its definitions for those fields weren't reachable, and the two counts aren't nested: an active address can be one that sent everything and ended at zero.
+
+One month isn't a trend, and over 90 days both lines rose by roughly 23 to 25%. The month does show that the two can come apart, and a holder count gives you no way to tell when they have. Even Crypto Briefing, the outlet that set the two supply figures side by side, concedes the point: "Holder counts measure addresses, not people, and one user can control many addresses".
+
+Addresses on Solana are also cheap to multiply. Visa doesn't say how many of the wallets in its example held a balance, so I can't tell you how much of the 14 million it touches. What [Visa Onchain Analytics](https://visaonchainanalytics.com/changelog) recorded on September 18, 2026 shows how easily an address count grows without anyone new showing up: "A single automated program on Solana was identified cycling the same stablecoins through thousands of throwaway wallets".
+
+Then there's volume. rwa.xyz puts raw stablecoin transfer volume on Solana at $504.5 billion over the 30 days to October 9, 2026, against $14.96 billion in circulation, which works out to about 34 turns a month. My read is that much of that money is trading desks and bots moving the same dollars around, because people paying for groceries and invoices don't turn their whole balance over every day.
+
+I want to give the record its best case, because it's a real one. Distribution comes before usage: you can't pay someone who holds no stablecoins. And usage grew too. Daily active stablecoin addresses on Solana reached 888,000 in September 2026, up 269% year on year, according to rwa.xyz data [relayed by Solana Compass](https://solanacompass.com/news/solana-daily-stablecoin-active-addresses-hit-888k-in-september-up-269-year-over-year). Relaying Bitget Research's figures from Allium data that filters out wash trading, bot loops and internal exchange flows, [Spark](https://www.spark.money/research/solana-stablecoin-transfer-volume-surge-2026) found that "Solana's share of adjusted stablecoin transfer volume grew from under 3% in early 2024 to 36% by February 2026".
+
+I'll grant the first half. Distribution does come first, and those are real growth numbers. They still don't measure payments. The 888,000 counts "unique wallets sending or receiving stablecoin transactions each day" with no bot adjustment stated, which is the kind of address a throwaway-wallet program creates, though Visa doesn't say how many of them that count includes. The 36% is cleaner, but it's a share of all adjusted transfer volume, which Spark says "includes both DEX trading and payment flows", and Allium also supplies the data behind Visa's analytics, so I don't count the two as separate confirmations. Neither number tells you how many people paid someone last month.
+
+One more line belongs next to the holder chart. DefiLlama data shows USDC on Solana peaking at $12.06 billion on October 14, 2025, falling to $9.47 billion by January 1, 2026, and sitting at $6.76 billion on October 9, 2026. Circle's own figure that day was $6.59 billion circulating. Total supply held up because other coins grew, USD1 among them, from $0.12 billion to $1.42 billion over 2026, and because DefiLlama added tokens to its basket during the year. USDC is still the largest dollar stablecoin on Solana by mint supply, it has lost more than 40% of its supply there in a year, and the holder count set a record anyway. No public explanation for the latest leg of that decline was found. I don't know what it means. If I were building payments on Solana, I'd want someone to explain it before I read anything into the holder line.
+
+None of that shows up on a holder chart.
+
+## Four numbers I'd ask for before building on any of this
+
+If I were weighing Solana for a payments flow, these are the four numbers I'd ask for. None of them appears in the headline, and the list is my judgement as a builder, not a finding.
+
+1. **Active senders at payment size.** Unique addresses that sent at least one transfer in the size band your product actually handles in the last 30 days, after removing addresses that behave like bots.
+2. **Median transfer size.** The median, not the mean, because a handful of very large transfers from trading desks drags any average far from what a person pays.
+3. **90-day sender retention.** Of the addresses that sent a payment-sized transfer in a given month, the share that sent another one three months later.
+4. **Volume per active card.** Card spend divided by the cards actually used that month, not a cumulative total since an unstated start date.
+
+[Visa Onchain Analytics](https://visaonchainanalytics.com/transactions) already counts transfers as "Adjusted" only when the address "has not sent more than 1,000 transactions or $10m in transfer volume in a given 30-day period", and it publishes 30-day "Retail Sized" volume and count for filtered transfers under $250. That's close to the first number, but it counts transfers, not the people sending them. It still shows the first number can be built from on-chain data. I haven't seen the other three published by anyone.
+
+Card volume shows why the fourth one matters. Coverage of the October 7, 2026 record put cumulative card volume above $1 billion, though Solana's own post didn't mention cards, and no outlet stated the cards, provider or start date behind the figure. A dated figure comes from Birdeye's quarterly report, [relayed by Solana Compass](https://solanacompass.com/news/birdeye-solana-q3-2026-report-sol-holders-up-205-to-838m-as-sol-trading): "Card payment volume on Solana reached $262.7 million in Q3" 2026, counted to September 22, 2026. Over the 84 days it covers, that's roughly $94 million a month. [An exchange blog](https://www.bitrue.com/blog/solana-crypto-card-record-july) credits a single card program, KAST, with $62.34 million of Solana card volume in July 2026 alone, from a screenshot of a Paymentscan card-volume chart, so treat it as a hint rather than a measurement. If one card program carries most of the volume, the total tells you about that program, not about the chain.
+
+[I've argued before](https://www.opeyemibangkok.com/blog/corporate-l1s-africa-payments#conclusion-track-the-metrics-not-the-memes) for tracking the metrics, not the memes. For a payments product, these four are where I'd start.
+
+## The burden sits with whoever posts the number
+
+I don't see a villain in this chain of posts. Solana's account posted a chart Blockworks built. Outlets reposted it and added a supply figure with no source, and one of them set that figure beside Solana's September record. Each step is ordinary. Together they turned an address count with a one-line definition into a story about adoption.
+
+Records are fine. Post the method with them. A holder count that ships without its counting method asks readers to take it on trust, however accurate it turns out to be, and every chain's holder chart deserves the same four numbers next to it before anyone builds on it.
+
+Until someone shows how a holder is counted, I'll read 14 million as exactly what the chart's own label says: a number of addresses holding a stablecoin. I wouldn't price a payments product off it.
+
+---
+
+**Footnote: disclosure.** I'm a Developer Experience Engineer who has worked on a few projects with the Solana Foundation. Blockworks' [Q2 2026 Solana Tokenholder Report](https://blockworks.com/api/investor-report/solana-token-holder-report-q2-2026/pdf) states: "This research report has been funded by Solana Foundation". I've treated that the way I'd want my own relationship treated: as context the reader is owed, not as evidence of anything.
+
+**Appendix: how the table was built.** The mint-supply row is a `getTokenSupply` call against Solana's public mainnet RPC (`https://api.mainnet-beta.solana.com`) at slot 454837470, October 9, 2026, 10:19 UTC, for five mints: USDC `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`, USDT `Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB`, USD1 `USD1ttGY1N17NEEHLmELoaybftRBUSErhqYiQzvEmuB`, PYUSD `2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo` and USDG `2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH`. `getTokenSupply` returns minted-minus-burned supply with issuer-held reserve included, which is why it runs about $2 billion above the issuers' circulating figures for USDC and USDT. Issuer figures come from [Circle's stablecoin API](https://api.circle.com/v1/stablecoins) and [Tether's transparency file](https://app.tether.to/transparency.json), which carries no timestamp. DefiLlama figures are the `totalCirculatingUSD.peggedUSD` field of its Solana stablecoin chart. rwa.xyz figures were read from the data embedded in [its Solana network page](https://app.rwa.xyz/networks/solana). The 30-day changes are the page's own published figures (`chg_30d_pct`); its field definitions weren't reachable. The page refreshes daily.
